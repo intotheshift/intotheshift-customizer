@@ -167,8 +167,8 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
 </div>
 
 <div class="page-wrap">
-  <h1 class="page-title">Paramétrage l'autodiagnostic</h1>
-  <p class="page-sub">Définissez ce que verront les répondants avant et après l'autodiagnostic, les données socio-démo utiles à l'analyse, et l'URL de passation.</p>
+  <h1 class="page-title">Paramétrer l'autodiagnostic</h1>
+  <p class="page-sub">Définissez ce que verront les répondants avant l'autodiagnostic, les données socio-démo utiles à l'analyse, le pack de passations et l'URL de passation.</p>
 
   <div class="two-col">
     <div>
@@ -188,7 +188,7 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
         </div>
         <div class="field">
           <label>Description interne</label>
-          <input class="inp" id="desc" type="text" value="Campagne interne Sonora RH sur les réflexes sécurité du quotidien." oninput="save()">
+          <input class="inp" id="desc" type="text" value="Campagne interne Mon entreprise sur les réflexes sécurité du quotidien." oninput="save()">
         </div>
         <div class="inp-row">
           <div class="field">
@@ -201,11 +201,25 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
           </div>
         </div>
         <div class="field">
+          <label>Pack de passations souhaité<span class="req">*</span></label>
+          <select class="inp" id="pack-passations" onchange="save();updatePack()">
+            <option value="200">200 passations</option>
+            <option value="500">500 passations</option>
+            <option value="1200">1 200 passations</option>
+            <option value="2000">2 000 passations</option>
+            <option value="3000">3 000 passations</option>
+            <option value="5000">5 000 passations</option>
+            <option value="7000">7 000 passations</option>
+            <option value="illimite">Illimité</option>
+          </select>
+          <div class="url-note">Ces passations sont mutualisées pour tous les autodiagnostics de votre entreprise.</div>
+        </div>
+        <div class="field">
           <label>Slug de l'URL<span class="req">*</span></label>
           <input class="inp" id="slug" type="text" value="securite-surete-travail" oninput="updateSlug()" placeholder="ex: securite-surete-travail">
           <div class="url-preview">
             <span class="url-label">URL</span>
-            <span class="url-val" id="url-preview">app.intotheshift.com/sonora-rh/securite-surete-travail</span>
+            <span class="url-val" id="url-preview">https://selfdiag-mayt.meandyoutoo.app/mon-entreprise/securite-surete-travail</span>
           </div>
           <div class="url-note">Le slug compose l'adresse de passation. Il doit être court, lisible et sans espace.</div>
         </div>
@@ -261,14 +275,9 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
       </div>
 
       <div class="block">
-        <div class="block-title">Fin d'autodiagnostic et ressources</div>
-        <div class="block-sub">Configurez le message et les ressources affichés après les résultats individuels du répondant.</div>
-        <div class="field">
-          <label>Message de fin</label>
-          <textarea class="inp" id="msg-fin" rows="3" oninput="save();updatePreview()">Merci d'avoir réalisé cet autodiagnostic. Vos réponses contribuent à mieux comprendre les pratiques du quotidien et à identifier les actions les plus utiles pour progresser collectivement.</textarea>
-        </div>
-        <div class="block-divider"></div>
-        <div style="font-size:12px;font-weight:700;color:#18375d;margin-bottom:8px;font-family:'Asap',sans-serif">Ressources complémentaires</div>
+        <div class="block-title">Ressources complémentaires</div>
+        <div class="block-sub">Ajoutez les ressources utiles qui pourront être affichées dans l'autodiagnostic : lien intranet, charte, procédure, module e-learning ou support interne.</div>
+        <div style="font-size:12px;font-weight:700;color:#18375d;margin-bottom:8px;font-family:'Asap',sans-serif">Ressources client</div>
         <div id="resources-list"></div>
         <button type="button" class="btn-add" onclick="addResource()" style="margin-top:4px">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><line x1="6" y1="1" x2="6" y2="11" stroke="#007883" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="6" x2="11" y2="6" stroke="#007883" stroke-width="2" stroke-linecap="round"/></svg>
@@ -304,17 +313,17 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
         </div>
         <div class="sidebar-url">
           <div class="sidebar-url-lbl">URL de passation</div>
-          <div class="sidebar-url-val" id="sb-url">app.intotheshift.com/sonora-rh/securite-surete-travail</div>
+          <div class="sidebar-url-val" id="sb-url">https://selfdiag-mayt.meandyoutoo.app/mon-entreprise/securite-surete-travail</div>
         </div>
       </div>
       <div class="pack-card">
         <div class="pack-head">
           <div class="pack-head-lbl">Pack passations</div>
-          <div class="pack-head-val">200 restantes sur 1 000</div>
+          <div class="pack-head-val" id="pack-val">200 passations</div>
         </div>
         <div class="pack-body">
           <div class="pack-bar-w"><div class="pack-bar-f"></div></div>
-          <div class="pack-note">Ces passations sont mutualisées pour tous les autodiagnostics de Sonora RH.</div>
+          <div class="pack-note">Ces passations sont mutualisées pour tous les autodiagnostics de votre entreprise.</div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0f4f8">
             <div style="font-size:11px;color:#64748b;font-family:'Asap',sans-serif;margin-bottom:5px">Besoin de recharger votre pack ?</div>
             <a href="mailto:cmichelon@meandyoutoo.app" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#007883;text-decoration:none;font-family:'Asap',sans-serif">Contactez-nous →</a>
@@ -332,10 +341,10 @@ var sociodemo = [
   { q:"Quel est votre service principal ?",   opts:["Production","Maintenance","RH","Fonctions support","Autre"], min_groupe: 10 }
 ];
 var resources = [
-  { titre:"Comprendre les bons réflexes sécurité",  url:"https://www.sonora-rh.fr/ressources/reflexes-securite" },
-  { titre:"Signaler un presqu'accident",             url:"https://www.sonora-rh.fr/ressources/signalement" },
-  { titre:"Préparer un briefing sécurité",           url:"https://www.sonora-rh.fr/ressources/briefing-securite" },
-  { titre:"Accéder aux consignes internes",          url:"https://www.sonora-rh.fr/ressources/consignes" }
+  { titre:"Comprendre les bons réflexes sécurité",  url:"https://www.mon-entreprise.fr/ressources/reflexes-securite" },
+  { titre:"Signaler un presqu'accident",             url:"https://www.mon-entreprise.fr/ressources/signalement" },
+  { titre:"Préparer un briefing sécurité",           url:"https://www.mon-entreprise.fr/ressources/briefing-securite" },
+  { titre:"Accéder aux consignes internes",          url:"https://www.mon-entreprise.fr/ressources/consignes" }
 ];
 
 function esc(s) {
@@ -368,12 +377,12 @@ function init() {
     var themeTitle = themeFromUrl || stored.title || 'Autodiagnostic personnalisé';
     document.getElementById('nom').value = (stored.meta && stored.meta.nom) || ('Autodiagnostic ' + themeTitle);
     document.getElementById('titre').value = (stored.meta && stored.meta.titre) || themeTitle;
-    document.getElementById('desc').value = (stored.meta && stored.meta.desc) || ('Campagne interne Sonora RH sur ' + themeTitle + '.');
+    document.getElementById('desc').value = (stored.meta && stored.meta.desc) || ('Campagne interne Mon entreprise sur ' + themeTitle + '.');
     document.getElementById('date-lancement').value = stored.launchDate || (stored.meta && stored.meta.date_lancement) || '';
     document.getElementById('date-cloture').value = stored.closeDate || (stored.meta && stored.meta.date_cloture) || '';
     document.getElementById('slug').value = (stored.meta && stored.meta.slug) || slugify(themeTitle);
     if (stored.intro) document.getElementById('intro').value = stored.intro;
-    if (stored.fin && stored.fin.message) document.getElementById('msg-fin').value = stored.fin.message;
+    if (stored.packPassations && document.getElementById("pack-passations")) document.getElementById("pack-passations").value = stored.packPassations;
     if (stored.demographics && stored.demographics.length) sociodemo = stored.demographics;
     if (stored.sociodemo && stored.sociodemo.length) sociodemo = stored.sociodemo;
     if (stored.resources && stored.resources.length) resources = stored.resources;
@@ -387,6 +396,7 @@ function init() {
   } catch(e) { console.warn('Impossible de charger le paramétrage', e); }
   renderSociodemo();
   renderResources();
+  updatePack();
   updateSlug();
   checkAnonymity();
   checkContinue();
@@ -405,20 +415,20 @@ function save() {
       slug: document.getElementById('slug').value
     };
     existing.title = document.getElementById('titre').value || existing.title || document.getElementById('nom').value.replace(/^Autodiagnostic\s+/i,'');
-    existing.clientName = existing.clientName || 'Sonora RH';
+    existing.clientName = existing.clientName || 'Mon entreprise';
+    existing.packPassations = document.getElementById("pack-passations").value;
     existing.launchDate = document.getElementById('date-lancement').value;
     existing.closeDate = document.getElementById('date-cloture').value;
     existing.intro = document.getElementById('intro').value;
     existing.demographics = sociodemo;
     existing.sociodemo = sociodemo;
     existing.resources = resources;
-    existing.fin = { message: document.getElementById('msg-fin').value };
     localStorage.setItem(LS_KEY, JSON.stringify(existing));
   } catch(e) {}
 }
 function updateSlug() {
   var slug = document.getElementById('slug').value.trim() || 'mon-autodiagnostic';
-  var url = 'app.intotheshift.com/sonora-rh/' + slug;
+  var url = 'https://selfdiag-mayt.meandyoutoo.app/mon-entreprise/' + slug;
   document.getElementById('url-preview').textContent = url;
   document.getElementById('sb-url').textContent = url;
   save();
@@ -593,9 +603,15 @@ function removeResource(i) { resources.splice(i,1); renderResources(); save(); }
 function updatePreview() {
   var previewEl = document.getElementById('preview-box');
   if (!previewEl) return;
-  var msg = document.getElementById('msg-fin').value;
   var resHTML = resources.map(function(r){ return '<div class="preview-res-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" stroke="#007883" stroke-width="2" stroke-linecap="round"/><polyline points="15 3 21 3 21 9" stroke="#007883" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="10" y1="14" x2="21" y2="3" stroke="#007883" stroke-width="2" stroke-linecap="round"/></svg>'+esc(r.titre)+'</div>'; }).join('');
-  previewEl.innerHTML = '<div class="preview-label">Aperçu — fin d\'autodiagnostic</div><p class="preview-msg">'+esc(msg)+'</p>'+(resources.length ? '<div class="preview-res">Ressources complémentaires</div>'+resHTML : '');
+  previewEl.innerHTML = '<div class="preview-label">Aperçu — ressources affichées dans l\'autodiagnostic</div>'+(resources.length ? '<div class="preview-res">Ressources complémentaires</div>'+resHTML : '<p class="preview-msg">Aucune ressource ajoutée pour le moment.</p>');
+}
+function updatePack() {
+  var el = document.getElementById('pack-passations');
+  if (!el) return;
+  var label = el.value === 'illimite' ? 'Illimité' : Number(el.value).toLocaleString('fr-FR') + ' passations';
+  var packVal = document.getElementById('pack-val');
+  if (packVal) packVal.textContent = label;
 }
 function checkContinue() {
   var ok = document.getElementById('intro').value.trim().length > 0
@@ -620,6 +636,7 @@ init();
 applyThemeFromEditor();
 updateSlug();
 updateSidebar();
+updatePack();
 checkContinue();
 updatePreview();
 </script>
