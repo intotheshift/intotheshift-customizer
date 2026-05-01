@@ -60,6 +60,14 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
 .pack-head{background:#fceaea;padding:10px 14px;border-bottom:1px solid #ffd6d4}.pack-head-lbl{font-size:10px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}.pack-head-val{font-size:13px;font-weight:700;color:#c0392b}
 .pack-body{padding:12px 14px}.pack-bar-w{height:5px;background:#edf1f7;border-radius:3px;overflow:hidden;margin-bottom:6px}.pack-bar-f{height:100%;border-radius:3px;background:#eb6366;width:20%}.pack-note{font-size:11px;color:#94a3b8;line-height:1.4}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;font-size:10px;font-weight:800;background:#fff8ec;color:#b7840a}.pill-ok{background:#f0fbf2;color:#27823a}
+
+.preview-modal{position:fixed;inset:0;background:rgba(15,30,55,.48);z-index:300;display:none;align-items:stretch;justify-content:flex-end;padding:0}
+.preview-modal.open{display:flex}.preview-panel{width:min(66.666vw,880px);max-width:100%;height:100vh;background:#eef0f4;box-shadow:-18px 0 40px rgba(0,0,0,.22);display:flex;flex-direction:column;animation:slideIn .18s ease-out}
+@keyframes slideIn{from{transform:translateX(24px);opacity:.7}to{transform:translateX(0);opacity:1}}
+.preview-top{height:54px;background:#18375d;color:#fff;display:flex;align-items:center;gap:12px;padding:0 18px;flex-shrink:0}.preview-top-title{font-size:14px;font-weight:800}.preview-top-sub{font-size:11px;color:rgba(255,255,255,.72);font-weight:500}.preview-close{margin-left:auto;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Asap',sans-serif}
+.preview-warning{background:#fff8ec;border-bottom:1px solid #ffd490;color:#9a6800;font-size:12px;line-height:1.45;padding:10px 18px}.preview-frame{overflow:auto;flex:1;padding:18px 16px 44px}.passation-page{max-width:600px;margin:0 auto}.pass-card{background:#fff;border-radius:14px;padding:22px 20px;box-shadow:0 1px 8px rgba(0,0,0,.06);margin-bottom:12px}.pass-hero{border-radius:14px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06);margin-bottom:12px}.pass-hero-img{height:150px;background:linear-gradient(135deg,#18375d 0%,#0d4c72 50%,#007883 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:48px}.pass-hero-body{background:#fff;padding:22px 20px;text-align:center}.pass-sup{font-size:12px;color:#94a3b8;margin-bottom:8px;font-weight:600}.pass-title{font-size:22px;font-weight:800;color:#18375d;margin-bottom:14px;line-height:1.25}.pass-text{font-size:14px;color:#475569;line-height:1.65}.pass-btn{width:100%;padding:14px;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Asap',sans-serif;background:#18375d;color:#fff;margin-top:8px}.pass-btn:disabled{background:#b8c4d4;cursor:not-allowed}.pass-option{display:flex;align-items:flex-start;gap:13px;padding:13px 15px;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .15s;background:#fff;user-select:none;margin-bottom:8px}.pass-option:hover{border-color:#b0c0d4;background:#f7f9fc}.pass-option.sel{border-color:#18375d;background:#edf1f7}.pass-num{width:30px;height:30px;border-radius:8px;background:#edf1f7;color:#18375d;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}.pass-option.sel .pass-num{background:#18375d;color:#fff}.pass-q{font-size:15px;font-weight:800;color:#18375d;line-height:1.5;margin-bottom:18px}.pass-progress{background:#fff;border-radius:12px;padding:12px 16px;margin-bottom:12px;box-shadow:0 1px 8px rgba(0,0,0,.06)}.pass-meta{display:flex;justify-content:space-between;font-size:12px;color:#64748b;font-weight:700;margin-bottom:8px}.pass-bar{height:7px;background:#e2e8f0;border-radius:20px;overflow:hidden}.pass-fill{height:100%;background:#18375d;border-radius:20px;transition:width .25s}.pass-socio-label{font-size:14px;font-weight:800;color:#18375d;margin-bottom:10px}.pass-result-card{border-left:4px solid #007883}.pass-result-title{font-size:17px;font-weight:900;color:#18375d;margin-bottom:6px}.pass-result-sub{font-size:13px;color:#64748b;font-style:italic;margin-bottom:10px}.pass-resource{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #d8e0ea;border-radius:8px;margin-top:7px;background:#fafbfc;color:#18375d;font-size:13px;font-weight:700;text-decoration:none}
+@media(max-width:900px){.preview-panel{width:100vw}.preview-modal{justify-content:center}}
+
 </style>
 </head>
 <body>
@@ -67,12 +75,11 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
 <script src="header.js"></script>
 
 <div class="subnav">
-  <button class="sn" onclick="window.location.href='index.html'">Accueil</button>
-  <button class="sn on" onclick="window.location.href='index-bibliotheque.html'">Créer un autodiagnostic</button>
   <button class="sn" onclick="window.location.href='index-bibliotheque.html'">Bibliothèque</button>
-  <button class="sn" onclick="window.location.href='index-bibliotheque.html'">Bases proposées</button>
+  <button class="sn" onclick="window.location.href='questions.html'">Création</button>
+  <button class="sn" onclick="window.location.href='parametrage.html'">Paramétrage</button>
+  <button class="sn on" onclick="window.location.href='campagne.html'">Campagne</button>
   <button class="sn" onclick="window.location.href='validation.html'">Transmission</button>
-  <button class="sn" onclick="window.location.href='parametrage.html'">Paramètres</button>
 </div>
 
 <div class="breadcrumb">
@@ -108,7 +115,7 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
         <div class="block-sub">Ce lien sert à préparer la communication. Il sera activé après validation et intégration par Into The Shift.</div>
         <div class="launch-url-box">
           <div><div class="url-label">URL prévisionnelle</div><div class="url-big" id="launch-url">https://selfdiag-mayt.meandyoutoo.app/mon-entreprise/securite-et-culture-de-surete</div></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-copy" onclick="copyUrl()">Copier l’URL</button><button class="btn-test" onclick="window.location.href='preview-passation.html'">Voir l’aperçu</button></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-copy" onclick="copyUrl()">Copier l’URL</button><button class="btn-test" onclick="openPreviewModal()">Voir l’aperçu</button></div>
         </div>
         <div style="display:flex;gap:16px;align-items:center;margin-top:16px;flex-wrap:wrap">
           <div class="qr-box" id="qr-code" aria-label="QR code de passation"></div>
@@ -125,11 +132,13 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
         <div class="block-sub">Chaque message peut être copié séparément par le client.</div>
         <div class="comm-tabs">
           <button class="comm-tab on" onclick="showTemplate('launch', this)">Email de lancement</button>
+          <button class="comm-tab" onclick="showTemplate('managers', this)">Email managers</button>
           <button class="comm-tab" onclick="showTemplate('reminder', this)">Relance</button>
-          <button class="comm-tab" onclick="showTemplate('last', this)">Dernière relance</button>
-          <button class="comm-tab" onclick="showTemplate('teams', this)">Teams / Slack</button>
+          <button class="comm-tab" onclick="showTemplate('last', this)">Dernière chance</button>
+          <button class="comm-tab" onclick="showTemplate('internal', this)">Canaux internes</button>
           <button class="comm-tab" onclick="showTemplate('intranet', this)">Post intranet</button>
-          <button class="comm-tab" onclick="showTemplate('restore', this)">Restitution</button>
+          <button class="comm-tab" onclick="showTemplate('restore', this)">Restitution intermédiaire</button>
+          <button class="comm-tab" onclick="showTemplate('finalrestore', this)">Restitution finale</button>
         </div>
         <div class="template-card">
           <div class="template-head">
@@ -153,14 +162,14 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
       </section>
 
       <section class="block">
-        <div class="block-title">Checklist avant publication</div>
-        <div class="block-sub">Vérifiez les points essentiels avant de rendre le lien actif.</div>
+        <div class="block-title">Checklist de préparation</div>
+        <div class="block-sub">Le lien définitif sera activé par Into The Shift après intégration dans le backoffice. Ici, l’objectif est de préparer les éléments de lancement.</div>
         <div class="checklist">
-          <label class="check-row"><input type="checkbox" checked onchange="updateChecklist()"><span><span class="check-title">Introduction validée</span><span class="check-sub">Le caractère 100 % anonyme est clairement expliqué.</span></span></label>
-          <label class="check-row"><input type="checkbox" checked onchange="updateChecklist()"><span><span class="check-title">Données socio-démo vérifiées</span><span class="check-sub">Les croisements ne créent pas de groupes trop identifiables.</span></span></label>
-          <label class="check-row"><input type="checkbox" onchange="updateChecklist()"><span><span class="check-title">Lien testé</span><span class="check-sub">Le lien de passation fonctionne sur ordinateur et mobile.</span></span></label>
-          <label class="check-row"><input type="checkbox" onchange="updateChecklist()"><span><span class="check-title">Messages prêts</span><span class="check-sub">Les emails et messages internes ont été relus.</span></span></label>
-          <label class="check-row"><input type="checkbox" onchange="updateChecklist()"><span><span class="check-title">Relances planifiées</span><span class="check-sub">Une ou plusieurs relances sont prévues pendant la période de passation.</span></span></label>
+          <label class="check-row"><input type="checkbox" checked onchange="updateChecklist()"><span><span class="check-title">Dates de campagne vérifiées</span><span class="check-sub">La date de lancement souhaitée et la date de clôture sont cohérentes.</span></span></label>
+          <label class="check-row"><input type="checkbox" checked onchange="updateChecklist()"><span><span class="check-title">Messages de communication relus</span><span class="check-sub">Les emails, messages internes et posts intranet sont adaptés à votre ton.</span></span></label>
+          <label class="check-row"><input type="checkbox" onchange="updateChecklist()"><span><span class="check-title">Canaux de diffusion identifiés</span><span class="check-sub">Email, Teams / Slack, intranet, affichage ou relais managers.</span></span></label>
+          <label class="check-row"><input type="checkbox" onchange="updateChecklist()"><span><span class="check-title">Besoin de visuels identifié</span><span class="check-sub">Si nécessaire, contactez Into The Shift pour obtenir des visuels de lancement.</span></span></label>
+          <label class="check-row"><input type="checkbox" onchange="updateChecklist()"><span><span class="check-title">Prêt à transmettre à Into The Shift</span><span class="check-sub">Votre brief est prêt pour intégration et activation du lien.</span></span></label>
         </div>
       </section>
 
@@ -193,14 +202,14 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
       </div>
 
       <div class="pack-card">
-        <div class="pack-head"><div class="pack-head-lbl">Pack passations</div><div class="pack-head-val">Pack à confirmer</div></div>
+        <div class="pack-head"><div class="pack-head-lbl">Pack passations</div><div class="pack-head-val" id="pack-value">Pack à confirmer</div></div>
         <div class="pack-body"><div class="pack-bar-w"><div class="pack-bar-f"></div></div><div class="pack-note">Ces passations sont mutualisées pour tous les autodiagnostics de votre entreprise.</div></div>
       </div>
 
       <div class="side-mini">
-        <div class="side-mini-head">Besoin d’aide ?</div>
+        <div class="side-mini-head">Visuels de lancement</div>
         <div class="side-mini-body">
-          <div style="font-size:12px;color:#475569;line-height:1.5;margin-bottom:10px">Contactez-nous pour obtenir des visuels, adapter les messages ou préparer la restitution.</div>
+          <div style="font-size:12px;color:#475569;line-height:1.5;margin-bottom:10px">Contactez-nous si vous souhaitez être accompagné pour obtenir des visuels.</div>
           <button class="btn-secondary" onclick="alert('Demande envoyée')">Contacter Into The Shift</button>
         </div>
       </div>
@@ -208,27 +217,191 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
   </div>
 </div>
 
-<script>
-var LS_KEY = 'selftech_current_ad';
 
+<div class="preview-modal" id="preview-modal" role="dialog" aria-modal="true" aria-label="Aperçu de la passation">
+  <div class="preview-panel">
+    <div class="preview-top">
+      <div>
+        <div class="preview-top-title">Aperçu de la passation</div>
+        <div class="preview-top-sub">Les réponses et résultats affichés dans cet aperçu sont simulés.</div>
+      </div>
+      <button class="preview-close" onclick="closePreviewModal()">Fermer</button>
+    </div>
+    <div class="preview-warning">⚠️ Aperçu non actif : cette passation reprend les données saisies dans le customizer. Les résultats de fin sont simulés pour tester le parcours.</div>
+    <div class="preview-frame" id="preview-frame"></div>
+  </div>
+</div>
+
+<script>
+var LS_KEY = 'intotheshift_customizer_state_v3';
+var LEGACY_KEYS = ['intotheshift_customizer_state_v3','selftech_current_ad'];
+
+var currentAd = {};
+var previewState = {step:'home', socio:{}, qIndex:0, answers:{}, score:0};
+function themeLabel(){var title=(currentAd.meta&&(currentAd.meta.titre||currentAd.meta.nom))||(currentAd.theme&&currentAd.theme.title)||'cet autodiagnostic';return String(title).replace(/^Autodiagnostic\s+/i,'').trim()||'cet autodiagnostic';}
+function durationLabel(){return '15 minutes';}
+function closeDateLabel(){var d=currentAd.meta&&(currentAd.meta.date_cloture||currentAd.meta.dateCloture);return d?formatDateISOToFR(d):'[date]';}
+function campaignDatesLabel(){var l=currentAd.meta&&(currentAd.meta.date_lancement||currentAd.meta.dateLancement);var c=currentAd.meta&&(currentAd.meta.date_cloture||currentAd.meta.dateCloture);if(l&&c)return 'du '+formatDateISOToFR(l)+' au '+formatDateISOToFR(c);if(c)return 'jusqu’au '+formatDateISOToFR(c);return '[durée / dates]';}
 var templates = {
-  launch:{title:"Email de lancement",meta:"À envoyer le jour du lancement",body:"Bonjour à toutes et tous,\n\nNous lançons aujourd’hui un autodiagnostic consacré à la sécurité et à la culture de sûreté.\n\nIl vous propose des situations concrètes du quotidien professionnel pour mieux identifier vos réflexes, vos points d’appui et les sujets à renforcer collectivement.\n\nLa démarche est entièrement anonyme : aucun login, aucun mot de passe, aucun cookie, aucun suivi d’adresse IP. Vos réponses ne pourront pas être reliées à votre identité.\n\nTemps estimé : 5 à 7 minutes.\n\nLien de passation : {{URL}}\n\nMerci pour votre participation."},
-  reminder:{title:"Email de relance",meta:"À envoyer à mi-campagne environ",body:"Bonjour,\n\nPetit rappel : l’autodiagnostic est toujours ouvert.\n\nVotre participation est importante pour mieux comprendre les pratiques du quotidien et cibler les actions les plus utiles.\n\nLa démarche est anonyme et prend seulement 5 à 7 minutes.\n\nLien de passation : {{URL}}\n\nMerci à celles et ceux qui ont déjà répondu."},
-  last:{title:"Email dernière relance",meta:"À envoyer avant la clôture",body:"Bonjour,\n\nDernière relance pour participer à l’autodiagnostic avant la clôture de la campagne.\n\nVotre retour compte pour obtenir une vision plus juste des réflexes et besoins du terrain.\n\nLa démarche reste entièrement anonyme.\n\nLien de passation : {{URL}}\n\nMerci pour votre contribution."},
-  teams:{title:"Message Teams / Slack",meta:"Format court pour canal interne",body:"📣 L’autodiagnostic sécurité & culture de sûreté est ouvert.\n\n5 à 7 minutes, 100 % anonyme, sans login ni suivi individuel.\n\n👉 {{URL}}\n\nMerci pour votre participation !"},
-  intranet:{title:"Post intranet",meta:"À publier sur l’intranet ou une newsletter interne",body:"Nous lançons un autodiagnostic pour mieux comprendre les réflexes sécurité du quotidien.\n\nL’objectif n’est pas d’évaluer les personnes, mais d’identifier les leviers utiles pour progresser collectivement.\n\nLa participation est anonyme et prend 5 à 7 minutes.\n\nAccéder à l’autodiagnostic : {{URL}}"},
-  restore:{title:"Message de restitution",meta:"À envoyer après la clôture",body:"Bonjour à toutes et tous,\n\nMerci pour votre participation à l’autodiagnostic.\n\nVos réponses permettent d’identifier les pratiques déjà solides et les sujets sur lesquels nous pouvons progresser collectivement.\n\nLes résultats seront analysés de manière agrégée et donneront lieu à des actions adaptées.\n\nMerci encore pour votre contribution."}
+  launch:{title:"Email de lancement",meta:"À envoyer le jour du lancement",body:`Objet : Lancement de l’autodiagnostic – votre participation compte
+
+Bonjour,
+
+Dans le cadre de notre démarche [nom du programme], nous lançons aujourd’hui un autodiagnostic ! Il a été conçu pour vous permettre de prendre du recul sur vos pratiques professionnelles, à partir de situations concrètes du quotidien.
+
+👉 Cet outil propose un retour utile et personnalisé. Il est simple, rapide ({{DURATION}}) et vos réponses sont 100% anonymes.
+
+Vous pourrez mieux comprendre certains de vos réflexes, modes de fonctionnement et comportements dans différentes situations. L’objectif est la prise de conscience individuelle, il n’y a donc pas de bonne ou de mauvaise réponse.
+
+Plus la participation sera forte, plus l’analyse sera représentative pour savoir où nous en sommes collectivement !
+
+➡️ Accéder à l’autodiagnostic : {{URL}}
+
+Nous vous remercions par avance pour votre contribution.
+
+Cordialement,`},
+  managers:{title:"Email à destination des managers",meta:"À transmettre aux relais internes",body:`Objet : Relayez l'autodiagnostic auprès de votre équipe
+
+Bonjour,
+
+Nous lançons aujourd'hui notre campagne avec l'autodiagnostic {{THEME}} auprès de l'ensemble des collaborateurs.
+
+En tant que manager, vous êtes notre meilleur relais. Une mention de votre part en réunion d'équipe cette semaine suffit à faire la différence sur le taux de participation.
+
+Ce que nous vous demandons :
+• Parlez-en lors de votre prochain point d'équipe, 2 minutes suffisent.
+• Partagez le lien directement dans votre canal Teams ou Slack.
+• Rassurez vos collaborateurs : l’autodiagnostic est anonyme, il dure {{DURATION}} et il n'y a pas de bonne ou mauvaise réponse car c’est un outil de prise de conscience individuelle.
+
+Le lien à partager : {{URL}}
+
+Merci pour votre implication.
+
+Cordialement,`},
+  reminder:{title:"Email de relance",meta:"À envoyer à mi-campagne",body:`Objet : Rappel – autodiagnostic en cours
+
+Bonjour,
+
+L’autodiagnostic est toujours en cours et votre participation compte ! Il est rapide, anonyme et s’appuie sur des situations concrètes du quotidien professionnel.
+
+👉 Si vous ne l’avez pas encore réalisé, il vous permettra de vous auto-évaluer, d’identifier vos réflexes dans certaines situations et d’obtenir un retour utile sur vos comportements individuels.
+
+Chaque participation contribue à enrichir la compréhension et l’amélioration des pratiques.
+
+➡️ Accéder à l’autodiagnostic : {{URL}}
+
+Merci pour votre participation,
+
+Cordialement,`},
+  last:{title:"Email de dernière chance",meta:"À envoyer avant la clôture",body:`Objet : Derniers jours pour participer à l’autodiagnostic
+
+Bonjour,
+
+L’autodiagnostic arrive bientôt à sa clôture.
+
+👉 Il vous reste encore quelques jours pour profiter de cet outil et obtenir un retour utile sur vos pratiques à partir de situations concrètes du quotidien professionnel.
+
+⏱️ {{DURATION}}
+🔒 100% anonyme
+✅ Aucun bon ou mauvais résultat
+
+Votre participation à cette auto-évaluation est aussi importante pour nous permettre d’identifier des pistes d’amélioration concrètes.
+
+➡️ Accéder à l’autodiagnostic : {{URL}}
+📅 Date de clôture : {{CLOSE_DATE}}
+
+Merci à toutes et tous pour votre contribution.
+
+Cordialement,`},
+  internal:{title:"Message à diffuser sur vos canaux internes",meta:"Teams, Slack ou canal interne",body:`📊 Votre autodiagnostic est maintenant disponible !
+
+Nous lançons un autodiagnostic sur {{THEME}} qui vous permet de prendre du recul sur vos pratiques et vos réflexes professionnels, à partir de situations concrètes.
+
+👉 En quelques minutes, vous obtenez un retour utile pour mieux comprendre votre fonctionnement et vos modes d’action.
+
+⏱️ Temps estimé : {{DURATION}}
+🔒 Réponses 100% anonymes.
+✅ Il n’y a pas de bonne ou de mauvaise réponse.
+
+👉 Accéder à l’autodiagnostic ici : {{URL}}
+
+💡 Votre participation est essentielle : plus nous aurons de retours, plus les résultats seront représentatifs.
+
+Merci pour votre contribution 🙌`},
+  intranet:{title:"Post intranet",meta:"À publier sur l’intranet",body:`📢 Lancement de l’autodiagnostic interne
+
+Dans le cadre de [nom du programme / de la démarche], un autodiagnostic est mis à disposition à l’ensemble des collaborateurs.
+
+🎯 Ce que l’autodiagnostic vous apporte
+Cet outil de prise de conscience individuelle vous permet avant tout de questionner vos propres pratiques, à partir de situations concrètes du quotidien professionnel.
+
+En quelques minutes, vous pourrez :
+• Mieux comprendre certains de vos fonctionnements.
+• Identifier vos réflexes dans différentes situations.
+• Obtenir un retour utile et personnalisé.
+
+⏱️ Un format simple et rapide
+• {{DURATION}}
+• Accessible à tous
+• Réponses 100% anonymes
+
+📅 Modalités
+L’autodiagnostic est accessible {{DATES}} afin de permettre à chacun de s’auto-évaluer librement.
+
+👉 Chaque participation contribue à enrichir une lecture collective des pratiques afin d’identifier des leviers d’action.
+
+🔗 Accéder à l’autodiagnostic
+➡️ {{URL}}
+
+Votre contribution est essentielle pour faire évoluer notre organisation de manière concrète et collective.`},
+  restore:{title:"Restitution des résultats — premiers enseignements",meta:"À utiliser pendant la campagne",body:`📊 Résultats de l’autodiagnostic - premiers enseignements
+
+Merci à toutes et tous pour votre participation. Les premiers résultats de l’autodiagnostic vous sont présentés ci-dessous.
+
+👉 Ces résultats sont entièrement anonymes. Aucune réponse individuelle ne peut être identifiée.
+
+📈 Taux de participation à ce stade
+[📊 insérer graphique taux global de participation]
+
+📊 Les premières tendances
+Les réponses permettent de faire ressortir des tendances globales issues de l’ensemble des contributions :
+[📊 insérer graphiques par partie]
+
+🔜 Prochaines étapes :
+La démarche se poursuit afin de renforcer la qualité et la représentativité des résultats. L’autodiagnostic reste ouvert pour les collaborateurs n’ayant pas encore répondu.
+
+💡 Ces contributions supplémentaires permettront d’obtenir une vision encore plus fidèle des réalités de l’ensemble des équipes.
+
+Merci pour votre participation continue 🙏`},
+  finalrestore:{title:"Restitution des résultats finaux et clôture",meta:"À utiliser après clôture",body:`📊 Autodiagnostic – résultats finaux
+
+L’autodiagnostic est désormais clôturé. Merci à l’ensemble des collaborateurs pour leur participation 🙌
+
+📊 Résultats finaux
+Les réponses recueillies ont été analysées afin de produire une vision globale des retours.
+
+👉 Les résultats sont présentés sous forme de graphiques qui garantissent l’anonymat des répondants.
+
+📈 Taux de participation global
+📊 Principales tendances issues des réponses
+📊 Enseignements par thématique
+[ insérer les graphiques finaux]
+
+💡 Vous serez tenus informés des suites et des actions mises en place à partir de ces résultats.
+
+Merci encore pour votre participation et votre contribution à cette démarche collective 🙏`}
 };
 
 function getUrl(){return document.getElementById('launch-url').textContent;}
 
+function fillTemplate(body){return String(body||'').replaceAll('{{URL}}',getUrl()).replaceAll('{{THEME}}',themeLabel()).replaceAll('{{DURATION}}',durationLabel()).replaceAll('{{CLOSE_DATE}}',closeDateLabel()).replaceAll('{{DATES}}',campaignDatesLabel());}
 function showTemplate(key,btn){
   document.querySelectorAll('.comm-tab').forEach(function(b){b.classList.remove('on')});
   if(btn) btn.classList.add('on');
   var t=templates[key]||templates.launch;
   document.getElementById('tpl-title').textContent=t.title;
   document.getElementById('tpl-meta').textContent=t.meta;
-  document.getElementById('tpl-body').textContent=t.body.replaceAll('{{URL}}',getUrl());
+  document.getElementById('tpl-body').textContent=fillTemplate(t.body);
 }
 
 function copyUrl(){if(navigator.clipboard)navigator.clipboard.writeText(getUrl());alert('Lien copié');}
@@ -282,32 +455,25 @@ function updateReminderPlan(launchISO,closeISO){
   document.getElementById('last-reminder-text').textContent=lastText;
 }
 
-function initFromStorage(){
-  try{
-    var raw=localStorage.getItem(LS_KEY),stored=raw?JSON.parse(raw):{},meta=stored.meta||{};
-    var themeTitle=(stored.theme&&stored.theme.title)||meta.nom||'Sécurité & culture de sûreté';
-    var slug=meta.slug||'securite-et-culture-de-surete';
-    var companySlug=(meta.entreprise_slug||meta.entrepriseSlug||meta.organisation_slug||'mon-entreprise');
-    var url='https://selfdiag-mayt.meandyoutoo.app/'+companySlug+'/'+slug;
-    document.getElementById('sb-title').textContent=themeTitle.replace(/^Autodiagnostic\s+/i,'');
-    document.getElementById('launch-url').textContent=url; document.getElementById('sb-url').textContent=url;
-    var launch=meta.date_lancement||meta.dateLancement||'2026-04-30',close=meta.date_cloture||meta.dateCloture||'2026-05-29';
-    document.getElementById('kpi-launch').textContent=formatDateISOToFR(launch); document.getElementById('kpi-close').textContent=formatDateISOToFR(close);
-    document.getElementById('sb-launch').textContent=formatDateISOToFR(launch); document.getElementById('sb-close').textContent=formatDateISOToFR(close);
-    updateReminderPlan(launch,close);
-    if(stored.theme&&stored.theme.chapters){
-      var chs=stored.theme.chapters;
-      document.getElementById('sb-q').textContent=chs.reduce(function(a,c){return a+((c.questions||[]).length)},0);
-      document.getElementById('sb-profils').textContent=chs.reduce(function(a,c){return a+((c.profils||[]).length)},0);
-    }
-  }catch(e){console.warn('Impossible de charger les données de lancement',e);}
-  showTemplate('launch',document.querySelector('.comm-tab'));
-  drawQrCode(getUrl());
-  updateChecklist();
-}
+function getStoredAd(){for(var i=0;i<LEGACY_KEYS.length;i++){try{var raw=localStorage.getItem(LEGACY_KEYS[i]);if(raw)return JSON.parse(raw);}catch(e){}}return {};}
+function companySlugFromStored(stored){var v=(stored.meta&&(stored.meta.company_slug||stored.meta.companySlug||stored.meta.entreprise_slug||stored.meta.entrepriseSlug))||'mon-entreprise';return String(v||'mon-entreprise').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'mon-entreprise';}
+function getQuestionsFromAd(){var chs=(currentAd.theme&&currentAd.theme.chapters)||[];var list=[];chs.forEach(function(ch,ci){(ch.questions||[]).forEach(function(q,qi){var responses=q.responses||q.reponses||q.answers||q.opts||[];if(responses.length){list.push({chapter:ch.title||('Chapitre '+(ci+1)),text:q.text||q.question||q.title||('Question '+(qi+1)),responses:responses,raw:q});}})});if(!list.length){list=[{chapter:'Exemple',text:'Face à une situation concrète, quelle réaction vous correspond le plus ?',responses:['Je réagis surtout selon l’urgence du moment.','Je prends un temps pour comprendre la situation.','Je mobilise les bons repères et j’agis de manière structurée.']},{chapter:'Exemple',text:'Quand une consigne n’est pas claire, que faites-vous le plus souvent ?',responses:['Je poursuis avec ce que je comprends.','Je demande une clarification si le risque est important.','Je clarifie avant d’agir et je partage l’information utile.']}];}return list;}
+function getSocioFromAd(){var s=currentAd.sociodemo||[];return s.filter(function(x){return x&&x.q&&(x.opts||[]).length;});}
+function escHtml(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function resourceItems(){return currentAd.resources||[];}
+function openPreviewModal(){previewState={step:'home',socio:{},qIndex:0,answers:{},score:0};document.getElementById('preview-modal').classList.add('open');renderPreview();}
+function closePreviewModal(){document.getElementById('preview-modal').classList.remove('open');}
+function renderPreview(){var frame=document.getElementById('preview-frame');if(!frame)return;var title=(currentAd.meta&&currentAd.meta.titre)||themeLabel();var intro=currentAd.intro||'Cet autodiagnostic vous propose des situations concrètes du quotidien professionnel pour prendre du recul sur vos pratiques.';var qs=getQuestionsFromAd(),socio=getSocioFromAd();if(previewState.step==='home'){frame.innerHTML='<div class="passation-page"><div class="pass-hero"><div class="pass-hero-img">✓</div><div class="pass-hero-body"><div class="pass-sup">Autodiagnostic Into The Shift</div><div class="pass-title">'+escHtml(title)+'</div><div class="pass-text">'+escHtml(intro)+'</div></div></div><div class="pass-card"><button class="pass-btn" onclick="previewStart()">Commencer l’aperçu</button><div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:10px">Aperçu simulé — aucune réponse n’est enregistrée.</div></div></div>';return;}if(previewState.step==='socio'){if(!socio.length){previewState.step='question';renderPreview();return;}var done=socio.every(function(x,i){return previewState.socio[i]!==undefined;});frame.innerHTML='<div class="passation-page"><div class="pass-card"><h2 style="font-size:18px;margin-bottom:6px;color:#18375d">Avant de commencer</h2><p class="pass-text">Ces informations permettent une analyse par segment, de manière agrégée.</p></div><div class="pass-card">'+socio.map(function(s,i){return '<div style="margin-bottom:18px"><div class="pass-socio-label">'+escHtml(s.q)+' *</div>'+s.opts.map(function(o,oi){return '<div class="pass-option '+(previewState.socio[i]===oi?'sel':'')+'" onclick="previewSocio('+i+','+oi+')"><div class="pass-num">'+(oi+1)+'</div><div class="pass-text" style="padding-top:4px">'+escHtml(o)+'</div></div>';}).join('')+'</div>';}).join('')+'</div><div class="pass-card"><button class="pass-btn" '+(done?'':'disabled')+' onclick="previewGoQuestions()">Étape suivante</button></div></div>';return;}if(previewState.step==='question'){var idx=previewState.qIndex,q=qs[idx],pct=Math.round((idx/qs.length)*100);frame.innerHTML='<div class="passation-page"><div class="pass-progress"><div class="pass-meta"><span>'+escHtml(q.chapter)+' · Question '+(idx+1)+'/'+qs.length+'</span><span>'+pct+'%</span></div><div class="pass-bar"><div class="pass-fill" style="width:'+pct+'%"></div></div></div><div class="pass-card"><div class="pass-q">'+escHtml(q.text)+' *</div>'+q.responses.map(function(r,i){var txt=(typeof r==='string')?r:(r.text||r.label||r.reponse||JSON.stringify(r));return '<div class="pass-option '+(previewState.answers[idx]===i?'sel':'')+'" onclick="previewAnswer('+i+')"><div class="pass-num">'+(i+1)+'</div><div class="pass-text" style="padding-top:4px">'+escHtml(txt)+'</div></div>';}).join('')+'</div><div class="pass-card"><button class="pass-btn" '+(previewState.answers[idx]!==undefined?'':'disabled')+' onclick="previewNextQuestion()">Continuer</button></div></div>';return;}if(previewState.step==='result'){var chs=(currentAd.theme&&currentAd.theme.chapters)||[];var cards=chs.slice(0,4).map(function(ch,ci){var profiles=ch.profils||ch.profiles||[];var p=profiles[Math.min(1,profiles.length-1)]||{};return '<div class="pass-card pass-result-card"><div style="font-size:11px;color:#94a3b8;font-weight:800;text-transform:uppercase;margin-bottom:4px">'+escHtml(ch.title||('Chapitre '+(ci+1)))+'</div><div class="pass-result-title">'+escHtml(p.titre||p.title||'Profil simulé')+'</div><div class="pass-result-sub">'+escHtml(p.resume||p.summary||p.phrase||'Résultat simulé à partir de vos réponses dans l’aperçu.')+'</div><div class="pass-text">'+escHtml(p.description||p.desc||'Cet aperçu montre la logique de restitution finale. Les résultats réels dépendront des réponses du collaborateur dans la passation active.')+'</div></div>';}).join('')||'<div class="pass-card pass-result-card"><div class="pass-result-title">Résultat simulé</div><div class="pass-text">Cet aperçu montre la logique de restitution finale. Les résultats réels dépendront des réponses du collaborateur.</div></div>';var resources=resourceItems().map(function(r){return '<a class="pass-resource" href="'+escHtml(r.url||'#')+'" target="_blank">↗ '+escHtml(r.titre||r.title||'Ressource')+'</a>';}).join('');frame.innerHTML='<div class="passation-page"><div class="pass-card" style="text-align:center"><div style="font-size:12px;color:#94a3b8;margin-bottom:6px">Merci d’avoir répondu à cet autodiagnostic</div><div class="pass-title" style="margin-bottom:8px">Récapitulatif de vos résultats</div><div class="pass-text">⚠️ Résultats simulés pour l’aperçu client.</div></div>'+cards+(resources?'<div class="pass-card"><div class="pass-result-title">Pour approfondir</div>'+resources+'</div>':'')+'<div class="pass-card"><button class="pass-btn" onclick="openPreviewModal()">Rejouer l’aperçu</button></div></div>';}}
+function previewStart(){previewState.step='socio';renderPreview();}
+function previewSocio(i,oi){previewState.socio[i]=oi;renderPreview();}
+function previewGoQuestions(){previewState.step='question';renderPreview();}
+function previewAnswer(i){previewState.answers[previewState.qIndex]=i;renderPreview();}
+function previewNextQuestion(){var qs=getQuestionsFromAd();if(previewState.qIndex<qs.length-1){previewState.qIndex++;}else{previewState.step='result';}renderPreview();}
+function initFromStorage(){currentAd=getStoredAd();try{var stored=currentAd,meta=stored.meta||{};var themeTitle=(stored.theme&&stored.theme.title)||meta.nom||'Sécurité & sûreté au travail';var slug=meta.slug||'securite-surete-travail';var url='https://selfdiag-mayt.meandyoutoo.app/'+companySlugFromStored(stored)+'/'+slug;document.getElementById('sb-title').textContent=themeTitle.replace(/^Autodiagnostic\s+/i,'');document.getElementById('launch-url').textContent=url;document.getElementById('sb-url').textContent=url;var launch=meta.date_lancement||meta.dateLancement||'2026-04-30',close=meta.date_cloture||meta.dateCloture||'2026-05-29';document.getElementById('kpi-launch').textContent=formatDateISOToFR(launch);document.getElementById('kpi-close').textContent=formatDateISOToFR(close);document.getElementById('sb-launch').textContent=formatDateISOToFR(launch);document.getElementById('sb-close').textContent=formatDateISOToFR(close);updateReminderPlan(launch,close);var pack=meta.pack_passations||meta.packPassations||meta.pack_size||meta.packSize||meta.pack_choisi||meta.packChoisi||meta.pack||stored.pack_passations||stored.packPassations||stored.pack_size||stored.packSize||stored.pack_choisi||stored.packChoisi||stored.pack||'';if(pack){var packTxt=String(pack).trim();document.getElementById('pack-value').textContent=packTxt.toLowerCase()==='illimité'?'Pack illimité':'Pack '+packTxt+' passations';}if(stored.theme&&stored.theme.chapters){var chs=stored.theme.chapters;document.getElementById('sb-q').textContent=chs.reduce(function(a,c){return a+((c.questions||[]).length)},0);document.getElementById('sb-profils').textContent=chs.reduce(function(a,c){return a+((c.profils||c.profiles||[]).length)},0);}}catch(e){console.warn('Impossible de charger les données de lancement',e);}showTemplate('launch',document.querySelector('.comm-tab'));drawQrCode(getUrl());updateChecklist();}
+
 
 function publishAutodiag(){
-  try{var raw=localStorage.getItem(LS_KEY),stored=raw?JSON.parse(raw):{};stored.launch_ready=true;stored.status='published';localStorage.setItem(LS_KEY,JSON.stringify(stored));}catch(e){}
+  try{var stored=getStoredAd();stored.campagne_ready=true;stored.status='ready_to_send';localStorage.setItem(LS_KEY,JSON.stringify(stored));}catch(e){}
   alert('Campagne prête à transmettre');
   window.location.href='validation.html';
 }
