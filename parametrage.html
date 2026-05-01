@@ -183,7 +183,7 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
           </div>
           <div class="field">
             <label>Titre visible par les répondants<span class="req">*</span></label>
-            <input class="inp" id="titre" type="text" placeholder="Rédigez un titre engageant pour le collaborateur" value="" oninput="save()">
+            <input class="inp" id="titre" type="text" placeholder="Rédigez un titre engageant pour le collaborateur" oninput="save()">
           </div>
         </div>
         <div class="field">
@@ -376,7 +376,9 @@ function init() {
     var stored = raw ? JSON.parse(raw) : {};
     var themeTitle = themeFromUrl || stored.title || 'Autodiagnostic personnalisé';
     document.getElementById('nom').value = (stored.meta && stored.meta.nom) || ('Autodiagnostic ' + themeTitle);
-    document.getElementById('titre').value = (stored.meta && stored.meta.titre) || themeTitle;
+    var storedTitre = (stored.meta && stored.meta.titre) || '';
+    if (storedTitre === 'Nouveau thème' || storedTitre === 'Autodiagnostic Nouveau thème') storedTitre = '';
+    document.getElementById('titre').value = storedTitre;
     document.getElementById('desc').value = (stored.meta && stored.meta.desc) || ('Campagne interne Mon entreprise sur ' + themeTitle + '.');
     document.getElementById('date-lancement').value = stored.launchDate || (stored.meta && stored.meta.date_lancement) || '';
     document.getElementById('date-cloture').value = stored.closeDate || (stored.meta && stored.meta.date_cloture) || '';
@@ -385,7 +387,14 @@ function init() {
     if (stored.packPassations && document.getElementById("pack-passations")) document.getElementById("pack-passations").value = stored.packPassations;
     if (stored.demographics && stored.demographics.length) sociodemo = stored.demographics;
     if (stored.sociodemo && stored.sociodemo.length) sociodemo = stored.sociodemo;
-    if (stored.resources && stored.resources.length) resources = stored.resources;
+    if (stored.resources && stored.resources.length) {
+      resources = stored.resources.map(function(r){
+        return {
+          titre: r.titre || '',
+          url: String(r.url || '').replace('https://www.sonora-rh.fr', 'https://www.monentreprise.fr')
+        };
+      });
+    }
     document.getElementById('sb-theme').textContent = themeTitle;
     if (stored.chapters) {
       var chs = stored.chapters;
