@@ -1163,8 +1163,25 @@ function updatePanelContext(){
   el.textContent = `${subject ? `Sujet : ${subject} · ` : ''}Partie : ${ch.name}`;
 }
 
+function currentQuestionKeys(){
+  const ch = chapters[activeChap];
+
+  return new Set((ch.questions || []).flatMap(q => [
+    String(q.id || ''),
+    norm(q.text || '')
+  ]).filter(Boolean));
+}
+
 function currentLib() {
-  return bibliothequeQuestions().filter(q => !q.added && libraryMatchesContext(q));
+  const existing = currentQuestionKeys();
+
+  return bibliothequeQuestions()
+    .filter(q => !q.added && libraryMatchesContext(q))
+    .filter(q => {
+      const sameId = existing.has(String(q.id || ''));
+      const sameText = existing.has(norm(q.text || ''));
+      return !sameId && !sameText;
+    });
 }
 
 function renderPanelTags() {
@@ -1187,7 +1204,7 @@ function renderPanelList(search, tag) {
   const filtered = currentLib().filter(q => (!s || norm(q.text).includes(s) || (q.tags||[]).some(t => norm(t).includes(s))) && (!tag || (q.tags||[]).includes(tag)));
   const list = document.getElementById('panel-list');
   if(!filtered.length){
-    list.innerHTML = '<div style="text-align:center;padding:28px;color:#94a3b8;font-size:13px;font-family:Asap,sans-serif">Aucune question disponible pour ce sujet et ce chapitre</div>';
+    list.innerHTML = '<div style="text-align:center;padding:28px;color:#94a3b8;font-size:13px;font-family:Asap,sans-serif">Toutes les questions disponibles pour ce chapitre sont déjà ajoutées, ou aucune question ne correspond au filtre.</div>';
     return;
   }
   list.innerHTML = filtered.map(q => `<div class="panel-q" id="pq-${q.id}">
@@ -1226,24 +1243,46 @@ function markLibraryAdded(qid){
 
 function addFromLib(qid) {
   if (chapters[activeChap].questions.length >= 10) return;
-  const bq = currentLib().find(q => q.id === qid);
+
+  const existing = currentQuestionKeys();
+  const bq = bibliothequeQuestions().find(q => q.id === qid);
+
   if(!bq) return;
+
+  if(existing.has(String(bq.id || '')) || existing.has(norm(bq.text || ''))){
+    alert("Cette question est déjà présente dans ce chapitre.");
+    renderPanelTags();
+    renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag);
+    return;
+  }
+
   markLibraryAdded(qid);
-  const id = 'q' + Date.now();
+
   const importedAnswers = normalizeImportedAnswers(bq);
+
   chapters[activeChap].questions.push({
-    id,
+    id: bq.id || ('q' + Date.now()),
     type: bq.type === 'likert' ? 'likert' : 'choix',
-    prov:bq.prov||'AI',
-    text:bq.text,
-    tags:(bq.tags||[]).map(t=>({t,ai:false})),
+    prov: bq.prov || 'AI',
+    text: bq.text,
+    tags:(bq.tags || [])
+      .filter(t => {
+        const x = String(t).toLowerCase();
+        return !x.includes('base assistée')
+          && !x.includes('conçu par')
+          && !x.includes('validation obligatoire')
+          && !x.includes('contribution client');
+      })
+      .map(t => ({t, ai:false})),
     answers: importedAnswers
   });
+
   refreshThresholdsAfterQuestionChange();
   saveState();
   renderNav();
   renderMain();
   updateSaveButton();
+
   renderPanelTags();
   renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag);
 }
