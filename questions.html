@@ -2,162 +2,1318 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Création — Into The Shift</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Éditeur — Into the Shift</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
 <link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
+
+/* ── SHELL ─────────────────────────────────────── */
+.shell{font-family:'Asap',sans-serif;background:#fff;min-height:100vh}
+
+/* ── TOPBAR ────────────────────────────────────── */
+.topbar{background:#18375d;display:flex;align-items:center;padding:0 24px;height:54px;gap:12px}
+.logo{display:flex;align-items:stretch}
+.logo-self{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.5px;align-self:center}
+.logo-tech{background:#eb6366;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 5px;margin-left:3px;border-radius:2px;min-height:30px}
+.logo-tech span{font-size:8px;font-weight:700;color:#fff;line-height:1.05;letter-spacing:0.5px}
+.tb-sp{flex:1}
+.acct{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:5px 13px 5px 5px}
+.av{width:26px;height:26px;border-radius:50%;background:#eb6366;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.acct-n{font-size:13px;color:rgba(255,255,255,0.9)}
+
+/* ── SUBNAV ────────────────────────────────────── */
+.subnav{background:#fff;border-bottom:1px solid #e2e8f0;display:flex;padding:8px 18px;gap:4px;overflow-x:auto}
+.subnav::-webkit-scrollbar{display:none}
+.sn{padding:7px 14px;border-radius:8px;font-size:12px;color:#64748b;cursor:pointer;border:none;background:transparent;white-space:nowrap;font-weight:500;font-family:'Asap',sans-serif;transition:all 0.12s}
+.sn.on{background:#18375d;color:#fff;font-weight:600}
+.sn:not(.on):hover{background:#eef1f6;color:#18375d}
+
+/* ── BREADCRUMB ────────────────────────────────── */
+.breadcrumb{display:flex;align-items:center;gap:6px;padding:11px 24px;border-bottom:1px solid #f0f4f8;background:#fafbfc;flex-wrap:wrap}
+.bc-link{font-size:12px;color:#007883;cursor:pointer;font-weight:500;font-family:'Asap',sans-serif}
+.bc-link:hover{text-decoration:underline}
+.bc-sep{font-size:12px;color:#c5ccd5}
+.bc-cur{font-size:12px;color:#64748b;font-family:'Asap',sans-serif}
+
+/* ── LAYOUT ────────────────────────────────────── */
+.editor-layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 120px)}
+
+/* ── SIDEBAR ───────────────────────────────────── */
+.sidebar{border-right:1px solid #e8edf4;padding:16px 12px;background:#fafbfc;display:flex;flex-direction:column;gap:5px}
+.sb-title{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;padding:0 4px;font-family:'Asap',sans-serif}
+
+.cni{border-radius:10px;border:1px solid transparent;font-family:'Asap',sans-serif;transition:all 0.15s;background:transparent;overflow:hidden}
+.cni.on{background:#fff;border-color:#d8e0ea;box-shadow:0 2px 8px rgba(24,55,93,0.08)}
+.cni-head{padding:10px 11px 8px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.cni:not(.on) .cni-head:hover{background:#eef1f6;border-radius:9px 9px 0 0}
+.cni-lbl{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em}
+.cni-name{font-size:13px;font-weight:600;color:#18375d;line-height:1.3}
+.cni-meta{display:flex;align-items:center;gap:5px;margin-top:3px}
+.cni-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cni-qcount{font-size:11px;color:#64748b;font-family:'Asap',sans-serif}
+
+/* Boutons Questions / Profils */
+.cni-tabs{display:flex;gap:5px;padding:0 11px 10px;margin-top:2px}
+.cni-tab{flex:1;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:600;font-family:'Asap',sans-serif;text-align:center;cursor:pointer;border:1px solid #d8e0ea;background:#fff;color:#64748b;transition:all 0.15s}
+.cni-tab.on{background:#18375d;color:#fff;border-color:#18375d}
+.cni-tab:not(.on):hover{background:#eef1f6;border-color:#b8c4d4;color:#18375d}
+
+.sb-bot{margin-top:auto;padding-top:14px;border-top:1px solid #e8edf4;display:flex;flex-direction:column;gap:6px}
+.sb-total{font-size:11px;color:#94a3b8;font-family:'Asap',sans-serif;text-align:center;padding:0 4px}
+.sb-total strong{color:#18375d}
+.btn-save{width:100%;background:#18375d;color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Asap',sans-serif;transition:all 0.15s}
+.btn-save:hover:not(:disabled){background:#122a47}
+.btn-save:disabled{background:#c5ccd5;cursor:not-allowed;opacity:0.7}
+.btn-save-hint{font-size:10px;color:#eb6366;font-family:'Asap',sans-serif;text-align:center;padding:0 4px;line-height:1.4;display:none}
+.btn-save-hint.visible{display:block}
+
+/* ── MAIN ──────────────────────────────────────── */
+.main-editor{padding:22px 28px;overflow-y:auto;background:#fff}
+
+/* En-tête chapitre */
+.chap-head{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0f4f8;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.chap-info{flex:1;min-width:0}
+.chap-badge{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;font-family:'Asap',sans-serif;margin-bottom:4px}
+.chap-name-inp{font-size:17px;font-weight:700;color:#18375d;font-family:'Asap',sans-serif;border:none;outline:none;border-bottom:2px solid transparent;background:transparent;width:100%;transition:border-color 0.15s;padding-bottom:1px}
+.chap-name-inp:focus{border-bottom-color:#18375d}
+.chap-desc-inp{font-size:12px;color:#64748b;font-family:'Asap',sans-serif;border:none;outline:none;border-bottom:1px solid transparent;background:transparent;width:100%;margin-top:5px;transition:border-color 0.15s}
+.chap-desc-inp:focus{border-bottom-color:#d8e0ea}
+.chap-actions{display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.btn-regen-all{background:linear-gradient(90deg,#18375d,#007883);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Asap',sans-serif;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-regen-all:hover{opacity:0.88}
+.btn-pioche{background:#fff;color:#007883;border:1px solid #b8dfe0;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Asap',sans-serif;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-pioche:hover{background:#e5f4f5}
+.btn-add-manual{background:#fff;color:#18375d;border:1px solid #c5cfdc;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Asap',sans-serif;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-add-manual:hover{background:#edf1f7}
+.btn-add-ai-one{background:#fff;color:#18375d;border:1.5px solid #18375d;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Asap',sans-serif;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all 0.15s}
+.btn-add-ai-one:hover:not(:disabled){background:linear-gradient(90deg,#18375d,#007883);color:#fff;border-color:transparent}
+.btn-add-ai-one:disabled{opacity:0.38;cursor:not-allowed}
+
+/* Compteur questions */
+.q-counter{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.qc-text{font-size:12px;color:#64748b;font-family:'Asap',sans-serif}
+.qc-text strong{color:#18375d}
+.qc-bar{height:5px;background:#edf1f7;border-radius:3px;overflow:hidden;width:90px}
+.qc-fill{height:100%;border-radius:3px;background:#007883;transition:width 0.3s}
+
+/* Info Likert */
+.likert-info{background:#f0f8ff;border:1px solid #b8dfe0;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.likert-info-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.likert-info-body{font-size:11px;color:#18375d;font-family:'Asap',sans-serif;line-height:1.5}
+.likert-info-body strong{font-weight:700}
+.likert-info-toggle{font-size:11px;color:#007883;font-weight:600;cursor:pointer;white-space:nowrap;margin-left:auto;flex-shrink:0}
+
+/* Questions list */
+.q-list{display:flex;flex-direction:column;gap:8px}
+
+/* Question card */
+.q-card{border:1px solid #d8e0ea;border-radius:12px;overflow:hidden;background:#fff;transition:border-color 0.12s}
+.q-card:hover{border-color:#b8c4d4}
+.q-card.open{border-color:#18375d}
+.q-header{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.q-num{width:24px;height:24px;border-radius:50%;background:#edf1f7;color:#18375d;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Asap',sans-serif;margin-top:1px;transition:all 0.15s}
+.q-card.open .q-num{background:#18375d;color:#fff}
+.q-main{flex:1;min-width:0}
+.q-text{font-size:13px;font-weight:600;color:#18375d;font-family:'Asap',sans-serif;line-height:1.4;margin-bottom:7px}
+  .editable-q{
+  outline:none;
+  border-radius:6px;
+  padding:2px 4px;
+  margin-left:-4px;
+  min-height:18px;
+  cursor:text;
+}
+.editable-q:focus{
+  background:#edf1f7;
+  box-shadow:0 0 0 1px #d8e0ea inset;
+}
+.q-tags-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+
+/* Tags de provenance */
+.tag-prov{display:inline-flex;align-items:center;gap:4px;background:#f0edff;border:1px solid #c4b5fd;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;color:#6d28d9;font-family:'Asap',sans-serif;white-space:nowrap;cursor:default}
+.tag-prov.expert{background:#fef3c7;border-color:#fcd34d;color:#92400e}
+.tag-prov.client{background:#f0fdf4;border-color:#86efac;color:#166534}
+
+/* Tags de contenu */
+.tag-pill{display:inline-flex;align-items:center;gap:3px;background:#edf1f7;border:1px solid #c5cfdc;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;color:#18375d;font-family:'Asap',sans-serif}
+.tag-pill.ai-sug{background:#e5f4f5;border-color:#b8dfe0;color:#007883}
+.tag-x{cursor:pointer;opacity:0.45;margin-left:1px;font-size:12px;line-height:1}
+.tag-x:hover{opacity:1;color:#eb6366}
+.tag-add{display:inline-flex;align-items:center;gap:3px;background:transparent;border:1px dashed #c5cfdc;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;color:#94a3b8;font-family:'Asap',sans-serif;cursor:pointer;transition:all 0.12s}
+.tag-add:hover{border-color:#007883;color:#007883;background:#e5f4f5}
+
+/* Actions droite */
+.q-right{display:flex;align-items:center;gap:0;flex-shrink:0;margin-top:1px}
+.q-chevron-btn{background:none;border:none;cursor:pointer;color:#c5ccd5;font-size:14px;padding:4px 6px;transition:all 0.15s;line-height:1}
+.q-chevron-btn:hover{color:#18375d}
+.q-card.open .q-chevron-btn{color:#18375d;transform:rotate(180deg)}
+.q-vsep{width:1px;height:22px;background:#e8edf4;margin:0 4px}
+.qa-btn{width:30px;height:30px;border-radius:8px;border:1px solid #e8edf4;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0}
+.qa-btn:hover{background:#f7f9fc;border-color:#c5cfdc}
+.qa-btn.del:hover{background:#fceaea;border-color:#f5c0c1}
+.qa-btn.regen-q:hover{background:#e5f4f5;border-color:#b8dfe0}
+
+/* Corps question */
+.q-body{display:none;padding:10px 14px 14px 48px;border-top:1px solid #f0f4f8}
+.q-card.open .q-body{display:block}
+.type-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;font-family:'Asap',sans-serif;margin-bottom:10px;display:inline-block}
+.tb-likert{background:#e5f4f5;color:#007883}
+.tb-choix{background:#edf1f7;color:#18375d}
+.score-note{font-size:11px;color:#94a3b8;font-family:'Asap',sans-serif;font-style:italic;margin-bottom:8px}
+.likert-list{display:flex;flex-direction:column;gap:6px}
+.la-row{display:flex;align-items:center;gap:8px}
+.la-bar{width:3px;height:18px;border-radius:2px;background:#e2e8f0;flex-shrink:0}
+.la-inp{flex:1;font-size:12px;font-family:'Asap',sans-serif;border:none;outline:none;background:transparent;border-bottom:1px solid transparent;transition:border-color 0.15s}
+.la-inp:focus{border-bottom-color:#d8e0ea}
+.la-score-info{font-size:10px;color:#94a3b8;font-family:'Asap',sans-serif;flex-shrink:0;min-width:55px;text-align:right}
+.mc-list{display:flex;flex-direction:column;gap:6px}
+.mc-row{display:flex;align-items:center;gap:8px;background:#fafbfc;border:1px solid #e8edf4;border-radius:8px;padding:8px 12px;transition:border-color 0.12s}
+.mc-row:hover{border-color:#c5cfdc}
+.mc-dot{width:7px;height:7px;border-radius:50%;background:#c5ccd5;flex-shrink:0}
+.mc-inp{flex:1;font-size:12px;font-family:'Asap',sans-serif;border:none;outline:none;background:transparent}
+.score-pill{display:flex;align-items:center;gap:4px;background:#edf1f7;border:1px solid #c5cfdc;border-radius:20px;padding:4px 10px;cursor:pointer;transition:all 0.15s;flex-shrink:0}
+.score-pill:hover{background:#dde3ed}
+.score-pill.editing{background:#18375d;border-color:#18375d}
+.sp-lbl{font-size:9px;font-weight:700;color:#94a3b8;font-family:'Asap',sans-serif;text-transform:uppercase}
+.sp-lbl.e{color:rgba(255,255,255,0.6)}
+.sp-val{font-size:12px;font-weight:700;color:#18375d;font-family:'Asap',sans-serif;min-width:22px;text-align:center}
+.sp-val.e{color:#fff}
+
+/* ── VUE PROFILS ───────────────────────────────── */
+.profils-view{display:none}
+.profils-view.on{display:block}
+
+/* Seuils */
+.seuils-card{background:#fafbfc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 18px;margin-bottom:20px}
+.seuils-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.seuils-title{font-size:13px;font-weight:600;color:#18375d;font-family:'Asap',sans-serif;display:flex;align-items:center;gap:7px}
+.seuils-hint{font-size:11px;color:#94a3b8;font-family:'Asap',sans-serif;font-style:italic}
+.seuils-row{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.seuil-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #d8e0ea;border-radius:10px;padding:10px 16px;flex:1;min-width:180px}
+.seuil-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.seuil-label{font-size:12px;font-weight:600;color:#475569;font-family:'Asap',sans-serif;flex:1}
+.seuil-range{display:flex;align-items:center;gap:6px}
+.seuil-inp{width:52px;padding:5px 8px;border:1px solid #d8e0ea;border-radius:7px;font-size:13px;font-weight:700;color:#18375d;font-family:'Asap',sans-serif;text-align:center;outline:none;transition:border-color 0.15s}
+.seuil-inp:focus{border-color:#18375d}
+.seuil-sep{font-size:12px;color:#94a3b8;font-family:'Asap',sans-serif}
+
+/* Profil cards */
+.profils-grid{display:flex;flex-direction:column;gap:16px}
+.profil-card{border-radius:12px;overflow:hidden;border:1px solid #e2e8f0}
+.profil-header{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.profil-level{display:flex;align-items:center;gap:9px}
+.profil-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.profil-level-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;font-family:'Asap',sans-serif}
+.profil-score-range{font-size:12px;font-weight:600;font-family:'Asap',sans-serif;opacity:0.7}
+.btn-ai-profil{display:flex;align-items:center;gap:5px;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Asap',sans-serif;transition:all 0.12s}
+.profil-body{padding:18px;background:#fff;display:flex;flex-direction:column;gap:14px}
+.pfield label{display:block;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;font-family:'Asap',sans-serif}
+.pfield input{width:100%;padding:9px 12px;border:1px solid #d8e0ea;border-radius:8px;font-size:13px;color:#18375d;font-family:'Asap',sans-serif;outline:none;transition:border-color 0.15s}
+.pfield input:focus{border-color:#18375d}
+.pfield input::placeholder{color:#c5ccd5;font-weight:400}
+.pfield input.short{font-weight:400;color:#475569}
+
+/* Rich text editor */
+.rte-wrap{border:1px solid #d8e0ea;border-radius:8px;overflow:hidden;transition:border-color 0.15s}
+.rte-wrap:focus-within{border-color:#18375d}
+.rte-toolbar{display:flex;gap:3px;padding:6px 8px;border-bottom:1px solid #f0f4f8;background:#fafbfc;flex-wrap:wrap;align-items:center}
+.rte-btn{width:28px;height:28px;border:1px solid transparent;border-radius:6px;background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:#475569;display:flex;align-items:center;justify-content:center;font-family:'Asap',sans-serif;transition:all 0.12s}
+.rte-btn:hover{background:#edf1f7;border-color:#d8e0ea}
+.rte-sep{width:1px;height:20px;background:#e2e8f0;margin:0 3px}
+.rte-area{min-height:80px;padding:11px 13px;font-size:13px;color:#475569;font-family:'Asap',sans-serif;line-height:1.6;outline:none}
+.rte-area:empty:before{content:attr(data-placeholder);color:#c5ccd5;pointer-events:none}
+
+/* Mots clés profil */
+.mkw-wrap{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:7px 10px;border:1px solid #d8e0ea;border-radius:8px;min-height:38px;background:#fff;cursor:text;transition:border-color 0.15s}
+.mkw-wrap:focus-within{border-color:#18375d}
+.mkw{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:'Asap',sans-serif;border:1px solid}
+.mkw-x{cursor:pointer;opacity:0.45;font-size:12px;margin-left:1px}
+.mkw-x:hover{opacity:1}
+.mkw-inp{border:none;outline:none;font-size:12px;font-family:'Asap',sans-serif;color:#18375d;background:transparent;min-width:80px;flex:1}
+.mkw-inp::placeholder{color:#c5ccd5}
+
+/* Médias */
+.media-row{display:flex;gap:10px}
+.media-slot{flex:1;border:1.5px dashed #d8e0ea;border-radius:8px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all 0.12s;background:#fafbfc;text-align:center}
+.media-slot:hover{border-color:#007883;background:#e5f4f5}
+.media-ico{font-size:22px}
+.media-lbl{font-size:11px;font-weight:600;color:#94a3b8;font-family:'Asap',sans-serif}
+.media-hint{font-size:10px;color:#c5ccd5;font-family:'Asap',sans-serif}
+
+/* Panel latéral */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,30,55,0.35);z-index:40;display:none}
+.overlay.on{display:block}
+.panel-right{position:fixed;top:0;right:-380px;width:360px;height:100%;background:#fff;border-left:1px solid #d8e0ea;z-index:50;transition:right 0.25s ease;display:flex;flex-direction:column}
+.panel-right.on{right:0}
+.panel-head{padding:15px 18px;border-bottom:1px solid #e8edf4;display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:14px;font-weight:600;color:#18375d;font-family:'Asap',sans-serif}
+.panel-close{width:28px;height:28px;border-radius:7px;border:1px solid #e8edf4;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#64748b}
+.panel-close:hover{background:#f7f9fc}
+.lib-toggle{display:flex;margin:12px 16px;background:#f0f4f8;border-radius:8px;padding:3px;gap:3px}
+.lib-btn{flex:1;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;font-family:'Asap',sans-serif;cursor:pointer;border:none;background:transparent;color:#64748b;transition:all 0.15s;text-align:center}
+.lib-btn.on{background:#fff;color:#18375d;box-shadow:0 1px 4px rgba(24,55,93,0.1)}
+.panel-search{padding:10px 16px;border-bottom:1px solid #f0f4f8}
+.search-inp{width:100%;padding:8px 12px;border:1px solid #d8e0ea;border-radius:8px;font-size:13px;font-family:'Asap',sans-serif;outline:none;color:#18375d}
+.search-inp:focus{border-color:#007883}
+.panel-tags{display:flex;flex-wrap:wrap;gap:5px;padding:8px 16px;border-bottom:1px solid #f0f4f8}
+.panel-tags-lbl{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;width:100%;margin-bottom:3px;font-family:'Asap',sans-serif}
+.filter-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid #d8e0ea;background:#fff;color:#64748b;cursor:pointer;font-family:'Asap',sans-serif;transition:all 0.12s}
+.filter-tag.on{background:#18375d;color:#fff;border-color:#18375d}
+.filter-tag:hover:not(.on){background:#edf1f7}
+.panel-list{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.panel-q{background:#fafbfc;border:1px solid #e8edf4;border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;transition:border-color 0.12s}
+.panel-q:hover{border-color:#b8c4d4}
+.panel-q-text{font-size:12px;color:#18375d;font-family:'Asap',sans-serif;font-weight:500;line-height:1.4;margin-bottom:4px}
+.panel-q-meta{display:flex;flex-wrap:wrap;gap:4px}
+.btn-add-from-base{width:26px;height:26px;border-radius:50%;background:#18375d;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;margin-top:2px;transition:background 0.12s}
+.btn-add-from-base:hover{background:#007883}
+
+/* Modale régénération */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,30,55,0.45);z-index:60;display:none;align-items:center;justify-content:center}
+.modal-overlay.on{display:flex}
+.modal{background:#fff;border-radius:14px;padding:26px;max-width:380px;width:90%;border:1px solid #d8e0ea;box-shadow:0 12px 32px rgba(24,55,93,0.15)}
+.modal h3{font-size:15px;font-weight:700;color:#18375d;font-family:'Asap',sans-serif;margin-bottom:8px}
+.modal p{font-size:13px;color:#64748b;font-family:'Asap',sans-serif;line-height:1.6;margin-bottom:18px}
+.modal-acts{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;font-family:'Asap',sans-serif;cursor:pointer;border:1px solid #d8e0ea;background:#fff;color:#64748b}
+.btn-cancel:hover{background:#f7f9fc}
+.btn-confirm{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;font-family:'Asap',sans-serif;cursor:pointer;border:none;background:#eb6366;color:#fff}
+.btn-confirm:hover{background:#d4474a}
+
+.empty-q{text-align:center;padding:40px;color:#94a3b8;font-size:13px;font-family:'Asap',sans-serif;border:1.5px dashed #e2e8f0;border-radius:10px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
+<div class="shell">
+
+  <!-- TOPBAR -->
 <div id="header"></div>
 <script src="header.js"></script>
-<script src="catalogue.js"></script>
-<script src="app.js"></script>
 
-<div class="subnav">
-  <button class="sn" onclick="window.location.href='index.html'">Bibliothèque</button>
-  <button class="sn on">Création</button>
-  <button class="sn" onclick="window.location.href='parametrage.html'">Paramétrage</button>
-  <button class="sn" onclick="window.location.href='campagne.html'">Campagne</button>
-  <button class="sn" onclick="window.location.href='validation.html'">Transmission</button>
+  <!-- SUBNAV -->
+  <div class="subnav">
+    <button class="sn" onclick="window.location.href='index.html'">Dashboard</button>
+    <button class="sn" onclick="window.location.href='selftech_mes_autodiagnostics_v3.html'">Mes autodiagnostics</button>
+    <button class="sn on" onclick="window.location.href='1-selftech_ma_bibliotheque.html'">Ma bibliothèque</button>
+    <button class="sn" onclick="window.location.href='selftech_bibliotheque_partagee.html'">Bibliothèque partagée</button>
+   <button class="sn" onclick="window.location.href='selftech_resultats.html'">Résultats</button>
+    <button class="sn" onclick="window.location.href='selftech_parametres.html'">Paramètres</button>
+  </div>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <span class="bc-link" onclick="window.location.href='1-selftech_ma_bibliotheque.html'">Ma bibliothèque</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-link" onclick="window.location.href='2-selftech_creer_theme_ia.html'">Sécurité & culture de sûreté</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-cur" id="bc-cur">Questions — Connaître les risques</span>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="editor-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-title">Chapitres</div>
+      <div id="chap-nav"></div>
+      <div class="sb-bot">
+        <div class="sb-total" id="sb-total"></div>
+        <div class="btn-save-hint" id="btn-save-hint">4 questions min. par chapitre</div>
+        <button class="btn-save" id="btn-save" onclick="trySave()">Enregistrer le thème</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-editor" id="main-editor"></div>
+  </div>
+
 </div>
 
-<div class="stepper-wrap">
-  <div class="stepper">
-    <div class="step"><div class="step-circle done">✓</div><span class="step-label done">Choisir</span></div><div class="step-connector done"></div>
-    <div class="step"><div class="step-circle active">2</div><span class="step-label active">Créer</span></div><div class="step-connector todo"></div>
-    <div class="step"><div class="step-circle todo">3</div><span class="step-label todo">Paramétrage</span></div><div class="step-connector todo"></div>
-    <div class="step"><div class="step-circle todo">4</div><span class="step-label todo">Campagne</span></div><div class="step-connector todo"></div>
-    <div class="step"><div class="step-circle todo">5</div><span class="step-label todo">Transmettre</span></div>
+<!-- PANEL BIBLIOTHÈQUES -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel-right" id="panel-right">
+  <div class="panel-head">
+    <span class="panel-title">Piocher dans les bibliothèques</span>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="lib-toggle">
+    <button class="lib-btn on" id="lib-btn-ma" onclick="switchLib('ma')">Ma bibliothèque</button>
+    <button class="lib-btn" id="lib-btn-shared" onclick="switchLib('shared')">Bibliothèque partagée</button>
+  </div>
+  <div class="panel-search">
+    <input class="search-inp" id="panel-search-inp" placeholder="Rechercher par mot-clé…" oninput="filterPanel(this.value)">
+  </div>
+  <div class="panel-tags">
+    <div class="panel-tags-lbl">Filtrer par tag</div>
+    <div id="panel-tags-wrap" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+  </div>
+  <div class="panel-list" id="panel-list"></div>
+</div>
+
+<!-- MODALE ENREGISTREMENT BLOQUÉ -->
+<div class="modal-overlay" id="modal-save-blocked">
+  <div class="modal">
+    <div style="font-size:22px;margin-bottom:12px">🔒</div>
+    <h3>Impossible d'enregistrer le thème</h3>
+    <p>Certains chapitres sont incomplets. Chaque chapitre doit contenir au moins <strong>4 questions</strong> avec réponses et scores, et <strong>3 profils</strong> avec titre, résumé et description. Les chapitres suivants nécessitent des corrections :</p>
+    <div id="modal-save-list" style="display:flex;flex-direction:column;gap:6px;margin:12px 0 20px"></div>
+    <div class="modal-acts">
+      <button class="btn-confirm" style="background:#18375d" onclick="closeSaveModal()">Compléter les questions</button>
+    </div>
   </div>
 </div>
 
-<div class="editor-layout">
-  <aside class="sidechap">
-    <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:12px">Chapitres</div>
-    <div id="chaptersNav"></div>
-  </aside>
-  <main class="editor-main">
-    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:18px">
-      <div>
-        <div class="audience" id="chapterLabel"></div>
-        <h1 class="page-title" id="chapterTitle"></h1>
-        <p class="page-sub" id="chapterDesc"></p>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-        <button class="btn btn-ai" onclick="regenChapter()">Régénérer avec IA</button>
-        <button class="btn btn-secondary" onclick="addQuestion()">Ajouter une question avec IA</button>
-        <button class="btn btn-add" onclick="addManualQuestion()">Ajouter manuellement</button>
-      </div>
+<!-- MODALE REGEN -->
+<div class="modal-overlay" id="modal-regen">
+  <div class="modal">
+    <div style="font-size:22px;margin-bottom:12px">⚠️</div>
+    <h3>Régénérer toutes les questions ?</h3>
+    <p>Les <strong id="modal-q-count"></strong> questions actuelles seront remplacées par de nouvelles questions générées par l'IA.</p>
+    <div class="modal-acts">
+      <button class="btn-cancel" onclick="closeRegenModal()">Annuler</button>
+      <button class="btn-confirm" onclick="confirmRegen()">Régénérer</button>
     </div>
-
-    <div id="tabs" style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="btn btn-primary" id="tabQuestions" onclick="setTab('questions')">Questions</button>
-      <button class="btn btn-secondary" id="tabProfiles" onclick="setTab('profiles')">Profils</button>
-    </div>
-
-    <div id="editorContent"></div>
-
-    <div class="bottom-actions">
-      <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Retour bibliothèque</button>
-      <button class="btn btn-primary" id="continueBtn" onclick="goNext()">Continuer vers le paramétrage</button>
-    </div>
-  </main>
+  </div>
 </div>
 
 <script>
-let state = itsLoad();
-if(!state.chapters){ window.location.href = "index.html"; }
-let currentChapter = 0;
-let currentTab = "questions";
+// ── DONNÉES ──────────────────────────────────────────────────────────────────
+const PROV = {
+  AI:     {key:'ai',     label:'Base assistée par IA', ico:'🤖', cls:''},
+  EXPERT: {key:'expert', label:'Conçu par expert·e',   ico:'⭐', cls:'expert'},
+  CLIENT: {key:'client', label:'Contribution client',  ico:'🤝', cls:'client'},
+};
 
-function saveState(){ itsSave(state); }
+const chapters = [
+  { id:1, name:"Connaître les risques",           desc:"Identifier les principaux risques du poste de travail.",
+    questions:[
+      {id:'q1',type:'likert',prov:'AI',text:"Dans mon travail quotidien, j'identifie les situations susceptibles de présenter un risque.",tags:[{t:'Risque',ai:false},{t:'Quotidien',ai:true},{t:'Vigilance',ai:true}],answers:[{l:"Jamais",s:0},{l:"Rarement",s:0.5},{l:"Parfois",s:1},{l:"Souvent",s:1.5},{l:"Toujours",s:2}]},
+      {id:'q2',type:'choix',prov:'AI',text:"Une situation inconnue vous semble risquée sur votre poste. Que faites-vous le plus spontanément ?",tags:[{t:'Réaction',ai:false},{t:'Signalement',ai:true}],answers:[
+        {l:"Je continue, ça passera probablement",s:0},
+        {l:"J'en parle à un collègue pour avoir son avis",s:1},
+        {l:"Je m'arrête, j'évalue et je remonte l'info à mon responsable",s:2},
+      ]},
+      {id:'q3',type:'choix',prov:'AI',text:"Un collègue vous demande où se trouvent les EPI pour une tâche inhabituelle. Vous…",tags:[{t:'EPI',ai:false},{t:'Connaissance',ai:true}],answers:[
+        {l:"Je lui dis que je ne sais pas vraiment",s:0},
+        {l:"Je lui indique vaguement où chercher",s:1},
+        {l:"Je lui montre l'emplacement sans vérifier que c'est le bon EPI",s:1},
+        {l:"Je l'accompagne et l'aide à identifier l'équipement adapté",s:2},
+      ]},
+      {id:'q4',type:'choix',prov:'AI',text:"Comment décririez-vous votre niveau de connaissance des consignes de sécurité sur votre site ?",tags:[{t:'Consignes',ai:true},{t:'Connaissance',ai:true}],answers:[
+        {l:"Je ne les connais pas vraiment",s:0},
+        {l:"J'en connais les grandes lignes mais pas dans le détail",s:1},
+        {l:"Je les connais et suis capable de les expliquer à quelqu'un",s:2},
+      ]},
+      {id:'q5',type:'choix',prov:'AI',text:"Vous remarquez un presqu'accident qui n'a pas eu de conséquence. Que faites-vous ?",tags:[{t:'Signalement',ai:false},{t:'Proactivité',ai:true}],answers:[
+        {l:"Je n'en fais rien, pas de dommage pas de problème",s:0},
+        {l:"J'y repense mais je ne le signale pas formellement",s:0},
+        {l:"J'en parle à un collègue mais sans remonter officiellement",s:1},
+        {l:"Je le signale formellement, même sans conséquence",s:2},
+      ]},
+    ],
+    profils:[
+      {niveau:1,titre:"La vigilance s'invite rarement dans votre quotidien",phrase:"Vous naviguez souvent en automatique, les signaux de risque passent inaperçus.",description:"Au quotidien, vous évoluez dans une forme d'habitude professionnelle qui laisse peu de place à la vigilance active. Ce n'est pas un manque d'intention — c'est souvent une exposition progressive aux risques qui les rend invisibles. La bonne nouvelle : cette prise de conscience est déjà un premier pas.",motscles:["Automatisme","Vigilance faible"]},
+      {niveau:2,titre:"Vous avez l'œil, mais pas encore le réflexe",phrase:"Votre sensibilité aux risques existe — elle s'exprime encore de façon irrégulière.",description:"Vous percevez les risques dans certaines situations, mais cela reste lié au contexte ou à votre état d'attention du moment. Ce qui vous manque encore, c'est la constance du regard. Vous êtes à un stade charnière : les automatismes de vigilance se construisent.",motscles:["Irrégulier","En construction"]},
+      {niveau:3,titre:"La vigilance fait partie de votre ADN professionnel",phrase:"Vous repérez et traitez les risques avec constance, même quand personne ne regarde.",description:"Vous avez intégré la vigilance comme une posture naturelle. Vous ne cherchez pas les risques — vous les voyez, presque instinctivement. Ce réflexe est une ressource précieuse pour vous et pour les personnes qui travaillent avec vous.",motscles:["Ancré","Ressource collective"]},
+    ],
+    seuils:[{min:0,max:0.7},{min:0.7,max:1.7},{min:1.7,max:2.1}]
+  },
+  { id:2, name:"Adopter les bons réflexes",       desc:"Mettre en pratique les comportements préventifs.",        questions:[
+    {id:'q6',type:'choix',prov:'AI',text:"Vous êtes sur le point de commencer une tâche et réalisez que vous n'avez pas vos EPI. Vous êtes à 5 minutes de les récupérer.",tags:[{t:'EPI',ai:false},{t:'Réflexe',ai:true}],answers:[
+      {l:"Je commence quand même, je serai prudent",s:0},
+      {l:"Je fais une partie sans EPI et j'irai les chercher ensuite",s:0},
+      {l:"Je vais les chercher avant de commencer, sans exception",s:2},
+    ]},
+    {id:'q7',type:'choix',prov:'AI',text:"Lorsque vous découvrez un équipement défectueux, que faites-vous ?",tags:[{t:'Équipement',ai:true},{t:'Signalement',ai:false}],answers:[
+      {l:"Je continue à l'utiliser en faisant attention",s:0},
+      {l:"Je le mets de côté mais sans rien signaler",s:1},
+      {l:"Je préviens un collègue pour qu'il le signale",s:1},
+      {l:"Je le mets hors service et le signale immédiatement",s:2},
+    ]},
+  ], profils:[{niveau:1,titre:"Les réflexes préventifs ne sont pas encore naturels",phrase:"Les automatismes de protection se construisent encore.",description:"",motscles:[]},{niveau:2,titre:"Vous faites les bons gestes dans les situations connues",phrase:"Il reste des angles morts dans les contextes moins habituels.",description:"",motscles:[]},{niveau:3,titre:"Prévenir est un réflexe que vous n'avez plus besoin d'activer",phrase:"Vos comportements préventifs sont devenus une seconde nature.",description:"",motscles:[]}], seuils:[{min:0,max:0.7},{min:0.7,max:1.7},{min:1.7,max:2.1}]},
+  { id:3, name:"Travailler en équipe en sécurité", desc:"Comprendre l'impact des comportements collectifs.",       questions:[], profils:[{niveau:1,titre:"",phrase:"",description:"",motscles:[]},{niveau:2,titre:"",phrase:"",description:"",motscles:[]},{niveau:3,titre:"",phrase:"",description:"",motscles:[]}], seuils:[{min:0,max:0.7},{min:0.7,max:1.7},{min:1.7,max:2.1}]},
+  { id:4, name:"Réagir et signaler",               desc:"Réagir face à un incident et mobiliser les bons interlocuteurs.", questions:[], profils:[{niveau:1,titre:"",phrase:"",description:"",motscles:[]},{niveau:2,titre:"",phrase:"",description:"",motscles:[]},{niveau:3,titre:"",phrase:"",description:"",motscles:[]}], seuils:[{min:0,max:0.7},{min:0.7,max:1.7},{min:1.7,max:2.1}]},
+];
 
-function render(){
+const profils_config = [
+  {couleur:'#ff847e', bgHead:'#fff0ef', borderHead:'#ffd6d4', textColor:'#c0392b', nom:'En développement'},
+  {couleur:'#ffc744', bgHead:'#fff9ec', borderHead:'#ffedb8', textColor:'#b7840a', nom:'En progression'},
+  {couleur:'#77cd8a', bgHead:'#f0fbf2', borderHead:'#b8e8c0', textColor:'#27823a', nom:'Ancré'},
+];
+
+const myLibQuestions = [
+  {id:'m1',prov:'AI',text:"Je participe activement aux exercices de sécurité organisés.",tags:["Exercice","Participation"],added:false},
+  {id:'m2',prov:'AI',text:"Je consulte régulièrement les affichages de sécurité.",tags:["Affichage","Veille"],added:false},
+  {id:'m3',prov:'AI',text:"Je suis capable d'expliquer les procédures d'évacuation à un collègue.",tags:["Évacuation","Formation"],added:false},
+];
+const sharedLibQuestions = [
+  {id:'s1',prov:'EXPERT',text:"Avant de démarrer une tâche, j'identifie systématiquement les risques potentiels.",tags:["Risque","Méthode"],added:false},
+  {id:'s2',prov:'EXPERT',text:"Je sais utiliser les équipements de premiers secours présents sur mon site.",tags:["Secours","EPI"],added:false},
+  {id:'s3',prov:'CLIENT',text:"Je remonte les presqu'accidents à mon manager sans attendre.",tags:["Signalement","Proactivité"],added:false},
+  {id:'s4',prov:'AI',text:"Je respecte les zones de circulation réservées aux piétons.",tags:["Circulation","Réflexe"],added:false},
+];
+
+let activeChap = 0;
+let activeTab = 'questions'; // 'questions' | 'profils'
+let openCards = {};
+let activeFilterTag = '';
+let activeLib = 'ma';
+let likertInfoOpen = false;
+ function applyDraftThemeFromStorage() {
+  const themeFromUrl = new URLSearchParams(window.location.search).get('theme');
+  const raw = localStorage.getItem('selftechDraftTheme');
+  if (!raw) return;
+
+  try {
+    const draft = JSON.parse(raw);
+    if (!draft || !draft.chapters || !draft.chapters.length) return;
+
+    // Correspondances spécifiques pour éviter les erreurs de slug
+    // Exemple : "Sécurité & culture de sûreté" ne doit pas devenir automatiquement "securite-et-culture-de-surete"
+    const knownSlugsByName = {
+      "Sécurité & culture de sûreté": "securite-culture-surete",
+      "Quel est mon niveau de compréhension des risques cyber ?": "cyber",
+      "Changer sans se crisper : mes réflexes face aux transformations": "transformation",
+      "Suis-je acteur de ma sobriété énergétique au quotidien ?": "sobriete",
+      "Qualité de vie au travail": "qualite-vie-travail"
+    };
+
+    const draftSlug = draft.slug || knownSlugsByName[draft.name] || slugify(draft.name || '');
+
+    // Si un thème est précisé dans l'URL, on ne charge le brouillon que s'il correspond bien
+    if (themeFromUrl && themeFromUrl !== draftSlug) return;
+
+    chapters.splice(0, chapters.length, ...draft.chapters.map((c, index) => ({
+      id: index + 1,
+      name: c.name || `Chapitre ${index + 1}`,
+      desc: c.desc || '',
+      questions: c.questions || [],
+      profils: c.profils || [
+        {niveau:1, titre:"", phrase:"", description:"", motscles:[]},
+        {niveau:2, titre:"", phrase:"", description:"", motscles:[]},
+        {niveau:3, titre:"", phrase:"", description:"", motscles:[]}
+      ],
+      seuils: c.seuils || [
+        {min:0, max:0.7},
+        {min:0.7, max:1.7},
+        {min:1.7, max:2.1}
+      ]
+    })));
+
+    activeChap = 0;
+    activeTab = 'questions';
+
+  } catch (e) {
+    console.warn('Impossible de charger le thème généré', e);
+  }
+}
+
+// ── MODE ÉDITEUR : thème seul OU création d'autodiagnostic ───────────────────
+const urlParams = new URLSearchParams(window.location.search);
+const editorMode = urlParams.get('mode') || 'theme';
+
+function getCurrentThemeName() {
+  const themeFromUrl = urlParams.get('theme');
+  const raw = localStorage.getItem('selftechDraftTheme');
+
+  if (raw) {
+    try {
+      const draft = JSON.parse(raw);
+      const draftSlug = slugify(draft.name || '');
+
+      if (draft && draft.name && (!themeFromUrl || themeFromUrl === draftSlug)) {
+        return draft.name;
+      }
+    } catch (e) {
+      console.warn('Nom du thème non récupérable', e);
+    }
+  }
+
+  if (themeFromUrl) {
+    const themeMap = {
+      'securite-culture-surete': 'Sécurité & culture de sûreté',
+      'cyber': 'Quel est mon niveau de compréhension des risques cyber ?',
+      'transformation': 'Changer sans se crisper : mes réflexes face aux transformations',
+      'sobriete': 'Suis-je acteur de ma sobriété énergétique au quotidien ?',
+      'qualite-vie-travail': 'Qualité de vie au travail',
+      'qvt': 'Qualité de vie au travail'
+    };
+
+    return themeMap[themeFromUrl] || decodeURIComponent(themeFromUrl);
+  }
+
+  return 'Nouveau thème';
+}
+function updateEditorModeUI() {
+  const saveBtn = document.getElementById('btn-save');
+  const breadcrumb = document.querySelector('.breadcrumb');
+  const navButtons = document.querySelectorAll('.subnav .sn');
+  const themeName = getCurrentThemeName();
+  const firstChapterName = chapters[0]?.name || 'Chapitre 1';
+
+  if (editorMode === 'autodiag') {
+    if (saveBtn) saveBtn.textContent = 'Continuer vers le paramétrage';
+
+    if (breadcrumb) {
+      breadcrumb.innerHTML = `
+        <span class="bc-link" onclick="window.location.href='selftech_mes_autodiagnostics_v3.html'">Mes autodiagnostics</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-link" onclick="window.location.href='selftech_creer_autodiagnostic.html'">Créer un autodiagnostic</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-link" onclick="window.location.href='2-selftech_creer_theme_ia.html?mode=autodiag'">${themeName}</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-cur" id="bc-cur">Questions — ${firstChapterName}</span>
+      `;
+    }
+
+    navButtons.forEach(b => b.classList.remove('on'));
+    if (navButtons[1]) navButtons[1].classList.add('on'); // Mes autodiagnostics
+
+  } else {
+    if (saveBtn) saveBtn.textContent = 'Enregistrer dans ma bibliothèque';
+
+    if (breadcrumb) {
+      breadcrumb.innerHTML = `
+        <span class="bc-link" onclick="window.location.href='1-selftech_ma_bibliotheque.html'">Ma bibliothèque</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-link" onclick="window.location.href='2-selftech_creer_theme_ia.html?mode=theme'">${themeName}</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-cur" id="bc-cur">Questions — ${firstChapterName}</span>
+      `;
+    }
+
+    navButtons.forEach(b => b.classList.remove('on'));
+    if (navButtons[2]) navButtons[2].classList.add('on'); // Ma bibliothèque
+  }
+}
+
+function slugify(text) {
+  return String(text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, 'et')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function saveCurrentAutodiagDraft() {
+  const themeName = getCurrentThemeName();
+  const slug = slugify(themeName) || 'mon-autodiagnostic';
+
+  const currentAd = {
+    meta: {
+      nom: `Autodiagnostic ${themeName}`,
+      titre: '',
+      desc: `Campagne interne Sonora RH sur ${themeName}.`,
+      slug: slug
+    },
+    theme: {
+      title: themeName,
+      chapters: chapters
+    },
+    intro: '',
+    sociodemo: [
+      { q:"À quelle catégorie appartenez-vous ?", opts:["Collaborateur·rice","Manager","Direction"], min_groupe: 25 }
+    ],
+    resources: [],
+    fin: {
+      message: "Merci d'avoir réalisé cet autodiagnostic. Vos réponses contribuent à mieux comprendre les pratiques du quotidien et à identifier les actions les plus utiles pour progresser collectivement.",
+      btn_titre: "Accéder aux ressources",
+      btn_url: ""
+    }
+  };
+
+  localStorage.setItem('selftech_current_ad', JSON.stringify(currentAd));
+}
+
+function goNextAfterSave() {
+  if (editorMode === 'autodiag') {
+    saveCurrentAutodiagDraft();
+
+    const themeName = getCurrentThemeName();
+    window.location.href =
+      '4-selftech_parametrage_autodiagnostic.html?themeName=' + encodeURIComponent(themeName);
+
+  } else {
+    window.location.href = '1-selftech_ma_bibliotheque.html';
+  }
+}
+
+// ── SVGs ─────────────────────────────────────────────────────────────────────
+const icoRegen = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6" stroke="#007883" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 15a9 9 0 1 0 .49-4.95L1 10" stroke="#007883" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const icoTrash = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14H6L5 6" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#eb6366" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4h6v2" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const icoStar = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>`;
+
+// ── RENDER NAV ────────────────────────────────────────────────────────────────
+
+  function renderNav() {
+  const nav = document.getElementById('chap-nav');
+  nav.innerHTML = '';
+  chapters.forEach((c, i) => {
+    const n = c.questions.length;
+    const nProfils = c.profils.filter(p => p.titre.trim() && p.phrase.trim() && p.description.trim()).length;
+    const dotColorQ = n >= 4 ? '#77cd8a' : n > 0 ? '#ffc744' : '#d8e0ea';
+    const dotColorP = nProfils === 3 ? '#77cd8a' : nProfils > 0 ? '#ffc744' : '#d8e0ea';
+    const div = document.createElement('div');
+    div.className = `cni ${i === activeChap ? 'on' : ''}`;
+    div.innerHTML = `
+      <div class="cni-head" onclick="selectChap(${i})">
+        <div class="cni-lbl">Chapitre ${c.id}</div>
+        <div class="cni-name">${c.name}</div>
+        <div class="cni-meta">
+          <span class="cni-dot" style="background:${dotColorQ}"></span>
+          <span class="cni-qcount">${n}/10 questions</span>
+        </div>
+        <div class="cni-meta">
+          <span class="cni-dot" style="background:${dotColorP}"></span>
+          <span class="cni-qcount">${nProfils}/3 profils</span>
+        </div>
+      </div>
+      <div class="cni-tabs">
+        <button class="cni-tab ${i === activeChap && activeTab === 'questions' ? 'on' : ''}" onclick="setTab(${i},'questions')">Questions</button>
+        <button class="cni-tab ${i === activeChap && activeTab === 'profils' ? 'on' : ''}" onclick="setTab(${i},'profils')">Profils</button>
+      </div>`;
+    nav.appendChild(div);
+  });
+  const total = chapters.reduce((a, c) => a + c.questions.length, 0);
+  document.getElementById('sb-total').innerHTML = `<strong>${total}</strong> questions au total`;
+}
+
+function selectChap(i) {
+  activeChap = i;
+  openCards = {};
   renderNav();
-  const ch = state.chapters[currentChapter];
-  document.getElementById("chapterLabel").textContent = `Chapitre ${currentChapter+1} · ${currentTab === 'questions' ? 'Questions' : 'Profils de résultat'}`;
-  document.getElementById("chapterTitle").textContent = ch.title;
-  document.getElementById("chapterDesc").textContent = ch.description || "";
-  document.getElementById("tabQuestions").className = "btn " + (currentTab==="questions" ? "btn-primary" : "btn-secondary");
-  document.getElementById("tabProfiles").className = "btn " + (currentTab==="profiles" ? "btn-primary" : "btn-secondary");
-  document.getElementById("editorContent").innerHTML = currentTab === "questions" ? renderQuestions(ch) : renderProfiles(ch);
-  document.getElementById("continueBtn").disabled = !isComplete();
+  renderMain();
+  updateSaveButton();
 }
 
-function renderNav(){
-  document.getElementById("chaptersNav").innerHTML = state.chapters.map((c,i)=>{
-    const qn = (c.questions||[]).length;
-    const pn = (c.profiles||[]).length;
-    return `<div class="chapter-pill ${i===currentChapter?'on':''}" onclick="currentChapter=${i};render()">
-      <div class="audience">Chapitre ${i+1}</div>
-      <div class="chapter-title">${c.title}</div>
-      <div class="chapter-meta">${qn}/10 questions<br>${pn}/3 profils</div>
+function setTab(i, tab) {
+  activeChap = i;
+  activeTab = tab;
+  openCards = {};
+  renderNav();
+  renderMain();
+  updateSaveButton();
+}
+
+// ── RENDER MAIN ───────────────────────────────────────────────────────────────
+function renderMain() {
+  const ch = chapters[activeChap];
+  document.getElementById('bc-cur').textContent =
+    activeTab === 'questions'
+      ? `Questions — ${ch.name}`
+      : `Profils — ${ch.name}`;
+
+  if (activeTab === 'questions') renderQuestions(ch);
+  else renderProfils(ch);
+}
+
+// ── VUE QUESTIONS ─────────────────────────────────────────────────────────────
+function renderQuestions(ch) {
+  const n = ch.questions.length;
+  const pct = Math.round((n / 10) * 100);
+
+  // Option D — libellé contextuel
+  const isEmpty = n === 0;
+  const btnRegenLabel = isEmpty ? 'Générer les questions avec l\'IA' : 'Régénérer avec l\'IA';
+  const btnRegenAction = isEmpty ? 'confirmRegen()' : 'askRegen()';
+
+  // En-tête commun
+  const header = `
+    <div class="chap-head">
+      <div class="chap-info">
+        <div class="chap-badge">Chapitre ${ch.id} · Questions</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <input class="chap-name-inp" value="${ch.name}" oninput="chapters[activeChap].name=this.value;renderNav()">
+          <span title="Cliquez sur le titre pour le modifier" style="color:#c5ccd5;font-size:13px;cursor:default;flex-shrink:0">✏️</span>
+        </div>
+        <input class="chap-desc-inp" value="${ch.desc}">
+      </div>
+      ${!isEmpty ? `<div class="chap-actions">
+        <button class="btn-regen-all" onclick="${btnRegenAction}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 15a9 9 0 1 0 .49-4.95L1 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          ${btnRegenLabel}
+        </button>
+        <button class="btn-add-ai-one" onclick="addOneAI()" ${n >= 10 ? 'disabled title="Maximum 10 questions atteint"' : ''}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Ajouter une question avec l'IA
+        </button>
+        <button class="btn-pioche" onclick="openPanel()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#007883" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="#007883" stroke-width="2" stroke-linecap="round"/></svg>
+          Piocher dans les bibliothèques
+        </button>
+        <button class="btn-add-manual" onclick="addManual()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#18375d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#18375d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Ajouter manuellement
+        </button>
+      </div>` : ''}
     </div>`;
-  }).join("");
-}
 
-function renderQuestions(ch){
-  return (ch.questions||[]).map((q,qi)=>`
-    <div class="q-card">
-      <div class="q-head">
-        <div style="display:flex;gap:10px;align-items:flex-start;width:100%">
-          <div class="q-num">${qi+1}</div>
-          <textarea class="inp" style="min-height:52px" oninput="state.chapters[${currentChapter}].questions[${qi}].text=this.value;saveState()">${q.text}</textarea>
-        </div>
-        <button class="btn btn-danger" onclick="deleteQuestion(${qi})">🗑</button>
-      </div>
-      <div>
-        ${(q.answers||[]).map((a,ai)=>`
-          <div class="ans-row">
-            <input class="inp" value="${a.text.replace(/"/g,'&quot;')}" oninput="state.chapters[${currentChapter}].questions[${qi}].answers[${ai}].text=this.value;saveState()">
-            <input class="inp" type="number" step="0.5" value="${a.score}" oninput="state.chapters[${currentChapter}].questions[${qi}].answers[${ai}].score=parseFloat(this.value||0);saveState()">
-            <button class="btn btn-danger" onclick="deleteAnswer(${qi},${ai})">×</button>
+  // Option A — état vide proéminent avec 3 CTAs hiérarchisés
+  const emptyState = `
+    <div style="padding:12px 0 0">
+      <!-- CTA principal : IA -->
+      <div onclick="confirmRegen()" style="background:linear-gradient(135deg,#18375d 0%,#007883 100%);border-radius:14px;padding:28px 24px;cursor:pointer;transition:opacity 0.15s;margin-bottom:12px" onmouseover="this.style.opacity='0.92'" onmouseout="this.style.opacity='1'">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="white"/></svg>
           </div>
-        `).join("")}
-      </div>
-      <button class="btn btn-add" style="margin-top:8px" onclick="addAnswer(${qi})">+ Ajouter une réponse</button>
-    </div>
-  `).join("");
-}
-
-function renderProfiles(ch){
-  return (ch.profiles||[]).map((p,pi)=>`
-    <div class="profile-card">
-      <div class="profile-head">
-        <strong>${p.level || 'Profil '+(pi+1)}</strong>
-        <button class="btn btn-ai" onclick="regenProfile(${pi})">${p.title ? 'Régénérer avec IA' : 'Générer avec IA'}</button>
-      </div>
-      <div class="profile-body">
-        <div class="field"><label>Titre du profil</label><input class="inp" value="${(p.title||'').replace(/"/g,'&quot;')}" oninput="state.chapters[${currentChapter}].profiles[${pi}].title=this.value;saveState();render()"></div>
-        <div class="field"><label>Phrase courte de résumé</label><input class="inp" value="${(p.summary||'').replace(/"/g,'&quot;')}" oninput="state.chapters[${currentChapter}].profiles[${pi}].summary=this.value;saveState()"></div>
-        <div class="field"><label>Description détaillée</label><textarea class="inp" oninput="state.chapters[${currentChapter}].profiles[${pi}].description=this.value;saveState()">${p.description||''}</textarea></div>
-        <div class="inp-row">
-          <div class="field"><label>Score min.</label><input class="inp" type="number" step="0.1" value="${p.min}" oninput="state.chapters[${currentChapter}].profiles[${pi}].min=parseFloat(this.value||0);saveState()"></div>
-          <div class="field"><label>Score max.</label><input class="inp" type="number" step="0.1" value="${p.max}" oninput="state.chapters[${currentChapter}].profiles[${pi}].max=parseFloat(this.value||0);saveState()"></div>
+          <div style="flex:1">
+            <div style="font-size:15px;font-weight:700;color:#fff;font-family:Asap,sans-serif;margin-bottom:4px">Générer les questions avec l'IA</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.7);font-family:Asap,sans-serif;line-height:1.4">L'IA propose des mises en situation adaptées au chapitre, avec scores comportementaux. Vous pourrez tout modifier ensuite.</div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M5 12h14M12 5l7 7-7 7" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
+
+      <!-- CTAs secondaires -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div onclick="openPanel()" style="background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:18px 16px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='#007883';this.style.background='#f0fcfc'" onmouseout="this.style.borderColor='#d8e0ea';this.style.background='#fff'">
+          <div style="width:36px;height:36px;border-radius:9px;background:#e5f4f5;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#007883" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="#007883" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Piocher dans les bibliothèques</div>
+          <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;line-height:1.4">Importez des questions existantes depuis vos bibliothèques.</div>
+        </div>
+        <div onclick="addManual()" style="background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:18px 16px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='#18375d';this.style.background='#f7f9fc'" onmouseout="this.style.borderColor='#d8e0ea';this.style.background='#fff'">
+          <div style="width:36px;height:36px;border-radius:9px;background:#edf1f7;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#18375d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#18375d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Ajouter manuellement</div>
+          <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;line-height:1.4">Rédigez vos propres mises en situation de A à Z.</div>
+        </div>
+      </div>
+    </div>`;
+
+  const qHTML = n === 0
+    ? emptyState
+    : ch.questions.map((q, qi) => renderCard(q, qi)).join('');
+
+  document.getElementById('main-editor').innerHTML = `
+    ${header}
+    ${!isEmpty ? `
+    <div class="q-counter">
+      <span class="qc-text"><strong>${n}</strong> question${n !== 1 ? 's' : ''} · min 4, max 10</span>
+      <div class="qc-bar"><div class="qc-fill" style="width:${pct}%"></div></div>
     </div>
-  `).join("");
+    <div class="likert-info" id="likert-info">
+      <span class="likert-info-ico">ℹ️</span>
+      <div class="likert-info-body">
+        <strong>Conversion échelle → score</strong> — Les questions Likert (1→5) sont normalisées : 1=0 · 2=0,5 · 3=1 · 4=1,5 · 5=2.
+        <span id="likert-extra" style="display:none"> Pour les formulations négatives, l'échelle est inversée : 1=2 · 2=1,5 · 3=1 · 4=0,5 · 5=0. Les mises en situation à choix (0/1/2) et les Likert normalisés sont calculés ensemble pour la moyenne du chapitre.</span>
+      </div>
+      <span class="likert-info-toggle" onclick="toggleLikertInfo()">Voir plus</span>
+    </div>` : ''}
+    <div class="q-list" id="q-list">${qHTML}</div>`;
 }
 
-function setTab(t){ currentTab=t; render(); }
-function deleteQuestion(i){ state.chapters[currentChapter].questions.splice(i,1); saveState(); render(); }
-function addAnswer(qi){ state.chapters[currentChapter].questions[qi].answers.push({text:"Nouvelle réponse",score:1}); saveState(); render(); }
-function deleteAnswer(qi,ai){ state.chapters[currentChapter].questions[qi].answers.splice(ai,1); saveState(); render(); }
-function addManualQuestion(){ state.chapters[currentChapter].questions.push({type:"choix",text:"Nouvelle situation à compléter.",answers:[{text:"Réponse A",score:0},{text:"Réponse B",score:1},{text:"Réponse C",score:2}],tags:["Ajout manuel"]}); saveState(); render(); }
-function addQuestion(){ state.chapters[currentChapter].questions.push({type:"choix",text:"Une situation nouvelle apparaît dans votre quotidien professionnel. Que faites-vous en priorité ?",answers:[{text:"J’agis vite avec les informations disponibles.",score:0},{text:"Je demande un avis avant de décider.",score:1},{text:"Je clarifie le cadre avant d’agir.",score:2}],tags:["Base assistée par IA"]}); saveState(); render(); }
-function regenChapter(){ state.chapters[currentChapter].description += " "; saveState(); render(); }
-function regenProfile(pi){
-  const p = state.chapters[currentChapter].profiles[pi];
-  p.title = (p.level || "Profil") + " — " + state.chapters[currentChapter].title;
-  p.summary = "Votre positionnement montre des réflexes à préciser sur cette dimension.";
-  p.description = "Ce profil décrit une manière d’agir dans les situations du quotidien. Il aide à identifier les points d’appui et les marges de progression, sans jugement individuel.";
-  saveState(); render();
+function toggleLikertInfo() {
+  likertInfoOpen = !likertInfoOpen;
+  const el = document.getElementById('likert-extra');
+  const btn = document.querySelector('.likert-info-toggle');
+  if (el) el.style.display = likertInfoOpen ? 'inline' : 'none';
+  if (btn) btn.textContent = likertInfoOpen ? 'Réduire' : 'Voir plus';
 }
-function isComplete(){
-  return state.chapters.every(c => (c.questions||[]).length >= 4 && (c.profiles||[]).length === 3 && c.profiles.every(p => p.title && p.summary && p.description));
+function updateQuestionText(qid, value) {
+  const q = chapters[activeChap].questions.find(q => q.id === qid);
+  if (q) q.text = value;
 }
-function goNext(){ saveState(); window.location.href="parametrage.html"; }
-render();
+function renderCard(q, qi) {
+  const open = openCards[q.id];
+  const p = PROV[q.prov] || {};
+  const provHTML = p.label ? `<span class="tag-prov ${p.cls}">${p.ico} ${p.label}</span>` : '';
+  const tagsHTML = q.tags.map((t, ti) => `
+    <span class="tag-pill ${t.ai ? 'ai-sug' : ''}">${t.ai ? '✦ ' : ''}${t.t}
+      <span class="tag-x" onclick="removeTag('${q.id}',${ti});event.stopPropagation()">×</span>
+    </span>`).join('');
+  const addBtn = q.tags.length < 6 ? `<span class="tag-add" onclick="addTag('${q.id}');event.stopPropagation()">+ Tag</span>` : '';
+
+  let bodyHTML = '';
+  if (open) {
+    const isLikert = q.type === 'likert';
+    const answersHTML = isLikert
+      ? `<div class="likert-list">${q.answers.map((a, ai) => `
+          <div class="la-row">
+            <div class="la-bar"></div>
+            <input class="la-inp" value="${a.l}" style="color:${ai===0?'#eb6366':ai===4?'#007883':'#475569'}">
+            <span class="la-score-info">→ score ${a.s}</span>
+            <div class="score-pill" onclick="editScore(this,event)" data-score="${a.s}">
+              <span class="sp-lbl">Score</span><span class="sp-val">${a.s}</span>
+            </div>
+          </div>`).join('')}</div>`
+      : `<div class="mc-list">${q.answers.map(a => `
+          <div class="mc-row">
+            <div class="mc-dot"></div>
+            <input class="mc-inp" value="${a.l}">
+            <div class="score-pill" onclick="editScore(this,event)" data-score="${a.s}">
+              <span class="sp-lbl">Score</span><span class="sp-val">${a.s}</span>
+            </div>
+          </div>`).join('')}</div>`;
+
+    bodyHTML = `<div class="q-body">
+      <span class="type-badge ${isLikert ? 'tb-likert' : 'tb-choix'}">${isLikert ? 'Échelle 1→5 (normalisée 0→2)' : 'Mise en situation — choix comportemental'}</span>
+      <div class="score-note">Scores : 0 = posture fragile · 1 = intention partielle · 2 = posture constructive · Cliquez pour modifier</div>
+      ${answersHTML}
+    </div>`;
+  }
+
+  return `
+    <div class="q-card ${open ? 'open' : ''}" id="qc-${q.id}">
+      <div class="q-header" onclick="toggleCard('${q.id}')">
+        <div class="q-num">${qi + 1}</div>
+        <div class="q-main">
+          <div class="q-text editable-q"
+     contenteditable="true"
+     spellcheck="true"
+     onclick="event.stopPropagation()"
+     onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();} event.stopPropagation();"
+     oninput="updateQuestionText('${q.id}', this.innerText)">
+  ${q.text}
+</div>
+          <div class="q-tags-row">${provHTML}${tagsHTML}${addBtn}</div>
+        </div>
+        <div class="q-right" onclick="event.stopPropagation()">
+          <button class="q-chevron-btn" onclick="toggleCard('${q.id}')">▾</button>
+          <div class="q-vsep"></div>
+          <button class="qa-btn regen-q" title="Régénérer avec l'IA" onclick="regenOne('${q.id}',this)">${icoRegen}</button>
+          <button class="qa-btn del" title="Supprimer" onclick="deleteQ('${q.id}')">${icoTrash}</button>
+        </div>
+      </div>
+      ${bodyHTML}
+    </div>`;
+}
+
+// ── VUE PROFILS ───────────────────────────────────────────────────────────────
+function renderProfils(ch) {
+  const seuilsHTML = ch.seuils.map((s, i) => {
+    const pc = profils_config[i];
+    return `
+      <div class="seuil-item">
+        <div class="seuil-dot" style="background:${pc.couleur}"></div>
+        <span class="seuil-label">${pc.nom}</span>
+        <div class="seuil-range">
+          <input class="seuil-inp" type="number" min="0" max="2" step="0.1" value="${s.min}" onchange="chapters[activeChap].seuils[${i}].min=parseFloat(this.value)">
+          <span class="seuil-sep">→</span>
+          <input class="seuil-inp" type="number" min="0" max="2.1" step="0.1" value="${s.max}" onchange="chapters[activeChap].seuils[${i}].max=parseFloat(this.value)">
+        </div>
+      </div>`;
+  }).join('');
+
+  const profilsHTML = ch.profils.map((p, i) => {
+    const pc = profils_config[i];
+    const mkwHTML = p.motscles.map((m, mi) => `
+      <span class="mkw" style="background:${pc.bgHead};border-color:${pc.borderHead};color:${pc.textColor}">${m}
+        <span class="mkw-x" onclick="removeMkw(${i},${mi})">×</span>
+      </span>`).join('');
+
+    return `
+      <div class="profil-card">
+        <div class="profil-header" style="background:${pc.bgHead};border-bottom:1px solid ${pc.borderHead}">
+          <div class="profil-level">
+            <div class="profil-dot" style="background:${pc.couleur}"></div>
+            <input value="Profil ${i+1} — ${pc.nom}" style="background:transparent;border:none;border-bottom:1px solid transparent;outline:none;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;font-family:'Asap',sans-serif;color:${pc.textColor};width:220px;transition:border-color 0.15s;cursor:text" onfocus="this.style.borderBottomColor='${pc.couleur}'" onblur="this.style.borderBottomColor='transparent';profils_config[${i}].nom=this.value.replace(/^Profil ${i+1} — /,'')" title="Cliquez pour renommer ce profil">
+            <span style="color:${pc.textColor};opacity:0.4;font-size:11px;margin-left:2px">✏️</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="profil-score-range" style="color:${pc.textColor}">Score ${ch.seuils[i].min} → ${ch.seuils[i].max}</span>
+            <button class="btn-ai-profil" style="background:rgba(0,0,0,0.08);color:${pc.textColor}" onclick="genProfil(${i})">
+              ${icoStar} Générer avec l'IA
+            </button>
+          </div>
+        </div>
+        <div class="profil-body">
+
+          <div class="pfield">
+            <label>Titre du profil <span style="color:#eb6366">*</span></label>
+            <input type="text" value="${p.titre}" placeholder="Titre évocateur — le répondant se projette dans ce comportement" oninput="chapters[activeChap].profils[${i}].titre=this.value;updateSaveButton()">
+          </div>
+
+          <div class="pfield">
+            <label>Phrase courte de résumé</label>
+            <input type="text" class="short" value="${p.phrase}" placeholder="Une phrase concise, bienveillante, sans jugement" oninput="chapters[activeChap].profils[${i}].phrase=this.value;updateSaveButton()">
+          </div>
+
+          <div class="pfield">
+            <label>Description détaillée</label>
+            <div class="rte-wrap">
+              <div class="rte-toolbar">
+                <button class="rte-btn" onclick="fmt('bold')" title="Gras"><b>G</b></button>
+                <button class="rte-btn" onclick="fmt('underline')" title="Souligné"><u>S</u></button>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onclick="fmt('insertUnorderedList')" title="Liste à puces">☰</button>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onclick="addLink()" title="Lien hypertexte">🔗</button>
+              </div>
+              <div class="rte-area" contenteditable="true" data-placeholder="Description bienveillante et actionnable — peut contenir des liens, du gras, une liste…" oninput="chapters[activeChap].profils[${i}].description=this.innerHTML;updateSaveButton()">${p.description}</div>
+            </div>
+          </div>
+
+          <div class="pfield">
+            <label>Mots clés <span style="font-weight:400;text-transform:none;font-style:italic;color:#94a3b8">— s'affichent pour le répondant dans la description de son profil</span></label>
+            <div class="mkw-wrap" onclick="this.querySelector('.mkw-inp').focus()">
+              ${mkwHTML}
+              <input class="mkw-inp" placeholder="+ mot clé" onkeydown="addMkw(event,${i},'${pc.bgHead}','${pc.borderHead}','${pc.textColor}')">
+            </div>
+          </div>
+
+          <div class="pfield">
+            <label>Médias optionnels</label>
+            <div class="media-row">
+              <div class="media-slot" title="Depuis la médiathèque (Paramètres)">
+                <span class="media-ico">🖼</span>
+                <span class="media-lbl">Ajouter une image</span>
+                <span class="media-hint">Depuis la médiathèque</span>
+              </div>
+              <div class="media-slot" title="URL vidéo ou médiathèque">
+                <span class="media-ico">▶️</span>
+                <span class="media-lbl">Ajouter une vidéo</span>
+                <span class="media-hint">URL ou médiathèque</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('main-editor').innerHTML = `
+    <div class="chap-head">
+      <div class="chap-info">
+        <div class="chap-badge">Chapitre ${ch.id} · Profils de résultat</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <input class="chap-name-inp" value="${ch.name}" oninput="chapters[activeChap].name=this.value;renderNav()">
+          <span title="Cliquez sur le titre pour le modifier" style="color:#c5ccd5;font-size:13px;cursor:default;flex-shrink:0">✏️</span>
+        </div>
+        <input class="chap-desc-inp" value="${ch.desc}">
+      </div>
+    </div>
+
+    <div class="seuils-card">
+      <div class="seuils-head">
+        <span class="seuils-title">${icoStar} Seuils de score par profil</span>
+        <span class="seuils-hint">Calculés automatiquement · ajustables manuellement · score de 0 à 2</span>
+      </div>
+      <div class="seuils-row">${seuilsHTML}</div>
+    </div>
+
+    <div class="profils-grid">${profilsHTML}</div>`;
+}
+
+// ── INTERACTIONS QUESTIONS ────────────────────────────────────────────────────
+function toggleCard(id) { openCards[id] = !openCards[id]; renderMain(); }
+function deleteQ(id) { chapters[activeChap].questions = chapters[activeChap].questions.filter(q => q.id !== id); delete openCards[id]; renderNav(); renderMain(); updateSaveButton(); }
+function regenOne(id, btn) {
+  btn.style.animation = 'spin 0.7s linear infinite'; btn.disabled = true;
+  setTimeout(() => {
+    const ch = chapters[activeChap], idx = ch.questions.findIndex(q => q.id === id);
+    if (idx > -1) ch.questions[idx] = { id, type: 'choix', prov: 'AI', text: "Lors d'un briefing sécurité, vous réalisez que vous n'avez pas bien mémorisé une consigne. Que faites-vous ?", tags: [{t:'Connaissance',ai:true},{t:'Réaction',ai:true}], answers: [{l:"Je fais semblant d'avoir compris",s:0},{l:"Je demande à un collègue après la réunion",s:1},{l:"Je pose la question immédiatement, sans hésiter",s:2}] };
+    renderNav(); renderMain(); updateSaveButton();
+  }, 1000);
+}
+function addManual() {
+  if (chapters[activeChap].questions.length >= 10) return;
+  const id = 'q' + Date.now();
+  chapters[activeChap].questions.push({ id, type: 'choix', prov: 'CLIENT', text: "Nouvelle mise en situation", tags: [], answers: [{l:"Réponse A",s:0},{l:"Réponse B",s:1},{l:"Réponse C",s:2}] });
+  openCards[id] = true; renderNav(); renderMain(); updateSaveButton();
+}
+
+function addOneAI() {
+  if (chapters[activeChap].questions.length >= 10) return;
+  const btn = document.querySelector('.btn-add-ai-one');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Génération…'; }
+  const newQuestions = [
+    {type:'choix', text:"Vous êtes en réunion et un collègue mentionne une anomalie qu'il a remarquée mais n'a pas signalée. Comment réagissez-vous ?",
+     tags:[{t:'Collectif',ai:true},{t:'Signalement',ai:true}],
+     answers:[
+       {l:"Je n'interviens pas, ce n'est pas mon rôle de le relancer",s:0},
+       {l:"Je l'encourage à en parler, sans aller plus loin",s:1},
+       {l:"Je lui suggère de le signaler et propose de l'accompagner si besoin",s:2},
+     ]},
+    {type:'choix', text:"Une procédure de sécurité vous semble inadaptée à votre réalité terrain. Que faites-vous ?",
+     tags:[{t:'Procédure',ai:true},{t:'Proactivité',ai:true}],
+     answers:[
+       {l:"Je l'ignore discrètement et fais à ma façon",s:0},
+       {l:"Je l'applique sans rien dire, même si elle me semble inadaptée",s:0},
+       {l:"J'en parle à un collègue pour voir si c'est un ressenti partagé",s:1},
+       {l:"Je remonte l'observation à mon responsable en proposant une piste d'amélioration",s:2},
+     ]},
+    {type:'choix', text:"En fin de journée, vous remarquez qu'un équipement a été mal rangé. Vous êtes pressé de partir.",
+     tags:[{t:'Réflexe',ai:true},{t:'Collectif',ai:true}],
+     answers:[
+       {l:"Je le laisse, quelqu'un s'en occupera demain",s:0},
+       {l:"Je le signale par message à mon responsable avant de partir",s:1},
+       {l:"Je prends 2 minutes pour le ranger correctement avant de partir",s:2},
+     ]},
+    {type:'choix', text:"Lors d'une tâche habituelle, vous ressentez une légère douleur inhabituelle. Que faites-vous ?",
+     tags:[{t:'Vigilance',ai:true},{t:'Réaction',ai:true}],
+     answers:[
+       {l:"Je continue, ça passera probablement",s:0},
+       {l:"Je ralentis mais je finis la tâche avant d'en parler",s:1},
+       {l:"Je cherche d'abord si quelqu'un d'autre a déjà eu ce problème",s:1},
+       {l:"J'arrête la tâche et j'en parle à mon responsable",s:2},
+     ]},
+  ];
+  const existingCount = chapters[activeChap].questions.length;
+  const pick = newQuestions[existingCount % newQuestions.length];
+  setTimeout(() => {
+    const id = 'q' + Date.now();
+    chapters[activeChap].questions.push({ id, type: pick.type, prov: 'AI', text: pick.text, tags: pick.tags, answers: pick.answers });
+    openCards[id] = true;
+    renderNav(); renderMain(); updateSaveButton();
+  }, 1100);
+}
+function removeTag(qid, ti) { const q = chapters[activeChap].questions.find(q => q.id === qid); if (q) q.tags.splice(ti, 1); renderMain(); }
+function addTag(qid) { const t = prompt('Nom du tag :'); if (!t) return; const q = chapters[activeChap].questions.find(q => q.id === qid); if (q && q.tags.length < 6) q.tags.push({t, ai:false}); renderMain(); }
+function askRegen() {
+  const n = chapters[activeChap].questions.length;
+  document.getElementById('modal-q-count').textContent = `${n} question${n !== 1 ? 's' : ''}`;
+  document.getElementById('modal-regen').classList.add('on');
+}
+function closeRegenModal() { document.getElementById('modal-regen').classList.remove('on'); }
+function confirmRegen() {
+  closeRegenModal();
+  chapters[activeChap].questions = [
+    {id:'qr1',type:'choix',prov:'AI',text:"Votre manager vous demande de débuter une nouvelle tâche sans briefing sécurité. Vous…",tags:[{t:'Procédure',ai:true}],answers:[{l:"Je commence, j'aviserai si problème",s:0},{l:"Je cherche les consignes par moi-même avant",s:1},{l:"Je demande le briefing avant de commencer",s:2}]},
+    {id:'qr2',type:'likert',prov:'AI',text:"Je respecte les procédures de sécurité même sous pression du temps.",tags:[{t:'Pression',ai:true},{t:'Procédure',ai:true}],answers:[{l:"Jamais",s:0},{l:"Rarement",s:0.5},{l:"Parfois",s:1},{l:"Souvent",s:1.5},{l:"Toujours",s:2}]},
+    {id:'qr3',type:'choix',prov:'AI',text:"Vous observez un collègue qui prend un risque sans s'en rendre compte. Que faites-vous ?",tags:[{t:'Collectif',ai:true}],answers:[{l:"Je l'observe sans intervenir",s:0},{l:"Je lui en parle plus tard",s:1},{l:"Je lui signale calmement sur le moment",s:2}]},
+    {id:'qr4',type:'likert',prov:'AI',text:"Je connais le plan d'évacuation de mon bâtiment.",tags:[{t:'Évacuation',ai:true}],answers:[{l:"Jamais",s:0},{l:"Rarement",s:0.5},{l:"Parfois",s:1},{l:"Souvent",s:1.5},{l:"Toujours",s:2}]},
+    {id:'qr5',type:'choix',prov:'AI',text:"Un premier incendie se déclare dans un local voisin. Votre premier réflexe ?",tags:[{t:'Incendie',ai:true},{t:'Réflexe',ai:true}],answers:[{l:"J'évalue si je peux l'éteindre seul",s:0},{l:"J'alerte et j'attends des instructions",s:1},{l:"J'alerte immédiatement et j'évacue",s:2}]},
+  ];
+  openCards = {}; renderNav(); renderMain(); updateSaveButton();
+}
+
+// ── SCORING ───────────────────────────────────────────────────────────────────
+function editScore(pill, e) {
+  e.stopPropagation();
+  const isEditing = pill.classList.contains('editing');
+  document.querySelectorAll('.score-pill.editing').forEach(p => closeScore(p));
+  if (isEditing) return;
+  pill.classList.add('editing');
+  const lbl = pill.querySelector('.sp-lbl'), valEl = pill.querySelector('.sp-val');
+  lbl.classList.add('e'); valEl.classList.add('e'); valEl.style.display = 'none';
+  const inp = document.createElement('input');
+  inp.type = 'number'; inp.min = '0'; inp.max = '2'; inp.step = '0.5'; inp.value = pill.dataset.score;
+  inp.style.cssText = 'width:38px;font-size:12px;font-weight:700;color:#fff;background:transparent;border:none;outline:none;text-align:center;font-family:Asap,sans-serif';
+  pill.appendChild(inp); inp.focus(); inp.select();
+  inp.addEventListener('blur', () => closeScore(pill));
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') closeScore(pill); });
+}
+function closeScore(pill) {
+  const inp = pill.querySelector('input');
+  if (inp) { pill.dataset.score = inp.value || pill.dataset.score; inp.remove(); }
+  const valEl = pill.querySelector('.sp-val');
+  if (valEl) { valEl.textContent = pill.dataset.score; valEl.style.display = ''; valEl.classList.remove('e'); }
+  const lbl = pill.querySelector('.sp-lbl');
+  if (lbl) lbl.classList.remove('e');
+  pill.classList.remove('editing');
+}
+
+// ── INTERACTIONS PROFILS ──────────────────────────────────────────────────────
+function removeMkw(profIdx, mkIdx) {
+  chapters[activeChap].profils[profIdx].motscles.splice(mkIdx, 1);
+  renderMain();
+}
+function addMkw(e, profIdx, bg, border, color) {
+  if (e.key !== 'Enter') return;
+  const inp = e.target, val = inp.value.trim();
+  if (!val) return;
+  e.preventDefault();
+  chapters[activeChap].profils[profIdx].motscles.push(val);
+  inp.value = '';
+  renderMain();
+}
+function genProfil(profIdx) {
+  const texts = [
+    {
+      titre: "La vigilance s'invite rarement dans votre quotidien",
+      phrase: "Vous naviguez souvent en automatique, les signaux de risque passent inaperçus.",
+      desc: "Au quotidien, vous évoluez dans une forme d'habitude professionnelle qui laisse peu de place à la vigilance active. Ce n'est pas un manque d'intention — c'est souvent une exposition progressive aux risques qui les rend invisibles."
+    },
+    {
+      titre: "Vous avez l'œil, mais pas encore le réflexe",
+      phrase: "Votre sensibilité aux risques existe — elle s'exprime encore de façon irrégulière.",
+      desc: "Vous percevez les risques dans certaines situations, mais cela reste lié au contexte ou à votre état d'attention du moment. Ce qui vous manque encore, c'est la constance du regard."
+    },
+    {
+      titre: "La vigilance fait partie de votre ADN professionnel",
+      phrase: "Vous repérez et traitez les risques avec constance, même quand personne ne regarde.",
+      desc: "Vous avez intégré la vigilance comme une posture naturelle. Ce réflexe est une ressource précieuse pour vous et pour les personnes qui travaillent avec vous."
+    }
+  ];
+
+  const t = texts[profIdx];
+
+  chapters[activeChap].profils[profIdx].titre = t.titre;
+  chapters[activeChap].profils[profIdx].phrase = t.phrase;
+  chapters[activeChap].profils[profIdx].description = t.desc;
+
+  renderNav();
+  renderMain();
+  updateSaveButton();
+}
+function fmt(cmd) { document.execCommand(cmd, false, null); }
+function addLink() { const url = prompt('URL du lien :'); if (url) document.execCommand('createLink', false, url); }
+
+// ── PANEL ─────────────────────────────────────────────────────────────────────
+function openPanel() {
+  activeFilterTag = ''; activeLib = 'ma';
+  document.getElementById('panel-search-inp').value = '';
+  document.getElementById('overlay').classList.add('on');
+  document.getElementById('panel-right').classList.add('on');
+  updateLibToggle(); renderPanelTags(); renderPanelList('', '');
+}
+function closePanel() {
+  document.getElementById('overlay').classList.remove('on');
+  document.getElementById('panel-right').classList.remove('on');
+}
+function switchLib(lib) { activeLib = lib; activeFilterTag = ''; document.getElementById('panel-search-inp').value = ''; updateLibToggle(); renderPanelTags(); renderPanelList('', ''); }
+function updateLibToggle() {
+  document.getElementById('lib-btn-ma').classList.toggle('on', activeLib === 'ma');
+  document.getElementById('lib-btn-shared').classList.toggle('on', activeLib === 'shared');
+}
+function currentLib() { return activeLib === 'ma' ? myLibQuestions : sharedLibQuestions; }
+function renderPanelTags() {
+  const all = [...new Set(currentLib().flatMap(q => q.tags))];
+  document.getElementById('panel-tags-wrap').innerHTML = all.map(t => `<span class="filter-tag ${t === activeFilterTag ? 'on' : ''}" onclick="filterByTag('${t}')">${t}</span>`).join('');
+}
+function filterByTag(t) { activeFilterTag = activeFilterTag === t ? '' : t; renderPanelTags(); renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag); }
+function filterPanel(val) { renderPanelList(val, activeFilterTag); }
+function renderPanelList(search, tag) {
+  const PROV_MAP = {AI:'🤖',EXPERT:'⭐',CLIENT:'🤝'};
+  const filtered = currentLib().filter(q => !q.added && (!search || q.text.toLowerCase().includes(search.toLowerCase())) && (!tag || q.tags.includes(tag)));
+  const list = document.getElementById('panel-list');
+  if (!filtered.length) { list.innerHTML = `<div style="text-align:center;padding:28px;color:#94a3b8;font-size:13px;font-family:Asap,sans-serif">Aucune question disponible</div>`; return; }
+  list.innerHTML = filtered.map(q => `
+    <div class="panel-q" id="pq-${q.id}">
+      <div style="flex:1">
+        <div class="panel-q-text">${q.text}</div>
+        <div class="panel-q-meta">
+          <span class="tag-prov ${q.prov==='EXPERT'?'expert':q.prov==='CLIENT'?'client':''}" style="font-size:10px">${PROV_MAP[q.prov]} ${PROV[q.prov]?.label||''}</span>
+          ${q.tags.map(t => `<span class="tag-pill" style="font-size:10px">${t}</span>`).join('')}
+        </div>
+      </div>
+      <button class="btn-add-from-base" onclick="addFromLib('${q.id}')" title="Ajouter">+</button>
+    </div>`).join('');
+}
+function addFromLib(qid) {
+  if (chapters[activeChap].questions.length >= 10) return;
+  const lib = currentLib(), bq = lib.find(q => q.id === qid);
+  if (!bq) return;
+  bq.added = true;
+  chapters[activeChap].questions.push({ id: 'q' + Date.now(), type: 'likert', prov: bq.prov, text: bq.text, tags: bq.tags.map(t => ({t, ai:false})), answers: [{l:"Jamais",s:0},{l:"Rarement",s:0.5},{l:"Parfois",s:1},{l:"Souvent",s:1.5},{l:"Toujours",s:2}] });
+  renderNav(); renderMain(); updateSaveButton();
+  renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag);
+}
+
+function renameProfil(i) {
+  const current = profils_config[i].nom;
+  const newName = prompt(`Renommer le profil ${i+1} :`, current);
+  if (newName && newName.trim()) {
+    profils_config[i].nom = newName.trim();
+    renderMain();
+  }
+}
+
+// ── SAVE ──────────────────────────────────────────────────────────────────────
+function chapProblems(c) {
+  const problems = [];
+
+  // Questions : min 4, chacune avec min 3 réponses et scores valides (0–2)
+  if (c.questions.length < 4) {
+    problems.push({ type:'q', msg:`${c.questions.length} question${c.questions.length!==1?'s':''} — minimum 4 requises`, tab:'questions' });
+  } else {
+    const badQ = c.questions.filter(q =>
+      !q.answers || q.answers.length < 3 ||
+      q.answers.some(a => typeof a.s !== 'number' || isNaN(a.s) || a.s < 0 || a.s > 2)
+    );
+    if (badQ.length > 0) {
+      problems.push({ type:'q', msg:`${badQ.length} question${badQ.length>1?'s':''} incomplète${badQ.length>1?'s':''} — min 3 réponses, scores entre 0 et 2 requis`, tab:'questions' });
+    }
+  }
+
+  // Profils : titre + résumé + description pour les 3
+  const badP = c.profils.filter(p =>
+    !p.titre || !p.titre.trim() ||
+    !p.phrase || !p.phrase.trim() ||
+    !p.description || !p.description.trim()
+  );
+  if (badP.length > 0) {
+    problems.push({ type:'p', msg:`${badP.length} profil${badP.length>1?'s':''} incomplet${badP.length>1?'s':''} — titre, résumé et description requis pour chacun`, tab:'profils' });
+  }
+
+  // Seuils : valeurs numériques, min < max, cohérence globale
+  const badS = c.seuils.some(s =>
+    typeof s.min !== 'number' || typeof s.max !== 'number' ||
+    isNaN(s.min) || isNaN(s.max) || s.min >= s.max || s.min < 0 || s.max > 2.1
+  );
+  if (badS) {
+    problems.push({ type:'p', msg:`Seuils incohérents — chaque min doit être inférieur à son max, entre 0 et 2`, tab:'profils' });
+  }
+
+  return problems;
+}
+
+function updateSaveButton() {
+  const btn = document.getElementById('btn-save');
+  const hint = document.getElementById('btn-save-hint');
+
+  const allProblems = chapters.map(c => ({ c, problems: chapProblems(c) })).filter(x => x.problems.length > 0);
+
+  if (allProblems.length === 0) {
+    btn.disabled = false;
+    hint.classList.remove('visible');
+  } else {
+    btn.disabled = true;
+    hint.classList.add('visible');
+    const hasQ = allProblems.some(x => x.problems.some(p => p.type === 'q'));
+    const hasP = allProblems.some(x => x.problems.some(p => p.type === 'p'));
+    if (hasQ && hasP) {
+      hint.textContent = 'Questions et profils incomplets sur certains chapitres';
+    } else if (hasQ) {
+      hint.textContent = 'Questions ou réponses incomplètes sur certains chapitres';
+    } else {
+      hint.textContent = 'Profils incomplets — titre, résumé et description requis';
+    }
+  }
+}
+function trySave() {
+  const allProblems = chapters.map(c => ({ c, problems: chapProblems(c) })).filter(x => x.problems.length > 0);
+
+  if (allProblems.length > 0) {
+    const list = document.getElementById('modal-save-list');
+    list.innerHTML = allProblems.map(({ c, problems }) =>
+      problems.map(p => `
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#fafbfc;border:1px solid #e8edf4;border-radius:8px;padding:9px 14px;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:700;color:#18375d;font-family:Asap,sans-serif">Chapitre ${c.id} — ${c.name}</div>
+            <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;margin-top:2px;line-height:1.4">${p.msg}</div>
+          </div>
+          <button onclick="closeSaveModal();setTab(${c.id-1},'${p.tab}')" style="background:#eb6366;color:#fff;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:Asap,sans-serif;flex-shrink:0">Compléter →</button>
+        </div>`).join('')
+    ).join('');
+    document.getElementById('modal-save-blocked').classList.add('on');
+    return;
+  }
+
+  goNextAfterSave();
+}
+
+function closeSaveModal() {
+  document.getElementById('modal-save-blocked').classList.remove('on');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+applyDraftThemeFromStorage();
+updateEditorModeUI();
+renderNav();
+renderMain();
+updateSaveButton();
 </script>
 </body>
 </html>
