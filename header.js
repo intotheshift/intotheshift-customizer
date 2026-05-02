@@ -8,10 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
         <img src="into-the-shift-logo.png" alt="Into The Shift" class="logo-img">
       </div>
       <div class="tb-sp"></div>
-      <div class="acct">
-        <div class="av">SR</div>
-        <span class="acct-n">Sonora RH</span>
-      </div>
     </div>
   `;
 });
