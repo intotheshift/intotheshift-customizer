@@ -60,6 +60,8 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 .cni-tab{flex:1;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:600;font-family:'Asap',sans-serif;text-align:center;cursor:pointer;border:1px solid #d8e0ea;background:#fff;color:#64748b;transition:all 0.15s}
 .cni-tab.on{background:#18375d;color:#fff;border-color:#18375d}
 .cni-tab:not(.on):hover{background:#eef1f6;border-color:#b8c4d4;color:#18375d}
+.cni-tab.disabled{opacity:.42;cursor:not-allowed;background:#f7f9fc;color:#94a3b8;border-style:dashed}
+.cni-tab.disabled:hover{background:#f7f9fc;color:#94a3b8;border-color:#d8e0ea}
 
 .sb-bot{margin-top:auto;padding-top:14px;border-top:1px solid #e8edf4;display:flex;flex-direction:column;gap:6px}
 .sb-total{font-size:11px;color:#94a3b8;font-family:'Asap',sans-serif;text-align:center;padding:0 4px}
@@ -367,6 +369,19 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
   </div>
 </div>
 
+
+<!-- MODALE PROFILS BLOQUÉS -->
+<div class="modal-overlay" id="modal-profiles-locked">
+  <div class="modal">
+    <div style="font-size:22px;margin-bottom:12px">🔒</div>
+    <h3>Complétez d’abord les questions</h3>
+    <p>Les profils de résultat se rédigent à partir des questions et des scores du chapitre. Ajoutez au moins <strong>4 questions valides</strong>, avec au moins <strong>3 réponses scorées</strong> par question, avant d’ouvrir les profils.</p>
+    <div class="modal-acts">
+      <button class="btn-confirm" style="background:#18375d" onclick="closeProfilesLockedModal()">Compris</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODALE REGEN -->
 <div class="modal-overlay" id="modal-regen">
   <div class="modal">
@@ -506,6 +521,70 @@ const icoRegen = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><p
 const icoTrash = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14H6L5 6" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#eb6366" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4h6v2" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const icoStar = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>`;
 
+
+function questionHasValidScoring(q){
+  return q && Array.isArray(q.answers) && q.answers.length >= 3 && q.answers.every(a => {
+    const n = Number(a.s);
+    return !isNaN(n) && n >= 0 && n <= 2;
+  });
+}
+function chapterQuestionsReady(c){
+  return c && Array.isArray(c.questions) && c.questions.length >= 4 && c.questions.every(questionHasValidScoring);
+}
+function openProfilesLockedModal(){
+  const modal = document.getElementById('modal-profiles-locked');
+  if(modal) modal.classList.add('on');
+}
+function closeProfilesLockedModal(){
+  const modal = document.getElementById('modal-profiles-locked');
+  if(modal) modal.classList.remove('on');
+}
+function tryOpenProfiles(i){
+  activeChap = i;
+  if(!chapterQuestionsReady(chapters[i])){
+    activeTab = 'questions';
+    openCards = {};
+    renderNav();
+    renderMain();
+    updateSaveButton();
+    openProfilesLockedModal();
+    return;
+  }
+  applyAutoSeuils(chapters[i]);
+  setTab(i,'profils');
+}
+function getQuestionMaxScore(q){
+  const scores = (q.answers || []).map(a => Number(a.s)).filter(n => !isNaN(n));
+  return scores.length ? Math.max(...scores) : 0;
+}
+function getChapterMaxScore(ch){
+  return (ch.questions || []).reduce((sum, q) => sum + getQuestionMaxScore(q), 0);
+}
+function roundScore(n){
+  return Math.round(Number(n) * 10) / 10;
+}
+function suggestAutoSeuils(ch){
+  // L’IA propose les seuils selon le score TOTAL possible du chapitre.
+  // Donc si le chapitre a plus de questions, les seuils augmentent automatiquement.
+  const max = getChapterMaxScore(ch);
+  if(!max || max <= 0) return [{min:0,max:0},{min:0,max:0},{min:0,max:0}];
+  return [
+    {min:0, max:roundScore(max * 0.33)},
+    {min:roundScore(max * 0.33), max:roundScore(max * 0.66)},
+    {min:roundScore(max * 0.66), max:roundScore(max)}
+  ];
+}
+function applyAutoSeuils(ch){
+  if(!chapterQuestionsReady(ch)) return;
+  ch.seuils = suggestAutoSeuils(ch);
+  ch.seuils_auto = true;
+  saveState();
+}
+function refreshThresholdsAfterQuestionChange(){
+  const ch = chapters[activeChap];
+  if(chapterQuestionsReady(ch)) applyAutoSeuils(ch);
+}
+
 function renderNav() {
   const nav = document.getElementById('chap-nav');
   nav.innerHTML = '';
@@ -525,7 +604,7 @@ function renderNav() {
       </div>
       <div class="cni-tabs">
         <button class="cni-tab ${i === activeChap && activeTab === 'questions' ? 'on' : ''}" onclick="setTab(${i},'questions')">Questions</button>
-        <button class="cni-tab ${i === activeChap && activeTab === 'profils' ? 'on' : ''}" onclick="setTab(${i},'profils')">Profils</button>
+        <button class="cni-tab ${i === activeChap && activeTab === 'profils' ? 'on' : ''} ${chapterQuestionsReady(c) ? '' : 'disabled'}" onclick="tryOpenProfiles(${i})" title="Complétez d’abord les questions du chapitre">Profils</button>
       </div>`;
     nav.appendChild(div);
   });
@@ -533,7 +612,18 @@ function renderNav() {
   document.getElementById('sb-total').innerHTML = `<strong>${total}</strong> questions au total`;
 }
 function selectChap(i) { activeChap = i; openCards = {}; renderNav(); renderMain(); updateSaveButton(); }
-function setTab(i, tab) { activeChap = i; activeTab = tab; openCards = {}; renderNav(); renderMain(); updateSaveButton(); }
+function setTab(i, tab) {
+  if(tab === 'profils'){
+    if(!chapterQuestionsReady(chapters[i])){ tryOpenProfiles(i); return; }
+    applyAutoSeuils(chapters[i]);
+  }
+  activeChap = i;
+  activeTab = tab;
+  openCards = {};
+  renderNav();
+  renderMain();
+  updateSaveButton();
+}
 
 function renderMain() {
   const ch = chapters[activeChap];
@@ -576,7 +666,7 @@ function renderQuestions(ch) {
   document.getElementById('main-editor').innerHTML = `
     ${header}
     ${!isEmpty ? `<div class="q-counter"><span class="qc-text"><strong>${n}</strong> question${n !== 1 ? 's' : ''} · min 4, max 10</span><div class="qc-bar"><div class="qc-fill" style="width:${pct}%"></div></div></div>
-    <div class="likert-info"><span class="likert-info-ico">ℹ️</span><div class="likert-info-body"><strong>Conversion échelle → score</strong> — Les questions Likert (1→5) sont normalisées : 1=0 · 2=0,5 · 3=1 · 4=1,5 · 5=2.<span id="likert-extra" style="display:none"> Les mises en situation à choix et les Likert normalisés sont calculés ensemble pour la moyenne du chapitre.</span></div><span class="likert-info-toggle" onclick="toggleLikertInfo()">Voir plus</span></div>` : ''}
+    <div class="likert-info"><span class="likert-info-ico">ℹ️</span><div class="likert-info-body"><strong>Conversion échelle → score</strong> — Les questions Likert (1→5) sont normalisées : 1=0 · 2=0,5 · 3=1 · 4=1,5 · 5=2.<span id="likert-extra" style="display:none"> Les scores des questions sont additionnés pour déterminer le profil du chapitre. Les seuils sont proposés automatiquement en fonction du nombre de questions et des scores.</span></div><span class="likert-info-toggle" onclick="toggleLikertInfo()">Voir plus</span></div>` : ''}
     <div class="q-list" id="q-list">${qHTML}</div>`;
 }
 function toggleLikertInfo() { likertInfoOpen = !likertInfoOpen; const el=document.getElementById('likert-extra'); const btn=document.querySelector('.likert-info-toggle'); if(el) el.style.display=likertInfoOpen?'inline':'none'; if(btn) btn.textContent=likertInfoOpen?'Réduire':'Voir plus'; }
@@ -597,27 +687,29 @@ function renderCard(q, qi) {
   }
   return `<div class="q-card ${open ? 'open' : ''}" id="qc-${q.id}"><div class="q-header" onclick="toggleCard('${q.id}')"><div class="q-num">${qi + 1}</div><div class="q-main"><div class="q-text editable-q" contenteditable="true" spellcheck="true" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();} event.stopPropagation();" oninput="updateQuestionText('${q.id}', this.innerText)">${esc(q.text)}</div><div class="q-tags-row">${provHTML}${tagsHTML}${addBtn}</div></div><div class="q-right" onclick="event.stopPropagation()"><button class="q-chevron-btn" onclick="toggleCard('${q.id}')">▾</button><div class="q-vsep"></div><button class="qa-btn regen-q" title="Régénérer avec l'IA" onclick="regenOne('${q.id}',this)">${icoRegen}</button><button class="qa-btn del" title="Supprimer" onclick="deleteQ('${q.id}')">${icoTrash}</button></div></div>${bodyHTML}</div>`;
 }
-function updateAnswer(qid, ai, field, value){ const q=chapters[activeChap].questions.find(q=>q.id===qid); if(q && q.answers[ai]){ q.answers[ai][field]=field==='s'?Number(value):value; saveState(); } }
-function addAnswer(qid){ const q=chapters[activeChap].questions.find(q=>q.id===qid); if(q){ q.answers.push({l:'Nouvelle réponse',s:1}); saveState(); renderMain(); } }
-function deleteAnswer(qid, ai){ const q=chapters[activeChap].questions.find(q=>q.id===qid); if(q){ q.answers.splice(ai,1); saveState(); renderMain(); updateSaveButton(); } }
+function updateAnswer(qid, ai, field, value){ const q=chapters[activeChap].questions.find(q=>q.id===qid); if(q && q.answers[ai]){ q.answers[ai][field]=field==='s'?Number(value):value; refreshThresholdsAfterQuestionChange(); saveState(); } }
+function addAnswer(qid){ const q=chapters[activeChap].questions.find(q=>q.id===qid); if(q){ q.answers.push({l:'Nouvelle réponse',s:1}); refreshThresholdsAfterQuestionChange(); saveState(); renderMain(); } }
+function deleteAnswer(qid, ai){ const q=chapters[activeChap].questions.find(q=>q.id===qid); if(q){ q.answers.splice(ai,1); refreshThresholdsAfterQuestionChange(); saveState(); renderMain(); updateSaveButton(); } }
 
 function renderProfils(ch) {
-  const seuilsHTML = ch.seuils.map((s, i) => { const pc = profils_config[i]; return `<div class="seuil-item"><div class="seuil-dot" style="background:${pc.couleur}"></div><span class="seuil-label">${pc.nom}</span><div class="seuil-range"><input class="seuil-inp" type="number" min="0" max="2" step="0.1" value="${s.min}" onchange="chapters[activeChap].seuils[${i}].min=parseFloat(this.value);saveState();updateSaveButton()"><span class="seuil-sep">→</span><input class="seuil-inp" type="number" min="0" max="2.1" step="0.1" value="${s.max}" onchange="chapters[activeChap].seuils[${i}].max=parseFloat(this.value);saveState();updateSaveButton()"></div></div>`; }).join('');
+  if(!chapterQuestionsReady(ch)){ openProfilesLockedModal(); activeTab='questions'; renderNav(); renderQuestions(ch); return; }
+  applyAutoSeuils(ch);
+  const seuilsHTML = ch.seuils.map((s, i) => { const pc = profils_config[i]; return `<div class="seuil-item"><div class="seuil-dot" style="background:${pc.couleur}"></div><span class="seuil-label">${pc.nom}<br><small style="font-weight:400;color:#94a3b8">seuil IA</small></span><div class="seuil-range"><input class="seuil-inp" type="number" min="0" step="0.1" value="${s.min}" onchange="chapters[activeChap].seuils[${i}].min=parseFloat(this.value);saveState();updateSaveButton()"><span class="seuil-sep">→</span><input class="seuil-inp" type="number" min="0"  step="0.1" value="${s.max}" onchange="chapters[activeChap].seuils[${i}].max=parseFloat(this.value);saveState();updateSaveButton()"></div></div>`; }).join('');
   const profilsHTML = ch.profils.map((p, i) => { const pc = profils_config[i]; const mkwHTML = (p.motscles||[]).map((m, mi) => `<span class="mkw" style="background:${pc.bgHead};border-color:${pc.borderHead};color:${pc.textColor}">${esc(m)}<span class="mkw-x" onclick="removeMkw(${i},${mi})">×</span></span>`).join(''); return `<div class="profil-card"><div class="profil-header" style="background:${pc.bgHead};border-bottom:1px solid ${pc.borderHead}"><div class="profil-level"><div class="profil-dot" style="background:${pc.couleur}"></div><span class="profil-level-name" style="color:${pc.textColor}">Profil ${i+1} — ${pc.nom}</span></div><div style="display:flex;align-items:center;gap:10px"><span class="profil-score-range" style="color:${pc.textColor}">Score ${ch.seuils[i].min} → ${ch.seuils[i].max}</span><button class="btn-ai-profil" style="background:rgba(0,0,0,0.08);color:${pc.textColor}" onclick="genProfil(${i})">${icoStar} Générer avec l'IA</button></div></div><div class="profil-body"><div class="pfield"><label>Titre du profil <span style="color:#eb6366">*</span></label><input type="text" value="${esc(p.titre)}" placeholder="Titre évocateur" oninput="chapters[activeChap].profils[${i}].titre=this.value;saveState();updateSaveButton()"></div><div class="pfield"><label>Phrase courte de résumé</label><input type="text" class="short" value="${esc(p.phrase)}" placeholder="Une phrase concise, bienveillante" oninput="chapters[activeChap].profils[${i}].phrase=this.value;saveState();updateSaveButton()"></div><div class="pfield"><label>Description détaillée</label><div class="rte-wrap"><div class="rte-toolbar"><button class="rte-btn" onclick="fmt('bold')" title="Gras"><b>G</b></button><button class="rte-btn" onclick="fmt('underline')" title="Souligné"><u>S</u></button><div class="rte-sep"></div><button class="rte-btn" onclick="fmt('insertUnorderedList')" title="Liste à puces">☰</button><div class="rte-sep"></div><button class="rte-btn" onclick="addLink()" title="Lien hypertexte">🔗</button></div><div class="rte-area" contenteditable="true" data-placeholder="Description bienveillante et actionnable…" oninput="chapters[activeChap].profils[${i}].description=this.innerHTML;saveState();updateSaveButton()">${p.description}</div></div></div><div class="pfield"><label>Mots clés</label><div class="mkw-wrap" onclick="this.querySelector('.mkw-inp').focus()">${mkwHTML}<input class="mkw-inp" placeholder="+ mot clé" onkeydown="addMkw(event,${i})"></div></div></div></div>`; }).join('');
-  document.getElementById('main-editor').innerHTML = `<div class="chap-head"><div class="chap-info"><div class="chap-badge">Chapitre ${activeChap+1} · Profils de résultat</div><div style="display:flex;align-items:center;gap:6px"><input class="chap-name-inp" value="${esc(ch.name)}" oninput="chapters[activeChap].name=this.value;saveState();renderNav()"><span style="color:#c5ccd5;font-size:13px">✏️</span></div><input class="chap-desc-inp" value="${esc(ch.desc)}" oninput="chapters[activeChap].desc=this.value;saveState()"></div></div><div class="seuils-card"><div class="seuils-head"><span class="seuils-title">${icoStar} Seuils de score par profil</span><span class="seuils-hint">Ajustables manuellement · score de 0 à 2</span></div><div class="seuils-row">${seuilsHTML}</div></div><div class="profils-grid">${profilsHTML}</div>`;
+  document.getElementById('main-editor').innerHTML = `<div class="chap-head"><div class="chap-info"><div class="chap-badge">Chapitre ${activeChap+1} · Profils de résultat</div><div style="display:flex;align-items:center;gap:6px"><input class="chap-name-inp" value="${esc(ch.name)}" oninput="chapters[activeChap].name=this.value;saveState();renderNav()"><span style="color:#c5ccd5;font-size:13px">✏️</span></div><input class="chap-desc-inp" value="${esc(ch.desc)}" oninput="chapters[activeChap].desc=this.value;saveState()"></div></div><div class="seuils-card"><div class="seuils-head"><span class="seuils-title">${icoStar} Seuils de score par profil</span><span class="seuils-hint">Seuils proposés automatiquement selon les questions et les scores du chapitre. Ils sont ajustables si besoin.</span></div><div class="seuils-row">${seuilsHTML}</div></div><div class="profils-grid">${profilsHTML}</div>`;
 }
 
 function toggleCard(id) { openCards[id] = !openCards[id]; renderMain(); }
-function deleteQ(id) { chapters[activeChap].questions = chapters[activeChap].questions.filter(q => q.id !== id); delete openCards[id]; saveState(); renderNav(); renderMain(); updateSaveButton(); }
-function regenOne(id, btn) { const ch = chapters[activeChap], idx = ch.questions.findIndex(q => q.id === id); if (idx > -1) ch.questions[idx] = makeAIQuestion(id); saveState(); renderNav(); renderMain(); updateSaveButton(); }
+function deleteQ(id) { chapters[activeChap].questions = chapters[activeChap].questions.filter(q => q.id !== id); delete openCards[id]; refreshThresholdsAfterQuestionChange(); saveState(); renderNav(); renderMain(); updateSaveButton(); }
+function regenOne(id, btn) { const ch = chapters[activeChap], idx = ch.questions.findIndex(q => q.id === id); if (idx > -1) ch.questions[idx] = makeAIQuestion(id); refreshThresholdsAfterQuestionChange(); saveState(); renderNav(); renderMain(); updateSaveButton(); }
 function makeAIQuestion(id){ return { id: id || 'q' + Date.now(), type:'choix', prov:'AI', text:"Une situation nouvelle apparaît dans votre quotidien professionnel. Que faites-vous en priorité ?", tags:[{t:'Réflexe',ai:true},{t:'Situation concrète',ai:true}], answers:[{l:"J'agis vite avec les informations disponibles.",s:0},{l:"Je demande un avis avant de décider.",s:1},{l:"Je clarifie le cadre avant d'agir.",s:2}] }; }
-function addManual() { if (chapters[activeChap].questions.length >= 10) return; const id = 'q' + Date.now(); chapters[activeChap].questions.push({ id, type: 'choix', prov: 'CLIENT', text: 'Nouvelle mise en situation', tags: [], answers: [{l:'Réponse A',s:0},{l:'Réponse B',s:1},{l:'Réponse C',s:2}] }); openCards[id] = true; saveState(); renderNav(); renderMain(); updateSaveButton(); }
-function addOneAI() { if (chapters[activeChap].questions.length >= 10) return; const q = makeAIQuestion('q' + Date.now()); chapters[activeChap].questions.push(q); openCards[q.id] = true; saveState(); renderNav(); renderMain(); updateSaveButton(); }
+function addManual() { if (chapters[activeChap].questions.length >= 10) return; const id = 'q' + Date.now(); chapters[activeChap].questions.push({ id, type: 'choix', prov: 'CLIENT', text: 'Nouvelle mise en situation', tags: [], answers: [{l:'Réponse A',s:0},{l:'Réponse B',s:1},{l:'Réponse C',s:2}] }); openCards[id] = true; refreshThresholdsAfterQuestionChange(); saveState(); renderNav(); renderMain(); updateSaveButton(); }
+function addOneAI() { if (chapters[activeChap].questions.length >= 10) return; const q = makeAIQuestion('q' + Date.now()); chapters[activeChap].questions.push(q); openCards[q.id] = true; refreshThresholdsAfterQuestionChange(); saveState(); renderNav(); renderMain(); updateSaveButton(); }
 function removeTag(qid, ti) { const q = chapters[activeChap].questions.find(q => q.id === qid); if (q) q.tags.splice(ti, 1); saveState(); renderMain(); }
 function addTag(qid) { const t = prompt('Nom du tag :'); if (!t) return; const q = chapters[activeChap].questions.find(q => q.id === qid); if (q && q.tags.length < 6) q.tags.push({t, ai:false}); saveState(); renderMain(); }
 function askRegen() { const n=chapters[activeChap].questions.length; document.getElementById('modal-q-count').textContent = `${n} question${n!==1?'s':''}`; document.getElementById('modal-regen').classList.add('on'); }
 function closeRegenModal() { document.getElementById('modal-regen').classList.remove('on'); }
-function confirmRegen() { closeRegenModal(); chapters[activeChap].questions = [makeAIQuestion('qr1'), makeAIQuestion('qr2'), makeAIQuestion('qr3'), makeAIQuestion('qr4'), makeAIQuestion('qr5')]; saveState(); openCards = {}; renderNav(); renderMain(); updateSaveButton(); }
+function confirmRegen() { closeRegenModal(); chapters[activeChap].questions = [makeAIQuestion('qr1'), makeAIQuestion('qr2'), makeAIQuestion('qr3'), makeAIQuestion('qr4'), makeAIQuestion('qr5')]; refreshThresholdsAfterQuestionChange(); saveState(); openCards = {}; renderNav(); renderMain(); updateSaveButton(); }
 
 function editScore(pill, e, qid, ai) { e.stopPropagation(); const v = prompt('Score entre 0 et 2 :', pill.dataset.score); if (v === null) return; const n = Number(v); if (isNaN(n) || n < 0 || n > 2) return; updateAnswer(qid, ai, 's', n); renderMain(); updateSaveButton(); }
 function removeMkw(profIdx, mkIdx) { chapters[activeChap].profils[profIdx].motscles.splice(mkIdx, 1); saveState(); renderMain(); }
@@ -635,9 +727,9 @@ function renderPanelTags() { const all = [...new Set(currentLib().flatMap(q => q
 function filterByTag(t) { activeFilterTag = activeFilterTag === t ? '' : t; renderPanelTags(); renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag); }
 function filterPanel(val) { renderPanelList(val, activeFilterTag); }
 function renderPanelList(search, tag) { const filtered = currentLib().filter(q => !q.added && (!search || String(q.text).toLowerCase().includes(search.toLowerCase())) && (!tag || (q.tags||[]).includes(tag))); const list=document.getElementById('panel-list'); if(!filtered.length){ list.innerHTML='<div style="text-align:center;padding:28px;color:#94a3b8;font-size:13px;font-family:Asap,sans-serif">Aucune question disponible</div>'; return; } list.innerHTML = filtered.map(q => `<div class="panel-q" id="pq-${q.id}"><div style="flex:1"><div class="panel-q-text">${esc(q.text)}</div><div class="panel-q-meta"><span class="tag-prov ${q.prov==='EXPERT'?'expert':q.prov==='CLIENT'?'client':''}" style="font-size:10px">${PROV[q.prov]?.ico||'🤖'} ${PROV[q.prov]?.label||''}</span>${(q.tags||[]).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}</div></div><button class="btn-add-from-base" onclick="addFromLib('${q.id}')" title="Ajouter">+</button></div>`).join(''); }
-function addFromLib(qid) { if (chapters[activeChap].questions.length >= 10) return; const bq=currentLib().find(q => q.id === qid); if(!bq) return; bq.added = true; const id='q'+Date.now(); chapters[activeChap].questions.push({ id, type:'likert', prov:bq.prov||'AI', text:bq.text, tags:(bq.tags||[]).map(t=>({t,ai:false})), answers:[{l:'Jamais',s:0},{l:'Rarement',s:0.5},{l:'Parfois',s:1},{l:'Souvent',s:1.5},{l:'Toujours',s:2}] }); saveState(); renderNav(); renderMain(); updateSaveButton(); renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag); }
+function addFromLib(qid) { if (chapters[activeChap].questions.length >= 10) return; const bq=currentLib().find(q => q.id === qid); if(!bq) return; bq.added = true; const id='q'+Date.now(); chapters[activeChap].questions.push({ id, type:'likert', prov:bq.prov||'AI', text:bq.text, tags:(bq.tags||[]).map(t=>({t,ai:false})), answers:[{l:'Jamais',s:0},{l:'Rarement',s:0.5},{l:'Parfois',s:1},{l:'Souvent',s:1.5},{l:'Toujours',s:2}] }); refreshThresholdsAfterQuestionChange(); saveState(); renderNav(); renderMain(); updateSaveButton(); renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag); }
 
-function chapProblems(c) { const problems=[]; if(c.questions.length < 4) problems.push({type:'q', msg:`${c.questions.length} question${c.questions.length!==1?'s':''} — minimum 4 requises`, tab:'questions'}); else { const badQ=c.questions.filter(q => !q.answers || q.answers.length < 3 || q.answers.some(a => typeof Number(a.s) !== 'number' || isNaN(Number(a.s)) || Number(a.s)<0 || Number(a.s)>2)); if(badQ.length) problems.push({type:'q', msg:`${badQ.length} question${badQ.length>1?'s':''} incomplète${badQ.length>1?'s':''} — min 3 réponses, scores entre 0 et 2 requis`, tab:'questions'}); } const badP=c.profils.filter(p => !String(p.titre).trim() || !String(p.phrase).trim() || !stripHtml(p.description).trim()); if(badP.length) problems.push({type:'p', msg:`${badP.length} profil${badP.length>1?'s':''} incomplet${badP.length>1?'s':''} — titre, résumé et description requis`, tab:'profils'}); const badS=c.seuils.some(s => isNaN(Number(s.min)) || isNaN(Number(s.max)) || Number(s.min)>=Number(s.max) || Number(s.min)<0 || Number(s.max)>2.1); if(badS) problems.push({type:'p', msg:'Seuils incohérents', tab:'profils'}); return problems; }
+function chapProblems(c) { const problems=[]; if(c.questions.length < 4) problems.push({type:'q', msg:`${c.questions.length} question${c.questions.length!==1?'s':''} — minimum 4 requises`, tab:'questions'}); else { const badQ=c.questions.filter(q => !q.answers || q.answers.length < 3 || q.answers.some(a => typeof Number(a.s) !== 'number' || isNaN(Number(a.s)) || Number(a.s)<0 || Number(a.s)>2)); if(badQ.length) problems.push({type:'q', msg:`${badQ.length} question${badQ.length>1?'s':''} incomplète${badQ.length>1?'s':''} — min 3 réponses, scores entre 0 et 2 requis`, tab:'questions'}); } const badP=c.profils.filter(p => !String(p.titre).trim() || !String(p.phrase).trim() || !stripHtml(p.description).trim()); if(badP.length) problems.push({type:'p', msg:`${badP.length} profil${badP.length>1?'s':''} incomplet${badP.length>1?'s':''} — titre, résumé et description requis`, tab:'profils'}); const badS=c.seuils.some(s => isNaN(Number(s.min)) || isNaN(Number(s.max)) || Number(s.min)>=Number(s.max) || Number(s.min)<0); if(badS) problems.push({type:'p', msg:'Seuils incohérents', tab:'profils'}); return problems; }
 function updateSaveButton() { const btn=document.getElementById('btn-save'); const hint=document.getElementById('btn-save-hint'); btn.textContent='Continuer vers le paramétrage'; const allProblems=chapters.map(c=>({c, problems:chapProblems(c)})).filter(x=>x.problems.length); btn.disabled = allProblems.length > 0; hint.classList.toggle('visible', allProblems.length > 0); if(allProblems.length) hint.textContent='Questions et/ou profils incomplets sur certains chapitres'; }
 function trySave() { syncToState(); const allProblems=chapters.map(c=>({c, problems:chapProblems(c)})).filter(x=>x.problems.length); if(allProblems.length){ const list=document.getElementById('modal-save-list'); list.innerHTML=allProblems.map(({c,problems}) => problems.map(p => `<div style="display:flex;align-items:center;justify-content:space-between;background:#fafbfc;border:1px solid #e8edf4;border-radius:8px;padding:9px 14px;gap:10px"><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:#18375d;font-family:Asap,sans-serif">Chapitre ${c.id} — ${esc(c.name)}</div><div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;margin-top:2px;line-height:1.4">${p.msg}</div></div><button onclick="closeSaveModal();setTab(${c.id-1},'${p.tab}')" style="background:#eb6366;color:#fff;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:Asap,sans-serif;flex-shrink:0">Compléter →</button></div>`).join('')).join(''); document.getElementById('modal-save-blocked').classList.add('on'); return; } window.location.href='parametrage.html'; }
 function closeSaveModal() { document.getElementById('modal-save-blocked').classList.remove('on'); }
