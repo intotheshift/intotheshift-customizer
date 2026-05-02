@@ -1,1 +1,78 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Into The Shift — validation</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css"><link rel="stylesheet" href="style.css"></head><body data-page="validation"><script src="header.js"></script><main class="page" id="app"></main><script src="intotheshift-data.js"></script><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Transmission — Into The Shift</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="header"></div>
+<script src="header.js"></script>
+<script src="app.js"></script>
+
+<div class="subnav">
+  <button class="sn" onclick="window.location.href='index.html'">Bibliothèque</button>
+  <button class="sn" onclick="window.location.href='questions.html'">Création</button>
+  <button class="sn" onclick="window.location.href='parametrage.html'">Paramétrage</button>
+  <button class="sn" onclick="window.location.href='campagne.html'">Campagne</button>
+  <button class="sn on">Transmission</button>
+</div>
+
+<div class="page-wrap">
+  <h1 class="page-title">Transmettre votre autodiagnostic</h1>
+  <p class="page-sub">Validez les informations préparées. Into The Shift finalisera ensuite la mise en ligne, le lien de votre autodiag à diffuser auprès de vos collaborateurs et le dashboard des résultats.</p>
+
+  <div class="two-col">
+    <main>
+      <section class="block">
+        <div class="block-title">Récapitulatif</div>
+        <div id="recap"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-title">Transmission</div>
+        <div class="block-sub">Dans cette maquette, le bouton prépare les données. En production, il sera relié à un formulaire, un webhook ou HubSpot.</div>
+        <button class="btn btn-primary" onclick="transmit()">Transmettre à Into The Shift</button>
+      </section>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-head"><div class="sidebar-head-lbl">Statut</div><div class="sidebar-head-val">Prêt à transmettre</div></div>
+        <div class="sidebar-body">
+          <div class="sidebar-row"><span class="sidebar-row-lbl">Chapitres</span><span class="sidebar-row-val" id="chapters"></span></div>
+          <div class="sidebar-row"><span class="sidebar-row-lbl">Questions</span><span class="sidebar-row-val" id="questions"></span></div>
+          <div class="sidebar-row"><span class="sidebar-row-lbl">Pack</span><span class="sidebar-row-val" id="pack"></span></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+let state = itsLoad();
+if(!state.chapters){ window.location.href="index.html"; }
+
+function url(){ return "https://selfdiag-mayt.meandyoutoo.app/mon-entreprise/" + (state.meta?.slug || itsSlugify(state.title)); }
+
+document.getElementById("recap").innerHTML = `
+  <p><strong>Autodiagnostic :</strong> ${state.meta?.nom || state.title}</p><br>
+  <p><strong>Titre visible :</strong> ${state.meta?.titre || "Non renseigné"}</p><br>
+  <p><strong>URL prévue :</strong> ${url()}</p><br>
+  <p><strong>Lancement :</strong> ${itsFormatDateFR(state.meta?.date_lancement)}</p><br>
+  <p><strong>Clôture :</strong> ${itsFormatDateFR(state.meta?.date_cloture)}</p><br>
+  <p><strong>Pack :</strong> ${state.packPassations === "illimite" ? "Illimité" : Number(state.packPassations||200).toLocaleString("fr-FR")+" passations"}</p>
+`;
+document.getElementById("chapters").textContent = state.chapters.length;
+document.getElementById("questions").textContent = state.chapters.reduce((a,c)=>a+(c.questions||[]).length,0);
+document.getElementById("pack").textContent = state.packPassations === "illimite" ? "Illimité" : Number(state.packPassations||200).toLocaleString("fr-FR");
+
+function transmit(){
+  state.transmittedAt = new Date().toISOString();
+  itsSave(state);
+  alert("Votre autodiagnostic a été transmis à Into The Shift.");
+}
+</script>
+</body>
+</html>
