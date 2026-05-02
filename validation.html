@@ -150,7 +150,7 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
         </div>
         <div class="alert alert-success hidden" id="success-alert">
           <span class="alert-ico">✓</span>
-          <span>Votre demande a bien été préparée. Nous allons finaliser la mise en ligne et vous transmettre le lien de passation.</span>
+          <span><strong>Votre demande a bien été transmise.</strong><br>L’équipe Into The Shift va finaliser la mise en ligne et vous envoyer prochainement le lien de passation.</span>
         </div>
       </section>
 
@@ -213,6 +213,21 @@ function formatDateFr(s){
   if(!s) return '—';
   const p = String(s).split('-');
   return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : s;
+}
+function formatPack(pack){
+  if(!pack) return '—';
+  if(typeof pack === 'string' || typeof pack === 'number') return String(pack);
+  if(typeof pack === 'object'){
+    const val = pack.value || pack.label || pack.nom || pack.name || pack.pack || pack.nb || pack.nombre || '';
+    if(val) return String(val);
+    try {
+      const values = Object.values(pack).filter(v => typeof v === 'string' || typeof v === 'number');
+      return values.length ? String(values[0]) : '—';
+    } catch(e) {
+      return '—';
+    }
+  }
+  return String(pack);
 }
 function getParam(){
   state.parametrage = state.parametrage || {};
@@ -325,7 +340,7 @@ function buildPayload(){
     titre_repondants: getCollaboratorTitle(),
     date_lancement: param.date_lancement || param.dateLancement || '',
     date_cloture: param.date_cloture || param.dateCloture || '',
-    pack: param.pack || state.pack || '',
+    pack: formatPack(param.pack || state.pack || ''),
     slug: getSlug(),
     url_prevue: getUrl(),
     chapters: getChapters(),
@@ -342,7 +357,7 @@ function refresh(){
   const company = getCompany();
   const launch = param.date_lancement || param.dateLancement || '';
   const close = param.date_cloture || param.dateCloture || '';
-  const pack = param.pack || state.pack || '—';
+  const pack = formatPack(param.pack || state.pack || '—');
   const url = getUrl();
 
   document.getElementById('sum-company').textContent = company;
@@ -406,7 +421,7 @@ async function transmit(){
 
   document.getElementById('success-alert').classList.remove('hidden');
   document.getElementById('btn-transmit').disabled = true;
-  document.getElementById('btn-transmit').textContent = 'Demande transmise';
+  document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
