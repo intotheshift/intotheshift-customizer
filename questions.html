@@ -247,9 +247,9 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 .panel-title{font-size:14px;font-weight:600;color:#18375d;font-family:'Asap',sans-serif}
 .panel-close{width:28px;height:28px;border-radius:7px;border:1px solid #e8edf4;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#64748b}
 .panel-close:hover{background:#f7f9fc}
-.lib-toggle{display:flex;margin:12px 16px;background:#f0f4f8;border-radius:8px;padding:3px;gap:3px}
-.lib-btn{flex:1;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;font-family:'Asap',sans-serif;cursor:pointer;border:none;background:transparent;color:#64748b;transition:all 0.15s;text-align:center}
-.lib-btn.on{background:#fff;color:#18375d;box-shadow:0 1px 4px rgba(24,55,93,0.1)}
+.panel-context{padding:10px 16px;background:#fafbfc;border-bottom:1px solid #f0f4f8;font-family:'Asap',sans-serif}
+.panel-context-title{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.panel-context-body{font-size:12px;color:#18375d;line-height:1.4}
 .panel-search{padding:10px 16px;border-bottom:1px solid #f0f4f8}
 .search-inp{width:100%;padding:8px 12px;border:1px solid #d8e0ea;border-radius:8px;font-size:13px;font-family:'Asap',sans-serif;outline:none;color:#18375d}
 .search-inp:focus{border-color:#007883}
@@ -325,12 +325,12 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
 <div class="panel-right" id="panel-right">
   <div class="panel-head">
-    <span class="panel-title">Piocher dans les bibliothèques</span>
+    <span class="panel-title">Piocher dans la bibliothèque</span>
     <button class="panel-close" onclick="closePanel()">✕</button>
   </div>
-  <div class="lib-toggle">
-    <button class="lib-btn on" id="lib-btn-ma" onclick="switchLib('ma')">Ma bibliothèque</button>
-    <button class="lib-btn" id="lib-btn-shared" onclick="switchLib('shared')">Bibliothèque partagée</button>
+  <div class="panel-context">
+    <div class="panel-context-title">Pioche filtrée</div>
+    <div class="panel-context-body" id="panel-context-body">Questions adaptées au sujet et au chapitre sélectionné.</div>
   </div>
   <div class="panel-search">
     <input class="search-inp" id="panel-search-inp" placeholder="Rechercher par mot-clé…" oninput="filterPanel(this.value)">
@@ -403,6 +403,18 @@ function stripHtml(v){
   const d = document.createElement('div');
   d.innerHTML = v || '';
   return d.textContent || d.innerText || '';
+}
+
+function norm(v){
+  return String(v || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .trim();
+}
+
+function getCurrentSubject(){
+  return state.subject || state.theme || state.topic || state.title || state.name || state.selectedSubject || '';
 }
 
 function normalizeProv(tags){
@@ -489,18 +501,42 @@ let activeChap = 0;
 let activeTab = 'questions';
 let openCards = {};
 let activeFilterTag = '';
-let activeLib = 'ma';
 let likertInfoOpen = false;
 
-const myLibQuestions = (typeof ITS_CATALOGUE !== 'undefined' && ITS_CATALOGUE.questions ? ITS_CATALOGUE.questions : [
-  {id:'m1',prov:'AI',text:"Je participe activement aux exercices organisés.",tags:["Exercice","Participation"],added:false},
-  {id:'m2',prov:'AI',text:"Je consulte régulièrement les informations utiles au sujet.",tags:["Veille","Compréhension"],added:false},
-]);
-
-const sharedLibQuestions = [
-  {id:'s1',prov:'EXPERT',text:"Avant de démarrer une tâche, j'identifie systématiquement les points de vigilance.",tags:["Méthode","Prévention"],added:false},
-  {id:'s2',prov:'CLIENT',text:"Je remonte les situations à risque sans attendre.",tags:["Signalement","Proactivité"],added:false},
+const fallbackBibliotheque = [
+  {id:'b1',prov:'AI',subject:'',chapter:'',text:"Je participe activement aux exercices organisés.",tags:["Exercice","Participation"],added:false},
+  {id:'b2',prov:'AI',subject:'',chapter:'',text:"Je consulte régulièrement les informations utiles au sujet.",tags:["Veille","Compréhension"],added:false},
+  {id:'b3',prov:'EXPERT',subject:'',chapter:'',text:"Avant de démarrer une tâche, j'identifie systématiquement les points de vigilance.",tags:["Méthode","Prévention"],added:false},
+  {id:'b4',prov:'CLIENT',subject:'',chapter:'',text:"Je remonte les situations à risque sans attendre.",tags:["Signalement","Proactivité"],added:false},
 ];
+
+function getRawBibliotheque(){
+  if (typeof ITS_CATALOGUE !== 'undefined') {
+    if (Array.isArray(ITS_CATALOGUE.bibliotheque)) return ITS_CATALOGUE.bibliotheque;
+    if (Array.isArray(ITS_CATALOGUE.questions)) return ITS_CATALOGUE.questions;
+    if (Array.isArray(ITS_CATALOGUE.library)) return ITS_CATALOGUE.library;
+  }
+  return fallbackBibliotheque;
+}
+
+function normalizeLibraryQuestion(q, i){
+  const rawTags = q.tags || q.keywords || [];
+  return {
+    id: q.id || `lib_${i}`,
+    prov: q.prov || normalizeProv(rawTags),
+    subject: q.subject || q.sujet || q.theme || q.thematique || q.category || '',
+    chapter: q.chapter || q.chapitre || q.partie || q.part || q.topic || '',
+    text: q.text || q.question || q.title || 'Question de bibliothèque',
+    tags: Array.isArray(rawTags) ? rawTags.map(String) : [],
+    answers: q.answers || q.reponses || null,
+    type: q.type || 'choix',
+    added: q.added || false
+  };
+}
+
+function bibliothequeQuestions(){
+  return getRawBibliotheque().map(normalizeLibraryQuestion);
+}
 
 const icoRegen = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6" stroke="#007883" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 15a9 9 0 1 0 .49-4.95L1 10" stroke="#007883" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const icoTrash = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14H6L5 6" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#eb6366" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4h6v2" stroke="#eb6366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -657,7 +693,7 @@ function renderQuestions(ch) {
       ${!isEmpty ? `<div class="chap-actions">
         <button class="btn-regen-all" onclick="askRegen()">Régénérer avec l'IA</button>
         <button class="btn-add-ai-one" onclick="addOneAI()" ${n >= 10 ? 'disabled title="Maximum 10 questions atteint"' : ''}>Ajouter une question avec l'IA</button>
-        <button class="btn-pioche" onclick="openPanel()">Piocher dans les bibliothèques</button>
+        <button class="btn-pioche" onclick="openPanel()">Piocher dans la bibliothèque</button>
         <button class="btn-add-manual" onclick="addManual()">Ajouter manuellement</button>
       </div>` : ''}
     </div>`;
@@ -670,8 +706,8 @@ function renderQuestions(ch) {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div onclick="openPanel()" style="background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:18px 16px;cursor:pointer">
-          <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Piocher dans les bibliothèques</div>
-          <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;line-height:1.4">Importez des questions existantes.</div>
+          <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Piocher dans la bibliothèque</div>
+          <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;line-height:1.4">Importez des questions existantes correspondant au sujet et au chapitre.</div>
         </div>
         <div onclick="addManual()" style="background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:18px 16px;cursor:pointer">
           <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Ajouter manuellement</div>
@@ -1052,13 +1088,27 @@ function addLink() {
   if (url) document.execCommand('createLink', false, url);
 }
 
+function libraryMatchesContext(q){
+  const ch = chapters[activeChap];
+  const subject = norm(getCurrentSubject());
+  const chapterName = norm(ch.name);
+  const chapterDesc = norm(ch.desc);
+  const qSubject = norm(q.subject);
+  const qChapter = norm(q.chapter);
+  const qTags = (q.tags || []).map(norm);
+
+  const subjectOk = !subject || !qSubject || qSubject === subject || qSubject.includes(subject) || subject.includes(qSubject) || qTags.some(t => t === subject || t.includes(subject));
+  const chapterOk = !qChapter || qChapter === chapterName || qChapter.includes(chapterName) || chapterName.includes(qChapter) || chapterDesc.includes(qChapter) || qTags.some(t => t === chapterName || t.includes(chapterName));
+
+  return subjectOk && chapterOk;
+}
+
 function openPanel() {
   activeFilterTag = '';
-  activeLib = 'ma';
   document.getElementById('panel-search-inp').value = '';
   document.getElementById('overlay').classList.add('on');
   document.getElementById('panel-right').classList.add('on');
-  updateLibToggle();
+  updatePanelContext();
   renderPanelTags();
   renderPanelList('', '');
 }
@@ -1068,22 +1118,16 @@ function closePanel() {
   document.getElementById('panel-right').classList.remove('on');
 }
 
-function switchLib(lib) {
-  activeLib = lib;
-  activeFilterTag = '';
-  document.getElementById('panel-search-inp').value = '';
-  updateLibToggle();
-  renderPanelTags();
-  renderPanelList('', '');
-}
-
-function updateLibToggle() {
-  document.getElementById('lib-btn-ma').classList.toggle('on', activeLib === 'ma');
-  document.getElementById('lib-btn-shared').classList.toggle('on', activeLib === 'shared');
+function updatePanelContext(){
+  const ch = chapters[activeChap];
+  const subject = getCurrentSubject();
+  const el = document.getElementById('panel-context-body');
+  if(!el) return;
+  el.textContent = `${subject ? `Sujet : ${subject} · ` : ''}Partie : ${ch.name}`;
 }
 
 function currentLib() {
-  return activeLib === 'ma' ? myLibQuestions : sharedLibQuestions;
+  return bibliothequeQuestions().filter(q => !q.added && libraryMatchesContext(q));
 }
 
 function renderPanelTags() {
@@ -1102,10 +1146,11 @@ function filterPanel(val) {
 }
 
 function renderPanelList(search, tag) {
-  const filtered = currentLib().filter(q => !q.added && (!search || String(q.text).toLowerCase().includes(search.toLowerCase())) && (!tag || (q.tags||[]).includes(tag)));
+  const s = norm(search);
+  const filtered = currentLib().filter(q => (!s || norm(q.text).includes(s) || (q.tags||[]).some(t => norm(t).includes(s))) && (!tag || (q.tags||[]).includes(tag)));
   const list = document.getElementById('panel-list');
   if(!filtered.length){
-    list.innerHTML = '<div style="text-align:center;padding:28px;color:#94a3b8;font-size:13px;font-family:Asap,sans-serif">Aucune question disponible</div>';
+    list.innerHTML = '<div style="text-align:center;padding:28px;color:#94a3b8;font-size:13px;font-family:Asap,sans-serif">Aucune question disponible pour ce sujet et ce chapitre</div>';
     return;
   }
   list.innerHTML = filtered.map(q => `<div class="panel-q" id="pq-${q.id}">
@@ -1113,6 +1158,8 @@ function renderPanelList(search, tag) {
       <div class="panel-q-text">${esc(q.text)}</div>
       <div class="panel-q-meta">
         <span class="tag-prov ${q.prov==='EXPERT'?'expert':q.prov==='CLIENT'?'client':''}" style="font-size:10px">${PROV[q.prov]?.ico||'🤖'} ${PROV[q.prov]?.label||''}</span>
+        ${(q.subject ? [`Sujet : ${q.subject}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
+        ${(q.chapter ? [`Partie : ${q.chapter}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
         ${(q.tags||[]).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
       </div>
     </div>
@@ -1120,31 +1167,47 @@ function renderPanelList(search, tag) {
   </div>`).join('');
 }
 
+function normalizeImportedAnswers(bq){
+  if(Array.isArray(bq.answers) && bq.answers.length >= 3){
+    return bq.answers.map((a, i) => ({
+      l: a.l ?? a.label ?? a.text ?? a.reponse ?? `Réponse ${String.fromCharCode(65+i)}`,
+      s: Number(a.s ?? a.score ?? Math.min(i,2))
+    })).map(a => ({...a, s: isNaN(a.s) ? 1 : Math.max(0, Math.min(2, a.s))}));
+  }
+  return [
+    {l:'Réponse A',s:0},
+    {l:'Réponse B',s:1},
+    {l:'Réponse C',s:2}
+  ];
+}
+
+function markLibraryAdded(qid){
+  const raw = getRawBibliotheque();
+  const item = raw.find((q, i) => (q.id || `lib_${i}`) === qid);
+  if(item) item.added = true;
+}
+
 function addFromLib(qid) {
   if (chapters[activeChap].questions.length >= 10) return;
   const bq = currentLib().find(q => q.id === qid);
   if(!bq) return;
-  bq.added = true;
+  markLibraryAdded(qid);
   const id = 'q' + Date.now();
+  const importedAnswers = normalizeImportedAnswers(bq);
   chapters[activeChap].questions.push({
     id,
-    type:'likert',
+    type: bq.type === 'likert' ? 'likert' : 'choix',
     prov:bq.prov||'AI',
     text:bq.text,
     tags:(bq.tags||[]).map(t=>({t,ai:false})),
-    answers:[
-      {l:'Jamais',s:0},
-      {l:'Rarement',s:0.5},
-      {l:'Parfois',s:1},
-      {l:'Souvent',s:1.5},
-      {l:'Toujours',s:2}
-    ]
+    answers: importedAnswers
   });
   refreshThresholdsAfterQuestionChange();
   saveState();
   renderNav();
   renderMain();
   updateSaveButton();
+  renderPanelTags();
   renderPanelList(document.getElementById('panel-search-inp').value, activeFilterTag);
 }
 
