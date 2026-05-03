@@ -540,7 +540,8 @@ function getRawBibliotheque(){
           out.push({
             id: q.id,
             prov: isTBF ? 'TBF' : 'AI',
-            subject: ad.title || ad.theme || '',
+            subject: ad.theme || '',
+            adTitle: ad.title || '',
             chapter: ch.title || '',
             text: q.text || '',
             tags: [
@@ -1217,7 +1218,7 @@ function renderPanelList(search, tag) {
       <div class="panel-q-text">${esc(q.text)}</div>
       <div class="panel-q-meta">
         <span class="tag-prov ${q.prov==='TBF'?'expert':''}" style="font-size:10px">${PROV[q.prov]?.ico||'🤖'} ${PROV[q.prov]?.label||''}</span>
-        ${(q.subject ? [`Sujet : ${q.subject}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
+        ${(q.adTitle ? [`Base : ${q.adTitle}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
         ${(q.chapter ? [`Partie : ${q.chapter}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
         ${(q.tags||[])
   .filter(t => norm(t) !== norm(q.subject) && norm(t) !== norm(q.chapter))
