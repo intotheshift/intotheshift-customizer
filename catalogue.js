@@ -840,7 +840,7 @@
 
   const raw = [
     ["cybersecurite", "Cybersécurité", "🔐", [
-      ["reflexes-cybersecurite",  "Vos réflexes face aux risques numériques",      "Tous publics",   "Identifier les situations numériques sensibles, réagir sans paniquer et protéger les informations utiles.",             { built: buildCyberChapters("reflexes-cybersecurite") }],
+      ["reflexes-cybersecurite",  "Vos réflexes de cybersécurité au quotidien",     "Tous publics",   "Identifier les situations de cybersécurité sensibles, réagir sans paniquer et protéger les informations utiles.",       { built: buildCyberChapters("reflexes-cybersecurite") }],
       ["fraude-phishing",         "Détecter les tentatives de fraude numérique",    "Tous publics",   "Repérer les sollicitations douteuses, les demandes urgentes et les faux signaux de confiance.",                        { built: buildCyberChapters("fraude-phishing") }],
       ["mots-de-passe-acces",     "Gérer ses accès et ses mots de passe",           "Tous publics",   "Adopter les bons réflexes sur les mots de passe, le partage d'accès et les connexions.",                              { built: buildCyberChapters("mots-de-passe-acces") }],
       ["donnees-confidentielles", "Protéger les données et informations sensibles", "Collaborateurs", "Faire les bons arbitrages face aux documents, transferts, exports et accès aux données.",                             { built: buildCyberChapters("donnees-confidentielles") }]
