@@ -524,6 +524,7 @@ const fallbackBibliotheque = [
 
 function getRawBibliotheque(){
   const out = [];
+  const seen = new Set();
 
   if (Array.isArray(window.ITS_CATALOGUE)) {
     window.ITS_CATALOGUE.forEach(ad => {
@@ -531,6 +532,11 @@ function getRawBibliotheque(){
 
       (ad.chapters || []).forEach(ch => {
         (ch.questions || []).forEach(q => {
+          const key = norm(q.text || '');
+
+          if (!key || seen.has(key)) return;
+          seen.add(key);
+
           out.push({
             id: q.id,
             prov: isTBF ? 'TBF' : 'AI',
@@ -538,7 +544,6 @@ function getRawBibliotheque(){
             chapter: ch.title || '',
             text: q.text || '',
             tags: [
-              ...(isTBF ? ['Conçu par The Big Factory'] : ['Base assistée par IA']),
               ad.theme || '',
               ch.title || ''
             ].filter(Boolean),
