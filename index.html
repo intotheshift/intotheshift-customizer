@@ -215,16 +215,28 @@ function startBlankDiagnostic(){
     selectedPack: null,
     currentAdId: null,
     title: "",
-    chapters: [],
-    questions: [],
-    profiles: [],
+    subject: "",
+    chapters: [
+      {
+        title: "Chapitre 1",
+        description: "Décrivez ici le sujet de ce chapitre",
+        questions: [],
+        profiles: [
+          { level:"En développement", title:"", summary:"", description:"", min:0, max:0.66 },
+          { level:"En progression", title:"", summary:"", description:"", min:0.66, max:1.32 },
+          { level:"Ancré", title:"", summary:"", description:"", min:1.32, max:2 }
+        ]
+      }
+    ],
     resources: [],
     campaign: {}
   };
 
-  localStorage.setItem("intotheshift_customizer_state_v1", JSON.stringify(blankState));
+  if (typeof itsSave === "function") itsSave(blankState);
+  else localStorage.setItem("intotheshift_customizer_state_v1", JSON.stringify(blankState));
+
   localStorage.removeItem("its_current_ad_id");
-  window.location.href = "questions.html?mode=blank";
+  window.location.assign("questions.html?mode=blank");
 }
 
 function useAd(id){
