@@ -15,10 +15,11 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 .badges-card{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:22px 26px;margin-bottom:24px}
 .badges-title{font-size:14px;font-weight:800;color:#18375d;margin-bottom:16px}
 .badges-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-.badge-item{display:flex;align-items:flex-start;gap:10px}
-.badge-copy{font-size:13px;line-height:1.45;color:#475569}
-.badge-copy strong{display:block;color:#18375d;margin-bottom:4px}
-.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;margin:0 5px 5px 0;border:1px solid #d8e0ea;background:#edf1f7;color:#18375d}
+.badge-item{display:grid;grid-template-columns:118px 1fr;align-items:flex-start;gap:12px;min-width:0}
+.badge-copy{font-size:13px;line-height:1.45;color:#475569;min-width:0}
+.badge-copy strong{display:block;color:#18375d;margin-bottom:4px;font-size:13px}
+.tag{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;margin:0 5px 5px 0;border:1px solid #d8e0ea;background:#edf1f7;color:#18375d;line-height:1.2;white-space:nowrap}
+.badges-card .tag{width:118px;height:28px;margin:0;padding:0 10px}
 .tag.ai{background:#f0edff;border-color:#c4b5fd;color:#6d28d9}
 .tag.tbf{background:#e5f4f5;border-color:#0097a7;color:#007883}
 .tag.help{background:#eef6ff;border-color:#b7d4f3;color:#18375d}
@@ -26,6 +27,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 .catalogue-count{font-size:12px;color:#64748b;margin-left:auto;align-self:center}
 .filters-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
 @media(max-width:900px){.badges-grid{grid-template-columns:1fr 1fr}.library-hero{flex-direction:column}}
+@media(max-width:560px){.badges-grid{grid-template-columns:1fr}.badge-item{grid-template-columns:1fr}.badges-card .tag{width:max-content;min-width:118px}}
 </style>
 </head>
 <body>
@@ -56,10 +58,10 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   <div class="badges-card">
     <div class="badges-title">🏷 Comprendre les badges</div>
     <div class="badges-grid">
-      <div class="badge-item"><span class="tag ai">Base assistée par IA</span><div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l'IA. À adapter avant utilisation.</div></div>
-      <div class="badge-item"><span class="tag tbf">Conçu par The Big Factory</span><div class="badge-copy"><strong>Conçu par The Big Factory</strong>Contenu conçu par The Big Factory. Base robuste et directement exploitable après relecture.</div></div>
-      <div class="badge-item"><span class="tag help">Aide à la rédaction</span><div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n'est pas destiné à être publié tel quel.</div></div>
-      <div class="badge-item"><span class="tag review">Relecture obligatoire</span><div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l'adéquation terrain.</div></div>
+      <div class="badge-item"><span class="tag ai">Base IA</span><div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l'IA. À adapter avant utilisation.</div></div>
+      <div class="badge-item"><span class="tag tbf">TBF</span><div class="badge-copy"><strong>Conçu par The Big Factory</strong>Contenu conçu par The Big Factory. Base robuste et exploitable après relecture.</div></div>
+      <div class="badge-item"><span class="tag help">Aide rédaction</span><div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n'est pas destiné à être publié tel quel.</div></div>
+      <div class="badge-item"><span class="tag review">Relecture</span><div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l'adéquation terrain.</div></div>
     </div>
   </div>
 
