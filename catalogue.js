@@ -371,10 +371,10 @@ function makeQuestions(prefix, domain, chapterIndex, extraTags){
     risquesNumeriques:{
       domain:"cyber",
       chapters:[
-        ["Repérer les signaux numériques sensibles","Identifier les demandes inhabituelles, les urgences artificielles et les signaux faibles."],
-        ["Protéger ses accès","Adopter des réflexes fiables sur les mots de passe, appareils et connexions."],
-        ["Partager les informations avec discernement","Choisir le bon canal, limiter les transmissions inutiles et protéger les données."],
-        ["Réagir et signaler","Savoir quoi faire quand un doute, une erreur ou un incident apparaît."]
+        ["Identifier les tentatives de fraude et d’hameçonnage","Repérer les emails, liens, pièces jointes, QR codes et demandes urgentes qui peuvent cacher une tentative de fraude."],
+        ["Sécuriser ses accès et ses mots de passe","Adopter des réflexes fiables sur les mots de passe, la double authentification, les sessions ouvertes et le partage d’accès."],
+        ["Protéger les données sensibles","Faire les bons arbitrages face aux fichiers, exports, outils collaboratifs, prestataires et informations confidentielles."],
+        ["Réagir face à un doute ou un incident cyber","Savoir quoi faire après un clic suspect, une alerte, un code inattendu ou une demande inhabituelle."]
       ]
     },
 
