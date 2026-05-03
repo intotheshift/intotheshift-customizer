@@ -53,6 +53,19 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
 .check-title{font-size:12px;font-weight:700;color:#18375d;display:block}
 .check-sub{font-size:11px;color:#64748b;line-height:1.4;margin-top:2px;display:block}
 
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-field.full{grid-column:1 / -1}
+.form-label{font-size:11px;font-weight:800;color:#18375d}
+.form-label .req{color:#eb6366}
+.form-input,.form-textarea{border:1px solid #d8e0ea;border-radius:9px;padding:10px 12px;font-size:13px;color:#18375d;font-family:'Asap',sans-serif;background:#fff;outline:none}
+.form-input:focus,.form-textarea:focus{border-color:#007883;box-shadow:0 0 0 3px rgba(0,120,131,.12)}
+.form-textarea{min-height:78px;resize:vertical}
+.field-error{font-size:10px;color:#eb6366;display:none}
+.form-field.invalid .form-input,.form-field.invalid .form-textarea{border-color:#eb6366;background:#fffafa}
+.form-field.invalid .field-error{display:block}
+
 .btn-main,.btn-back{border-radius:8px;padding:11px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Asap',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:all .12s}
 .btn-main{border:none;background:#eb6366;color:#fff}
 .btn-main:hover:not(:disabled){background:#d4474a}
@@ -135,6 +148,45 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
       </section>
 
       <section class="block">
+        <div class="block-title">Vos informations</div>
+        <div class="block-sub">Ces informations permettront de vous envoyer le récapitulatif et de préparer la mise en ligne de votre autodiagnostic.</div>
+        <div class="form-grid">
+          <div class="form-field" id="field-company">
+            <label class="form-label" for="client-company">Entreprise <span class="req">*</span></label>
+            <input class="form-input" id="client-company" type="text" autocomplete="organization" placeholder="Ex. BNP Paribas" oninput="updateReady()">
+            <div class="field-error">Entreprise obligatoire.</div>
+          </div>
+          <div class="form-field" id="field-email">
+            <label class="form-label" for="client-email">Email professionnel <span class="req">*</span></label>
+            <input class="form-input" id="client-email" type="email" autocomplete="email" placeholder="prenom.nom@entreprise.com" oninput="updateReady()">
+            <div class="field-error">Email professionnel obligatoire.</div>
+          </div>
+          <div class="form-field" id="field-firstname">
+            <label class="form-label" for="client-firstname">Prénom <span class="req">*</span></label>
+            <input class="form-input" id="client-firstname" type="text" autocomplete="given-name" placeholder="Prénom" oninput="updateReady()">
+            <div class="field-error">Prénom obligatoire.</div>
+          </div>
+          <div class="form-field" id="field-lastname">
+            <label class="form-label" for="client-lastname">Nom <span class="req">*</span></label>
+            <input class="form-input" id="client-lastname" type="text" autocomplete="family-name" placeholder="Nom" oninput="updateReady()">
+            <div class="field-error">Nom obligatoire.</div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="client-role">Fonction</label>
+            <input class="form-input" id="client-role" type="text" autocomplete="organization-title" placeholder="Ex. DRH, Responsable formation…" oninput="updateReady()">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="client-phone">Téléphone</label>
+            <input class="form-input" id="client-phone" type="tel" autocomplete="tel" placeholder="Optionnel" oninput="updateReady()">
+          </div>
+          <div class="form-field full">
+            <label class="form-label" for="client-comment">Commentaire ou besoin spécifique</label>
+            <textarea class="form-textarea" id="client-comment" placeholder="Ex. besoin de visuels, contrainte de calendrier, diffusion internationale…" oninput="updateReady()"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
         <div class="block-title">Validation finale</div>
         <div class="block-sub">Cochez les points validés avant de transmettre votre demande.</div>
         <div class="checklist">
@@ -146,7 +198,7 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
         </div>
         <div class="alert alert-warning" id="missing-alert">
           <span class="alert-ico">⚠️</span>
-          <span>Le bouton de transmission s’activera quand tous les points seront cochés.</span>
+          <span>Le bouton de transmission s’activera quand les informations obligatoires seront remplies et tous les points cochés.</span>
         </div>
         <div class="alert alert-success hidden" id="success-alert">
           <span class="alert-ico">✓</span>
@@ -240,7 +292,7 @@ function getCollaboratorTitle(){
   return getParam().titre_repondants || getParam().titre || getThemeTitle();
 }
 function getCompany(){
-  return getParam().entreprise || getParam().company || state.company || 'nomdelentreprise';
+  return getClientInfo().entreprise || getParam().entreprise || getParam().company || state.company || 'nomdelentreprise';
 }
 function getSlug(){
   return getParam().slug || state.slug || slugify(getThemeTitle()) || 'autodiagnostic';
@@ -331,10 +383,57 @@ function buildExcelHtml(){
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body><table>${htmlRows}</table></body></html>`;
 }
 
+function getClientInfo(){
+  const byId = id => document.getElementById(id)?.value?.trim() || '';
+  return {
+    entreprise: byId('client-company'),
+    prenom: byId('client-firstname'),
+    nom: byId('client-lastname'),
+    email: byId('client-email'),
+    fonction: byId('client-role'),
+    telephone: byId('client-phone'),
+    commentaire: byId('client-comment')
+  };
+}
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+function validateClientInfo(showErrors){
+  const info = getClientInfo();
+  const rules = [
+    ['field-company', !!info.entreprise],
+    ['field-firstname', !!info.prenom],
+    ['field-lastname', !!info.nom],
+    ['field-email', isValidEmail(info.email)]
+  ];
+  rules.forEach(([id, ok]) => {
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('invalid', showErrors && !ok);
+  });
+  return rules.every(([, ok]) => ok);
+}
+function restoreClientInfo(){
+  const info = state.clientInfo || state.transmission?.clientInfo || {};
+  const map = {
+    'client-company': info.entreprise || getParam().entreprise || getParam().company || state.company || '',
+    'client-firstname': info.prenom || '',
+    'client-lastname': info.nom || '',
+    'client-email': info.email || '',
+    'client-role': info.fonction || '',
+    'client-phone': info.telephone || '',
+    'client-comment': info.commentaire || ''
+  };
+  Object.entries(map).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if(el && value) el.value = value;
+  });
+}
+
 function buildPayload(){
   const param = getParam();
   return {
     submitted_at: new Date().toISOString(),
+    client_info: getClientInfo(),
     entreprise: getCompany(),
     titre_autodiag: getThemeTitle(),
     titre_repondants: getCollaboratorTitle(),
@@ -381,19 +480,28 @@ function updateReady(){
   const boxes = Array.from(document.querySelectorAll('.check-row input'));
   const checked = boxes.filter(b => b.checked).length;
   const total = boxes.length;
-  const ok = checked === total;
+  const checksOk = checked === total;
+  const clientOk = validateClientInfo(false);
+  const ok = checksOk && clientOk;
   document.getElementById('check-pill').textContent = checked + '/' + total;
-  document.getElementById('check-pill').className = 'pill ' + (ok ? 'pill-ok' : '');
+  document.getElementById('check-pill').className = 'pill ' + (checksOk ? 'pill-ok' : '');
   document.getElementById('check-progress').style.width = Math.round((checked/total)*100) + '%';
-  document.getElementById('check-hint').textContent = ok ? 'Tout est validé : vous pouvez transmettre.' : 'Transmission en attente de validation.';
+  document.getElementById('check-hint').textContent = ok ? 'Tout est validé : vous pouvez transmettre.' : 'Transmission en attente des informations obligatoires et de la validation finale.';
   document.getElementById('btn-transmit').disabled = !ok;
   document.getElementById('missing-alert').classList.toggle('hidden', ok);
 }
 
 async function transmit(){
+  if(!validateClientInfo(true)){
+    document.getElementById('missing-alert').classList.remove('hidden');
+    document.getElementById('missing-alert').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   const payload = buildPayload();
 
+  state.clientInfo = getClientInfo();
   state.transmission = state.transmission || {};
+  state.transmission.clientInfo = state.clientInfo;
   state.transmission.status = 'ready_to_send';
   state.transmission.submitted_at = payload.submitted_at;
   state.transmission.payload = payload;
@@ -425,6 +533,7 @@ async function transmit(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+restoreClientInfo();
 refresh();
 </script>
 </body>
