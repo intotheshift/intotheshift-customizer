@@ -336,7 +336,48 @@
 
   return variants[domain]?.[prefix] || 0;
 }
+function chaptersTags(domain, chapterIndex){
+  const tags = {
+    cyber: [
+      ["Phishing", "Fraude", "Email suspect"],
+      ["Mot de passe", "Double authentification", "Accès"],
+      ["Données sensibles", "Confidentialité", "Partage de fichier"],
+      ["Incident cyber", "Signalement", "Réaction"]
+    ],
+    securite: [
+      ["Risque terrain", "Prévention", "Vigilance"],
+      ["Consigne", "Équipement", "Bon réflexe"],
+      ["Sécurité collective", "Coactivité", "Intervention"],
+      ["Signalement", "Presqu’accident", "Alerte"]
+    ],
+    qvt: [
+      ["Signaux faibles", "Surcharge", "Isolement"],
+      ["Charge de travail", "Priorisation", "Arbitrage"],
+      ["Climat de travail", "Tension", "Coopération"],
+      ["Relais", "Alerte", "Prévention"]
+    ],
+    management: [
+      ["Cadrage", "Rôles", "Priorités"],
+      ["Incertitude", "Coopération", "Projet"],
+      ["Feedback", "Retour constructif", "Communication"],
+      ["Ancrage", "Changement", "Pratiques"]
+    ],
+    environnement: [
+      ["Impact environnemental", "Sobriété", "Usage"],
+      ["Arbitrage", "Achats", "Déplacement"],
+      ["Coopération", "Fournisseur", "Collectif"],
+      ["Changement durable", "Rituel", "Mesure"]
+    ],
+    ethique: [
+      ["Zone grise", "Dilemme", "Règle"],
+      ["Conflit d’intérêts", "Conseil", "Cadeau"],
+      ["Alerte", "Traçabilité", "Faits"],
+      ["Culture éthique", "Vigilance", "Compliance"]
+    ]
+  };
 
+  return tags[domain]?.[chapterIndex] || [];
+}
 function makeQuestions(prefix, domain, chapterIndex, extraTags){
   const bank = questionBanks[domain] || questionBanks.management;
   const offset = makeVariantOffset(prefix, domain);
@@ -350,7 +391,12 @@ function makeQuestions(prefix, domain, chapterIndex, extraTags){
       type:"choix",
       text:text,
       answers:answerSets(domain, k),
-      tags:extraTags || [BADGES.IA, BADGES.VALIDATION]
+      tags:[
+        ...(extraTags || [BADGES.IA, BADGES.VALIDATION]),
+        domain,
+        chaptersTags(domain, chapterIndex),
+        "Mise en situation"
+      ].flat()
     };
   });
 }
