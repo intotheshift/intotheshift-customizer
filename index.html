@@ -5,6 +5,28 @@
 <title>Bibliothèque — Into The Shift</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
 <link rel="stylesheet" href="style.css">
+<style>
+body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
+.library-hero{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:26px 28px;margin-bottom:18px;display:flex;gap:18px;align-items:flex-start}
+.library-icon{width:52px;height:52px;border-radius:10px;background:#0f6878;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.library-title{font-size:22px;font-weight:800;color:#18375d;margin-bottom:8px}
+.library-text{font-size:14px;line-height:1.6;color:#475569;max-width:980px}
+.notice{background:#fff7e8;border:1px solid #ffc866;border-radius:10px;padding:14px 18px;margin-bottom:22px;color:#7a4b00;font-size:13px;line-height:1.5}
+.badges-card{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:22px 26px;margin-bottom:24px}
+.badges-title{font-size:14px;font-weight:800;color:#18375d;margin-bottom:16px}
+.badges-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.badge-item{display:flex;align-items:flex-start;gap:10px}
+.badge-copy{font-size:13px;line-height:1.45;color:#475569}
+.badge-copy strong{display:block;color:#18375d;margin-bottom:4px}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;margin:0 5px 5px 0;border:1px solid #d8e0ea;background:#edf1f7;color:#18375d}
+.tag.ai{background:#f0edff;border-color:#c4b5fd;color:#6d28d9}
+.tag.tbf{background:#e5f4f5;border-color:#0097a7;color:#007883}
+.tag.help{background:#eef6ff;border-color:#b7d4f3;color:#18375d}
+.tag.review{background:#fff7e8;border-color:#ffc866;color:#8a5a00}
+.catalogue-count{font-size:12px;color:#64748b;margin-left:auto;align-self:center}
+.filters-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+@media(max-width:900px){.badges-grid{grid-template-columns:1fr 1fr}.library-hero{flex-direction:column}}
+</style>
 </head>
 <body>
 <div id="header"></div>
@@ -21,10 +43,33 @@
 </div>
 
 <div class="page-wrap">
+  <div class="library-hero">
+    <div class="library-icon">▣</div>
+    <div>
+      <div class="library-title">Bibliothèque de situations</div>
+      <div class="library-text">Cette bibliothèque propose des bases de situations pour construire vos autodiagnostics. Les contenus servent d'aide à la rédaction : ils doivent être adaptés, relus et validés dans leur contexte avant diffusion. Le client reste responsable du contenu final publié.</div>
+    </div>
+  </div>
+
+  <div class="notice"><strong>Important :</strong> les contenus proposés sont des bases de travail. Une relecture est obligatoire avant lancement pour vérifier l'exactitude, la pertinence métier et l'adéquation au contexte de votre organisation.</div>
+
+  <div class="badges-card">
+    <div class="badges-title">🏷 Comprendre les badges</div>
+    <div class="badges-grid">
+      <div class="badge-item"><span class="tag ai">Base assistée par IA</span><div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l'IA. À adapter avant utilisation.</div></div>
+      <div class="badge-item"><span class="tag tbf">Conçu par The Big Factory</span><div class="badge-copy"><strong>Conçu par The Big Factory</strong>Contenu conçu par The Big Factory. Base robuste et directement exploitable après relecture.</div></div>
+      <div class="badge-item"><span class="tag help">Aide à la rédaction</span><div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n'est pas destiné à être publié tel quel.</div></div>
+      <div class="badge-item"><span class="tag review">Relecture obligatoire</span><div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l'adéquation terrain.</div></div>
+    </div>
+  </div>
+
   <h1 class="page-title">Choisir une base d’autodiagnostic</h1>
   <p class="page-sub">Sélectionnez une base de travail, personnalisez les situations et préparez votre campagne. Into The Shift finalisera ensuite le lien de votre autodiag à diffuser auprès de vos collaborateurs et le dashboard des résultats.</p>
 
-  <div id="themeFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px"></div>
+  <div class="filters-row">
+    <div id="themeFilters" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    <div class="catalogue-count" id="catalogueCount"></div>
+  </div>
   <div class="grid" id="catalogueGrid"></div>
 </div>
 
@@ -37,6 +82,30 @@
 
 <script>
 let currentTheme = "all";
+
+function cleanTags(tags){
+  const allowed = [];
+  (tags || []).forEach(t => {
+    const x = String(t || '').toLowerCase();
+    if (x.includes('base assistée') || x.includes('base assistee')) allowed.push('Base assistée par IA');
+    else if (x.includes('the big factory')) allowed.push('Conçu par The Big Factory');
+    else if (x.includes('aide à la rédaction') || x.includes('aide a la redaction')) allowed.push('Aide à la rédaction');
+    else if (x.includes('relecture obligatoire')) allowed.push('Relecture obligatoire');
+  });
+  return [...new Set(allowed)];
+}
+
+function tagClass(t){
+  if(t.includes('Factory')) return 'tbf';
+  if(t.includes('IA')) return 'ai';
+  if(t.includes('Aide')) return 'help';
+  if(t.includes('Relecture')) return 'review';
+  return '';
+}
+
+function renderTags(tags){
+  return cleanTags(tags).map(t => `<span class="tag ${tagClass(t)}">${t}</span>`).join('');
+}
 
 function renderFilters(){
   const el = document.getElementById("themeFilters");
@@ -53,12 +122,13 @@ function setTheme(key){
 function renderCatalogue(){
   const grid = document.getElementById("catalogueGrid");
   const ads = ITS_CATALOGUE.filter(ad => currentTheme === "all" || ad.themeKey === currentTheme);
+  document.getElementById('catalogueCount').textContent = `${ads.length} thème${ads.length>1?'s':''}`;
   grid.innerHTML = ads.map(ad => `
     <div class="ad-card card">
       <div class="audience">${ad.theme} · ${ad.audience}</div>
       <div class="ad-title">${ad.title}</div>
       <div class="ad-desc">${ad.description}</div>
-      ${(ad.tags||[]).map(t=>`<span class="tag ${t.includes('Factory')?'tbf':''}">${t}</span>`).join("")}
+      ${renderTags(ad.tags)}
       <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
         <button class="btn btn-secondary" onclick="openPreview('${ad.id}')">Aperçu</button>
         <button class="btn btn-primary" onclick="useAd('${ad.id}')">Utiliser comme base de travail</button>
@@ -74,7 +144,7 @@ function openPreview(id){
     <div class="audience">${ad.theme}</div>
     <h2 style="font-size:24px;margin:8px 0">${ad.title}</h2>
     <p style="color:#64748b;line-height:1.6;margin-bottom:18px">${ad.description}</p>
-    <div>${(ad.tags||[]).map(t=>`<span class="tag ${t.includes('Factory')?'tbf':''}">${t}</span>`).join("")}</div>
+    <div>${renderTags(ad.tags)}</div>
     <h3 style="margin:24px 0 12px">Chapitres</h3>
     ${ad.chapters.map((c,i)=>`
       <div class="card" style="margin-bottom:10px">
