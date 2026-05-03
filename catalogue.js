@@ -188,10 +188,19 @@
     "presquaccidents-signalement":  5,
     "acces-sites-surete":          10,
     "managers-securite":           15,
+    "coactivite-sous-traitance":    20,
+    "epi-gestes-securite":          25,
+    "securite-manager-arbitrage":   30,
+    "securite-nucleaire":            0,
+    "securite-chantier-btp":         0,
     "rps-signaux-faibles":          0,
     "charge-priorites":             5,
     "cooperation-climat":          10,
     "manager-qvt-rps":             15,
+    "teletravail-hybridation":     20,
+    "epuisement-prevention":       30,
+    "retour-apres-absence":        35,
+    "manager-signaux-rps":         40,
     "changement-reflexes":          0,
     "feedback-managerial":          5,
     "manager-engageant-tbf":       10,
@@ -203,12 +212,7 @@
     "conflits-interets":            0,
     "cadeaux-invitations":          5,
     "alerte-ethique":              10,
-    "manager-compliance":          15,
-    "coactivite-sous-traitance":    20,
-    "epi-gestes-securite":          25,
-    "securite-manager-arbitrage":   30,
-    "securite-nucleaire":            0,
-    "securite-chantier-btp":         0
+    "manager-compliance":          15
   };
 
   function makeVariantOffset(prefix) {
@@ -242,10 +246,10 @@
         ["BTP", "Incident chantier", "Urgence", "Signalement"]
       ],
       qvt: [
-        ["Signaux faibles", "Vigilance",    "Isolement"],
-        ["Charge",          "Priorisation", "Urgences"],
-        ["Relations",       "Conflits",     "Dialogue"],
-        ["Relais",          "Alerte",       "Soutien"]
+        ["Signaux faibles", "RPS", "Vigilance", "Isolement", "Prévention"],
+        ["Charge de travail", "Priorisation", "Urgences", "Épuisement professionnel", "Droit à la déconnexion"],
+        ["Relations", "Coopération", "Tensions", "Climat de travail", "Télétravail"],
+        ["Relais RH", "Alerte", "Soutien", "Retour d'absence", "Orientation"]
       ],
       management: [
         ["Cadre",      "Clarté",         "Rôles"],
@@ -314,8 +318,7 @@
       "Un incident implique à la fois votre équipe et un prestataire. Qui doit prendre en charge le signalement ?",
       "Un exercice d'évacuation est programmé pendant une période de forte activité. Comment réagissez-vous ?",
       "Une étiquette de signalisation est illisible ou absente sur un équipement potentiellement dangereux. Que faites-vous ?",
-      "Un accès à une zone dangereuse est possible sans habilitation requise en raison d'un défaut de balisage. Que faites-vous ?",
-      "Une livraison est déposée dans un couloir de circulation active. Quelle réaction adoptez-vous ?"
+      "Un accès à une zone dangereuse est possible sans habilitation requise en raison d'un défaut de balisage. Que faites-vous ?"
     ],
     sec_nucl: [
       "Vous constatez un écart entre la procédure écrite et la pratique réelle lors d'une opération. Que faites-vous ?",
@@ -381,7 +384,47 @@
       "Une équipe voisine sollicite souvent votre aide dans l'urgence. Que faites-vous ?",
       "Un canal de discussion devient le lieu de remarques tendues ou passives-agressives. Quelle réaction adoptez-vous ?",
       "Une personne revient après une absence et semble vouloir reprendre trop vite. Que faites-vous ?",
-      "Une charge invisible repose toujours sur les mêmes personnes. Comment réagissez-vous ?"
+      "Une charge invisible repose toujours sur les mêmes personnes. Comment réagissez-vous ?",
+      "En télétravail, vous finissez régulièrement votre journée bien après l'horaire habituel. Que faites-vous ?",
+      "Un collègue en distanciel est de moins en moins réactif lors des réunions d'équipe. Quelle réaction adoptez-vous ?",
+      "Vous constatez que les personnes en présentiel ont plus facilement accès aux décisions que celles à distance. Que faites-vous ?",
+      "Une réunion hybride crée régulièrement un déséquilibre entre participants en salle et ceux à distance. Comment réagissez-vous ?",
+      "Vous n'arrivez plus à déconnecter en fin de journée lors des semaines entièrement en télétravail. Quelle réaction adoptez-vous ?",
+      "Un collègue en hybride semble moins bien informé que les autres des décisions prises en présentiel. Que faites-vous ?",
+      "Votre espace de télétravail ne vous permet pas de travailler dans de bonnes conditions. Comment vous positionnez-vous ?",
+      "Vous ressentez une forme d'isolement lors des semaines entièrement à distance. Que faites-vous ?",
+      "Un désaccord surgit entre collègues sur le nombre de jours de présence attendus dans l'équipe. Quelle réaction adoptez-vous ?",
+      "Vous observez que certains membres de l'équipe évitent systématiquement les jours en présentiel. Que faites-vous ?",
+      "Vous vous réveillez régulièrement fatigué·e avant même de commencer la journée. Que faites-vous ?",
+      "Des tâches qui vous plaisaient habituellement vous semblent désormais pesantes et difficiles. Quelle réaction adoptez-vous ?",
+      "Vous avez du mal à vous souvenir des dernières fois où vous avez réellement récupéré. Que faites-vous ?",
+      "Un collègue revient d'un arrêt maladie et semble vouloir rattraper immédiatement tout ce qu'il a manqué. Que faites-vous ?",
+      "Vous sentez que vous n'arrivez plus à vous investir comme avant dans votre travail. Comment vous positionnez-vous ?",
+      "Une personne en retour d'absence semble éviter de parler de ce qui s'est passé. Quelle réaction adoptez-vous ?",
+      "Vous avez pris l'habitude de ne jamais refuser une demande supplémentaire, même quand vous êtes déjà saturé·e. Que faites-vous ?",
+      "Un collègue vous confie qu'il envisage de prendre un arrêt mais qu'il hésite par peur du regard des autres. Que faites-vous ?",
+      "Vous sentez que vos limites ne sont pas respectées dans l'organisation de votre charge. Comment réagissez-vous ?",
+      "Une personne de retour après une longue absence est confrontée à des changements importants dans son équipe. Que faites-vous ?",
+      "Un membre de votre équipe semble de moins en moins impliqué sans raison apparente. Que faites-vous ?",
+      "Lors d'un échange, un collègue vous dit qu'il ne se sent plus à sa place dans l'équipe. Comment réagissez-vous ?",
+      "Deux personnes de votre équipe ont visiblement des tensions mais personne n'en parle ouvertement. Que faites-vous ?",
+      "Un collaborateur traverse une période personnelle difficile qui commence à affecter son travail. Comment vous positionnez-vous ?",
+      "Vous constatez qu'un collègue fait des erreurs inhabituelles depuis quelques semaines. Quelle réaction adoptez-vous ?",
+      "Un collègue vous demande si vous pouvez alléger sa charge. Vous n'avez pas de marge immédiate. Que faites-vous ?",
+      "Lors d'une réunion, quelqu'un fond en larmes brièvement. Comment réagissez-vous ?",
+      "Vous suspectez qu'un collègue est en épuisement professionnel mais il nie toute difficulté. Que faites-vous ?",
+      "Un collègue vous indique qu'il se sent mal dans l'équipe sans pouvoir préciser pourquoi. Comment réagissez-vous ?",
+      "La charge de votre équipe dépasse ce qui est tenable mais vous n'avez pas d'arbitrage de votre hiérarchie. Que faites-vous ?",
+      "Un membre de l'équipe signale qu'il ne peut pas tenir un délai sans explication supplémentaire. Quelle réaction adoptez-vous ?",
+      "Un collègue orienté vers les ressources RH revient vous voir sans avoir contacté personne. Que faites-vous ?",
+      "Vous observez un changement progressif dans le comportement d'un collègue depuis une réorganisation. Comment réagissez-vous ?",
+      "Une personne est clairement en difficulté mais refuse toute aide formelle. Que faites-vous ?",
+      "Votre équipe sort d'une période de forte pression. Certains semblent ne pas décompresser. Quelle réaction adoptez-vous ?",
+      "Un collègue ne prend jamais ses congés et semble en tirer une certaine fierté. Que faites-vous ?",
+      "Lors du retour d'absence d'un collègue, l'équipe n'avait pas vraiment préparé son accueil. Que faites-vous ?",
+      "Vous sentez que vous n'avez pas les ressources suffisantes pour accompagner la situation difficile d'un collègue. Comment réagissez-vous ?",
+      "Un collègue développe une dépendance au travail qui commence à inquiéter l'entourage. Que faites-vous ?",
+      "Vous constatez que votre équipe fonctionne à flux tendu depuis trop longtemps sans régulation. Comment vous positionnez-vous ?"
     ],
     management: [
       "Deux personnes n'ont pas la même compréhension du livrable attendu. Que faites-vous ?",
@@ -510,6 +553,87 @@
         ["Mobiliser les bons relais",         "Savoir quand et comment alerter sans exposer inutilement."]
       ]
     },
+    securiteCoactivite: {
+      domain: "securite",
+      chapters: [
+        ["Préparer une intervention en coactivité",  "Identifier les risques liés à la présence simultanée de plusieurs équipes ou prestataires."],
+        ["Coordonner les zones et les accès",        "Gérer les interférences entre activités parallèles, baliser et vérifier les habilitations."],
+        ["Intégrer les intervenants externes",       "Accueillir, informer et contrôler les prestataires et sous-traitants présents sur le site."],
+        ["Réagir à un incident en coactivité",       "Alerter, sécuriser et gérer les responsabilités quand plusieurs équipes sont impliquées."]
+      ]
+    },
+    securiteEPI: {
+      domain: "securite",
+      chapters: [
+        ["Choisir et vérifier ses EPI",              "Identifier les équipements de protection requis, vérifier leur état avant toute utilisation."],
+        ["Maintenir ses réflexes sous contrainte",   "Conserver les bons gestes même sous pression opérationnelle, par fatigue ou en urgence."],
+        ["Signaler une anomalie matérielle",         "Détecter une défaillance d'EPI ou d'équipement de protection collectif et réagir sans délai."],
+        ["Contribuer à une culture EPI collective",  "Encourager les bonnes pratiques autour de soi sans créer de tensions ou de postures de contrôle."]
+      ]
+    },
+    securiteManagerArbitrage: {
+      domain: "securite",
+      chapters: [
+        ["Tenir les exigences face à la pression",       "Maintenir les standards de sécurité quand la production, les délais ou la hiérarchie créent une pression forte."],
+        ["Traiter les écarts de façon constructive",     "Analyser les causes d'un non-respect de consigne sans culpabiliser, pour agir efficacement sur les causes réelles."],
+        ["Animer la vigilance dans les périodes calmes", "Maintenir l'attention sécurité de l'équipe entre deux incidents, quand la routine tend à s'installer."],
+        ["Détecter les glissements silencieux",          "Repérer les dérives progressives de pratique avant qu'elles ne créent une situation grave."]
+      ]
+    },
+    securiteNucleaire: {
+      domain: "sec_nucl",
+      chapters: [
+        ["Adopter une posture de questionnement",  "Exercer une questioning attitude, ne jamais laisser passer un doute sans le formaliser."],
+        ["Appliquer la rigueur procédurale",       "Respecter les gammes et modes opératoires sans raccourci, même sous pression de délai ou d'expérience."],
+        ["Gérer les situations non prévues",       "Adopter la bonne posture face à une situation non couverte par les référentiels."],
+        ["Déclarer et tirer les enseignements",    "Signaler les écarts et événements précurseurs dans une culture de sûreté ouverte."]
+      ]
+    },
+    securiteChantierBTP: {
+      domain: "sec_btp",
+      chapters: [
+        ["Sécuriser son poste avant de démarrer", "Analyser les risques, baliser sa zone, vérifier les EPC et les EPI avant toute intervention."],
+        ["Gérer la coactivité sur chantier",       "Coordonner avec les autres corps de métier, signaler les interférences et les zones partagées."],
+        ["Appliquer et faire respecter le PPSPS", "Vérifier les habilitations, les permis de travail et les protections collectives prévues au plan."],
+        ["Réagir à un accident ou incident",       "Donner l'alerte, sécuriser les personnes et préserver les conditions pour l'analyse."]
+      ]
+    },
+    qvtTeletravail: {
+      domain: "qvt",
+      chapters: [
+        ["Organiser son temps et son espace à distance",   "Structurer sa journée en télétravail, poser des limites et éviter le glissement des horaires."],
+        ["Maintenir le lien avec son collectif",           "Rester visible et contributeur à distance, prévenir le sentiment d'isolement ou de mise à l'écart."],
+        ["Communiquer efficacement en mode hybride",       "Adapter ses pratiques d'échange pour que distance et présentiel n'induisent pas d'inégalités."],
+        ["Gérer les irritants de l'hybridation",           "Identifier et traiter les frictions propres au travail hybride sans laisser s'installer les non-dits."]
+      ]
+    },
+    qvtEpuisement: {
+      domain: "qvt",
+      chapters: [
+        ["Reconnaître ses propres signaux d'alerte",       "Identifier les signes précoces de fatigue ou de surcharge avant qu'ils ne s'aggravent."],
+        ["Réguler sa charge dans la durée",                "Agir sur les leviers concrets : hiérarchiser, dire non, déléguer sans culpabiliser."],
+        ["Préserver son énergie au quotidien",             "Créer des routines de récupération, maintenir des frontières saines et exercer le droit à la déconnexion."],
+        ["Oser en parler et chercher un appui",            "Identifier les bons interlocuteurs et franchir le pas sans attendre d'être en difficulté réelle."]
+      ]
+    },
+    qvtRetourAbsence: {
+      domain: "qvt",
+      chapters: [
+        ["Préparer les conditions du retour",              "Anticiper les ajustements nécessaires et identifier ce qui a changé pendant l'absence."],
+        ["Réintégrer son collectif de travail",            "Reprendre le fil avec ses collègues, gérer les décalages accumulés et les non-dits."],
+        ["Réguler la reprise en charge",                   "Éviter la surcompensation, calibrer ses engagements et signaler ce qui ne tient pas."],
+        ["Détecter les signaux qui persistent",            "Reconnaître quand le retour ne se stabilise pas et identifier le bon moment pour en parler."]
+      ]
+    },
+    qvtManagerSignaux: {
+      domain: "qvt",
+      chapters: [
+        ["Repérer les signaux faibles dans son équipe",    "Observer sans sur-interpréter, distinguer l'exceptionnel du structurel sans s'ériger en thérapeute."],
+        ["Intervenir de façon factuelle",                  "Agir sur le travail — pas sur la personne — et créer les conditions pour qu'un échange soit possible."],
+        ["Orienter vers les bons relais",                  "Savoir quand passer la main sans se défausser : RH, médecin du travail, dispositif d'écoute."],
+        ["Prévenir par l'organisation",                    "Agir en amont sur la charge, les rôles et le cadre plutôt que de gérer les symptômes individuels."]
+      ]
+    },
     management: {
       domain: "management",
       chapters: [
@@ -535,51 +659,6 @@
         ["Demander conseil au bon moment", "Ne pas rester seul·e face à un doute, une pression ou un conflit d'intérêts."],
         ["Documenter et alerter",          "Décrire les faits, protéger les personnes et utiliser le bon canal."],
         ["Créer une culture de vigilance", "Rendre les règles compréhensibles, applicables et discutables au quotidien."]
-      ]
-    },
-    securiteCoactivite: {
-      domain: "securite",
-      chapters: [
-        ["Préparer une intervention en coactivité",  "Identifier les risques liés à la présence simultanée de plusieurs équipes ou prestataires."],
-        ["Coordonner les zones et les accès",        "Gérer les interférences entre activités parallèles, baliser et vérifier les habilitations."],
-        ["Intégrer les intervenants externes",       "Accueillir, informer et contrôler les prestataires et sous-traitants présents sur le site."],
-        ["Réagir à un incident en coactivité",       "Alerter, sécuriser et gérer les responsabilités quand plusieurs équipes sont impliquées."]
-      ]
-    },
-    securiteEPI: {
-      domain: "securite",
-      chapters: [
-        ["Choisir et vérifier ses EPI",              "Identifier les équipements de protection requis, vérifier leur état avant toute utilisation."],
-        ["Maintenir ses réflexes sous contrainte",   "Conserver les bons gestes même sous pression opérationnelle, par fatigue ou en urgence."],
-        ["Signaler une anomalie matérielle",         "Détecter une défaillance d'EPI ou d'équipement de protection collectif et réagir sans délai."],
-        ["Contribuer à une culture EPI collective",  "Encourager les bonnes pratiques autour de soi sans créer de tensions ou de postures de contrôle."]
-      ]
-    },
-    securiteManagerArbitrage: {
-      domain: "securite",
-      chapters: [
-        ["Tenir les exigences face à la pression",  "Maintenir les standards de sécurité quand la production, les délais ou la hiérarchie créent une pression forte."],
-        ["Traiter les écarts de façon constructive","Analyser les causes d'un non-respect de consigne sans culpabiliser, pour agir efficacement sur les causes réelles."],
-        ["Animer la vigilance dans les périodes calmes", "Maintenir l'attention sécurité de l'équipe entre deux incidents, quand la routine tend à s'installer."],
-        ["Détecter les glissements silencieux",     "Repérer les dérives progressives de pratique avant qu'elles ne créent une situation grave."]
-      ]
-    },
-    securiteNucleaire: {
-      domain: "sec_nucl",
-      chapters: [
-        ["Adopter une posture de questionnement",   "Exercer une questioning attitude, ne jamais laisser passer un doute sans le formaliser."],
-        ["Appliquer la rigueur procédurale",        "Respecter les gammes et modes opératoires sans raccourci, même sous pression de délai ou d'expérience."],
-        ["Gérer les situations non prévues",        "Adopter la bonne posture face à une situation non couverte par les référentiels."],
-        ["Déclarer et tirer les enseignements",     "Signaler les écarts et événements précurseurs dans une culture de sûreté ouverte."]
-      ]
-    },
-    securiteChantierBTP: {
-      domain: "sec_btp",
-      chapters: [
-        ["Sécuriser son poste avant de démarrer",  "Analyser les risques, baliser sa zone, vérifier les EPC et les EPI avant toute intervention."],
-        ["Gérer la coactivité sur chantier",        "Coordonner avec les autres corps de métier, signaler les interférences et les zones partagées."],
-        ["Appliquer et faire respecter le PPSPS",  "Vérifier les habilitations, les permis de travail et les protections collectives prévues au plan."],
-        ["Réagir à un accident ou incident",        "Donner l'alerte, sécuriser les personnes et préserver les conditions pour l'analyse."]
       ]
     }
   };
@@ -1008,21 +1087,25 @@
       ["donnees-confidentielles", "Protéger les données et informations sensibles", "Collaborateurs", "Faire les bons arbitrages face aux documents, transferts, exports et accès aux données.",                             { built: buildCyberChapters("donnees-confidentielles") }]
     ]],
     ["securite-surete", "Sécurité & sûreté au travail", "🦺", [
-      ["culture-securite-terrain",    "Sécurité & culture de sûreté au quotidien",          "Équipes terrain",          "Identifier les risques, respecter les consignes et signaler les situations sensibles.",                    templates.securiteSurete],
-      ["presquaccidents-signalement", "Signaler les incidents et presqu'accidents",           "Tous publics",             "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.",                      templates.securiteSurete],
-      ["acces-sites-surete",          "Sûreté des sites, accès et comportements inhabituels","Tous publics",             "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.",              templates.securiteSurete],
-      ["managers-securite",           "Manager la sécurité sans créer de tension",           "Managers",                 "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.",          templates.securiteSurete],
-      ["coactivite-sous-traitance",   "Travailler en coactivité et gérer les prestataires",  "Équipes terrain",          "Coordonner les interventions simultanées, intégrer les sous-traitants et gérer les zones partagées.",    templates.securiteCoactivite],
-      ["epi-gestes-securite",         "EPI et gestes de sécurité au quotidien",              "Collaborateurs",           "Porter les bons équipements, maintenir ses réflexes sous contrainte et signaler les anomalies matérielles.", templates.securiteEPI],
-      ["securite-manager-arbitrage",  "Arbitrer entre sécurité et pression opérationnelle",  "Managers / Encadrants",    "Tenir les exigences de sécurité face aux délais, traiter les écarts et détecter les dérives silencieuses.", templates.securiteManagerArbitrage],
-      ["securite-nucleaire",          "Culture de sûreté en environnement nucléaire",         "Tous publics — Nucléaire", "Adopter la posture de questionnement, appliquer la rigueur procédurale et déclarer les événements précurseurs.", templates.securiteNucleaire],
-      ["securite-chantier-btp",       "Sécurité sur chantier BTP",                           "Équipes terrain — BTP",    "Sécuriser son poste, gérer la coactivité chantier, respecter le PPSPS et réagir aux incidents.",          templates.securiteChantierBTP]
+      ["culture-securite-terrain",   "Sécurité & culture de sûreté au quotidien",          "Équipes terrain",          "Identifier les risques, respecter les consignes et signaler les situations sensibles.",                    templates.securiteSurete],
+      ["presquaccidents-signalement","Signaler les incidents et presqu'accidents",           "Tous publics",             "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.",                      templates.securiteSurete],
+      ["acces-sites-surete",         "Sûreté des sites, accès et comportements inhabituels","Tous publics",             "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.",              templates.securiteSurete],
+      ["managers-securite",          "Manager la sécurité sans créer de tension",           "Managers",                 "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.",          templates.securiteSurete],
+      ["coactivite-sous-traitance",  "Travailler en coactivité et gérer les prestataires",  "Équipes terrain",          "Coordonner les interventions simultanées, intégrer les sous-traitants et gérer les zones partagées.",    templates.securiteCoactivite],
+      ["epi-gestes-securite",        "EPI et gestes de sécurité au quotidien",              "Collaborateurs",           "Porter les bons équipements, maintenir ses réflexes sous contrainte et signaler les anomalies matérielles.", templates.securiteEPI],
+      ["securite-manager-arbitrage", "Arbitrer entre sécurité et pression opérationnelle",  "Managers / Encadrants",    "Tenir les exigences de sécurité face aux délais, traiter les écarts et détecter les dérives silencieuses.", templates.securiteManagerArbitrage],
+      ["securite-nucleaire",         "Culture de sûreté en environnement nucléaire",        "Tous publics — Nucléaire", "Adopter la posture de questionnement, appliquer la rigueur procédurale et déclarer les événements précurseurs.", templates.securiteNucleaire],
+      ["securite-chantier-btp",      "Sécurité sur chantier BTP",                          "Équipes terrain — BTP",    "Sécuriser son poste, gérer la coactivité chantier, respecter le PPSPS et réagir aux incidents.",          templates.securiteChantierBTP]
     ]],
     ["qvt-rps", "QVT & RPS", "🌿", [
-      ["rps-signaux-faibles", "Repérer les signaux faibles de RPS",         "Tous publics",   "Identifier les tensions, alertes et situations d'isolement dans le quotidien professionnel.", templates.qvtRps],
-      ["charge-priorites",    "Charge de travail et priorisation",          "Tous publics",   "Prendre du recul sur l'urgence, les arbitrages et les limites soutenables.",                  templates.qvtRps],
-      ["cooperation-climat",  "Coopération et climat de travail",           "Collaborateurs", "Agir dans les irritants du quotidien, désamorcer et préserver la qualité relationnelle.",      templates.qvtRps],
-      ["manager-qvt-rps",     "Manager la charge et les tensions d'équipe", "Managers",       "Identifier, réguler et orienter sans porter seul les situations sensibles.",                   templates.qvtRps]
+      ["rps-signaux-faibles",    "Repérer les signaux faibles de RPS",                      "Tous publics",          "Identifier les tensions, alertes et situations d'isolement dans le quotidien professionnel.",                  templates.qvtRps],
+      ["charge-priorites",       "Charge de travail et priorisation",                       "Tous publics",          "Prendre du recul sur l'urgence, les arbitrages et les limites soutenables.",                                  templates.qvtRps],
+      ["cooperation-climat",     "Coopération et climat de travail",                        "Collaborateurs",        "Agir dans les irritants du quotidien, désamorcer et préserver la qualité relationnelle.",                      templates.qvtRps],
+      ["manager-qvt-rps",        "Manager la charge et les tensions d'équipe",              "Managers",              "Identifier, réguler et orienter sans porter seul les situations sensibles.",                                   templates.qvtRps],
+      ["teletravail-hybridation","Télétravail et travail hybride",                          "Collaborateurs",        "Organiser sa présence à distance, maintenir le lien collectif et gérer les irritants de l'hybridation.",       templates.qvtTeletravail],
+      ["epuisement-prevention",  "Prévenir l'épuisement professionnel",                    "Collaborateurs",        "Reconnaître ses signaux d'alerte, réguler sa charge dans la durée et oser chercher un appui.",                  templates.qvtEpuisement],
+      ["retour-apres-absence",   "Reprendre le travail après une absence",                  "Tous publics",          "Préparer son retour, réintégrer son collectif et calibrer la reprise en charge sans surcompenser.",             templates.qvtRetourAbsence],
+      ["manager-signaux-rps",    "Détecter et orienter sans psychologiser",                 "Managers / Encadrants", "Repérer les signaux faibles, intervenir sur le travail et orienter vers les bons relais sans se substituer aux spécialistes.", templates.qvtManagerSignaux]
     ]],
     ["management", "Transformation & management", "🔄", [
       ["changement-reflexes",   "Changer sans se crisper",             "Tous publics",   "Comprendre ses réflexes face aux changements de méthode, d'outil ou d'organisation.",         templates.management],
