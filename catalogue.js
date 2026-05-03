@@ -104,6 +104,42 @@
           { text: "Je cherche une solution prudente sans forcément formaliser.", score: 1 },
           { text: "Je clarifie le risque, les personnes concernées et la règle à appliquer.", score: 2 }
         ]
+      ],
+      sec_nucl: [
+        [
+          { text: "Je fais confiance au retour de l'équipe et poursuis l'opération.", score: 0 },
+          { text: "Je note le point et le signale en fin d'opération.", score: 1 },
+          { text: "Je stoppe, signale formellement et attends une validation avant de reprendre.", score: 2 }
+        ],
+        [
+          { text: "Je m'appuie sur l'expérience collective — la procédure peut être adaptée.", score: 0 },
+          { text: "J'interpelle le responsable sans bloquer l'opération.", score: 1 },
+          { text: "Je remonte le point formellement et n'avance pas sans validation claire.", score: 2 }
+        ],
+        [
+          { text: "Je laisse passer : l'écart est mineur et n'a pas eu de conséquence.", score: 0 },
+          { text: "J'en parle informellement à un collègue pour avoir son avis.", score: 1 },
+          { text: "Je déclenche le processus de signalement prévu, même pour un écart apparemment mineur.", score: 2 },
+          { text: "Je documente et contribue à l'analyse de retour d'expérience.", score: 2 }
+        ]
+      ],
+      sec_btp: [
+        [
+          { text: "Je continue : la pression du planning ne laisse pas d'autre choix.", score: 0 },
+          { text: "Je signale verbalement mais ne bloque pas les travaux.", score: 1 },
+          { text: "Je stoppe l'activité concernée jusqu'à correction de la situation.", score: 2 }
+        ],
+        [
+          { text: "Je laisse l'encadrement gérer : ce n'est pas directement ma zone.", score: 0 },
+          { text: "J'alerte verbalement la personne concernée.", score: 1 },
+          { text: "Je signale formellement et m'assure que la correction est effectuée.", score: 2 },
+          { text: "Je contribue à trouver une solution immédiate et documente le problème.", score: 2 }
+        ],
+        [
+          { text: "Je finalise la tâche en cours avant d'agir.", score: 0 },
+          { text: "Je vérifie l'urgence réelle avant d'intervenir.", score: 1 },
+          { text: "Je réagis immédiatement pour éviter toute aggravation.", score: 2 }
+        ]
       ]
     };
     const selected = sets[domain] || sets.management;
@@ -167,7 +203,12 @@
     "conflits-interets":            0,
     "cadeaux-invitations":          5,
     "alerte-ethique":              10,
-    "manager-compliance":          15
+    "manager-compliance":          15,
+    "coactivite-sous-traitance":    20,
+    "epi-gestes-securite":          25,
+    "securite-manager-arbitrage":   30,
+    "securite-nucleaire":            0,
+    "securite-chantier-btp":         0
   };
 
   function makeVariantOffset(prefix) {
@@ -183,10 +224,22 @@
   function chaptersTags(domain, chapterIndex) {
     var map = {
       securite: [
-        ["Risque terrain", "Observation", "Prévention"],
-        ["Gestes sûrs",   "Pression opérationnelle", "Réflexes"],
-        ["Collectif",     "Intervention",             "Culture sécurité"],
-        ["Signalement",   "Alerte",                   "REX"]
+        ["Risque terrain", "Observation", "Prévention", "EPI", "Détection"],
+        ["Gestes sûrs", "Pression opérationnelle", "Réflexes", "Procédure", "EPI"],
+        ["Collectif", "Intervention", "Culture sécurité", "Coactivité", "Sous-traitance"],
+        ["Signalement", "Alerte", "REX", "Presqu'accident", "Urgence opérationnelle"]
+      ],
+      sec_nucl: [
+        ["Nucléaire", "Questioning attitude", "Rigueur", "Sûreté"],
+        ["Nucléaire", "Procédure", "Référentiel", "Gamme opératoire"],
+        ["Nucléaire", "Situation imprévue", "Escalade", "Sûreté"],
+        ["Nucléaire", "Déclaration", "REX", "Culture de sûreté"]
+      ],
+      sec_btp: [
+        ["BTP", "Chantier", "EPI", "EPC", "Risque terrain"],
+        ["BTP", "Coactivité", "Corps de métier", "Coordination chantier"],
+        ["BTP", "PPSPS", "Permis de travail", "Habilitation"],
+        ["BTP", "Incident chantier", "Urgence", "Signalement"]
       ],
       qvt: [
         ["Signaux faibles", "Vigilance",    "Isolement"],
@@ -242,7 +295,71 @@
       "Une zone est mal rangée après une intervention. Quelle réaction adoptez-vous ?",
       "Un accès badge est prêté pour dépanner quelqu'un. Que faites-vous ?",
       "Un briefing sécurité est écourté car la journée est chargée. Comment réagissez-vous ?",
-      "Vous identifiez un risque qui concerne plusieurs équipes. Que faites-vous ?"
+      "Vous identifiez un risque qui concerne plusieurs équipes. Que faites-vous ?",
+      "Deux équipes travaillent simultanément dans la même zone sans avoir coordonné leurs interventions. Que faites-vous ?",
+      "Un sous-traitant réalise une tâche sans avoir reçu le plan de prévention. Quelle est votre réaction ?",
+      "Un EPI obligatoire est inconfortable et ralentit l'exécution de la tâche. Comment réagissez-vous ?",
+      "Un équipement de protection collectif a été déplacé sans raison apparente. Que faites-vous ?",
+      "Une zone balisée est franchie par des personnes qui ne participent pas à l'intervention. Que faites-vous ?",
+      "Un intervenant externe ne connaît pas les consignes de sécurité du site. Comment réagissez-vous ?",
+      "Une tâche nécessite une habilitation spécifique, mais la personne disponible ne l'a pas. Que faites-vous ?",
+      "Vous constatez qu'un EPI est endommagé mais encore utilisé. Quelle réaction adoptez-vous ?",
+      "Un permis de travail est en cours mais les conditions ont changé depuis sa délivrance. Que faites-vous ?",
+      "Une procédure d'urgence est affichée mais peu de personnes semblent la connaître. Comment réagissez-vous ?",
+      "Un travailleur isolé n'a pas déclenché sa vérification périodique depuis un moment. Que faites-vous ?",
+      "Vous observez de la fatigue visible chez un collègue qui doit réaliser une tâche à risque. Que faites-vous ?",
+      "Un mode opératoire n'a pas été actualisé après un changement d'équipement. Quelle réaction adoptez-vous ?",
+      "Une situation d'urgence survient mais le responsable sécurité n'est pas joignable. Que faites-vous ?",
+      "Une consigne de sécurité semble inadaptée à la réalité du terrain. Comment vous positionnez-vous ?",
+      "Un incident implique à la fois votre équipe et un prestataire. Qui doit prendre en charge le signalement ?",
+      "Un exercice d'évacuation est programmé pendant une période de forte activité. Comment réagissez-vous ?",
+      "Une étiquette de signalisation est illisible ou absente sur un équipement potentiellement dangereux. Que faites-vous ?",
+      "Un accès à une zone dangereuse est possible sans habilitation requise en raison d'un défaut de balisage. Que faites-vous ?",
+      "Une livraison est déposée dans un couloir de circulation active. Quelle réaction adoptez-vous ?"
+    ],
+    sec_nucl: [
+      "Vous constatez un écart entre la procédure écrite et la pratique réelle lors d'une opération. Que faites-vous ?",
+      "Une déviation technique mineure survient en cours d'opération. L'équipe pense pouvoir la gérer sans escalade. Que faites-vous ?",
+      "Vous avez un doute sur l'interprétation d'un référentiel technique mais la pression de délai est forte. Comment réagissez-vous ?",
+      "Une gamme d'intervention comporte une étape ambiguë. Votre collègue l'interprète différemment de vous. Que faites-vous ?",
+      "Un événement significatif de sûreté semble s'être produit mais aucun dommage n'est visible. Quelle réaction adoptez-vous ?",
+      "Le chef de chantier vous demande de commencer une intervention avant que la consignation soit complète. Que faites-vous ?",
+      "Vous êtes témoin d'un contournement de procédure qui n'a entraîné aucun incident. Comment vous positionnez-vous ?",
+      "Une situation non prévue par les procédures se présente lors d'une opération. Que faites-vous ?",
+      "Un collègue minimise l'importance d'un signalement car il pense que ça n'a pas de conséquence réelle. Quelle est votre réaction ?",
+      "Vous identifiez un signal faible qui pourrait être précurseur d'un problème plus grave. Que faites-vous ?",
+      "La pression de remise en service d'un équipement est forte, mais une question technique reste ouverte. Comment réagissez-vous ?",
+      "Un prestataire habituel semble moins rigoureux dans l'application des règles. Que faites-vous ?",
+      "Vous constatez qu'une modification temporaire d'installation n'a pas été correctement documentée. Que faites-vous ?",
+      "Un retour d'expérience d'un autre site mentionne un incident similaire à une situation rencontrée chez vous. Comment réagissez-vous ?",
+      "Vous avez eu un doute en cours d'opération mais avez continué. L'opération s'est bien passée. Que faites-vous a posteriori ?",
+      "Un opérateur expérimenté déclare qu'une vérification systématique est inutile dans ce cas précis. Que faites-vous ?",
+      "Une nouvelle recrue signale une anomalie que personne d'autre n'avait remarquée. Quelle réaction adoptez-vous ?",
+      "Vous êtes fatigué en fin de poste et devez encore réaliser une vérification documentée. Que faites-vous ?",
+      "Une situation ambiguë se présente entre une règle formelle et une pratique acceptée de longue date. Comment vous positionnez-vous ?",
+      "Un défaut d'information pourrait induire un autre intervenant en erreur sur l'état d'un équipement. Que faites-vous ?"
+    ],
+    sec_btp: [
+      "Vous débutez une journée sur chantier et constatez que le balisage de la veille a été modifié sans information. Que faites-vous ?",
+      "Un engin de chantier manœuvre dans une zone piétonne sans signalement préalable. Quelle réaction adoptez-vous ?",
+      "Une fouille est ouverte sans étaiement alors que le terrain est instable. Que faites-vous ?",
+      "Vous devez travailler en hauteur mais le harnais disponible n'a pas été vérifié récemment. Comment réagissez-vous ?",
+      "Deux corps de métier se trouvent simultanément dans la même zone sans coordination préalable. Que faites-vous ?",
+      "Un chef de chantier demande d'avancer les travaux avant que les protections collectives ne soient en place. Quelle est votre réaction ?",
+      "Un intérimaire commence une tâche risquée sans avoir reçu l'accueil sécurité chantier. Que faites-vous ?",
+      "Les conditions météo se dégradent et rendent dangereuse la poursuite de certains travaux. Comment vous positionnez-vous ?",
+      "Un matériel de levage est utilisé sans vérification périodique à jour. Quelle réaction adoptez-vous ?",
+      "Les protections contre les chutes ne couvrent pas l'ensemble de la zone concernée. Que faites-vous ?",
+      "Un sous-traitant ne respecte pas les consignes de sécurité spécifiques au chantier. Comment réagissez-vous ?",
+      "Des travaux de soudure sont réalisés à proximité de matériaux inflammables non protégés. Que faites-vous ?",
+      "Le délai est avancé et plusieurs équipes travaillent en même temps dans un espace réduit. Quelle réaction adoptez-vous ?",
+      "Un permis de feu a expiré mais les travaux n'ont pas encore été terminés. Que faites-vous ?",
+      "Vous constatez qu'une canalisation ou un câble n'est pas à l'endroit indiqué sur les plans. Comment réagissez-vous ?",
+      "Un opérateur travaille seul dans une tranchée sans dispositif de surveillance. Quelle réaction adoptez-vous ?",
+      "Des déchets de chantier sont stockés sur un cheminement d'évacuation d'urgence. Que faites-vous ?",
+      "Un incident mineur survient mais l'équipe préfère ne pas le signaler pour ne pas ralentir le chantier. Comment vous positionnez-vous ?",
+      "La réception de travaux révèle que certaines protections définitives n'ont pas été posées. Que faites-vous ?",
+      "Un nouvel arrivant sur le chantier n'a pas eu de présentation des risques spécifiques de la zone. Quelle réaction adoptez-vous ?"
     ],
     qvt: [
       "Vous constatez qu'une personne répond régulièrement très tard le soir. Que faites-vous ?",
@@ -418,6 +535,51 @@
         ["Demander conseil au bon moment", "Ne pas rester seul·e face à un doute, une pression ou un conflit d'intérêts."],
         ["Documenter et alerter",          "Décrire les faits, protéger les personnes et utiliser le bon canal."],
         ["Créer une culture de vigilance", "Rendre les règles compréhensibles, applicables et discutables au quotidien."]
+      ]
+    },
+    securiteCoactivite: {
+      domain: "securite",
+      chapters: [
+        ["Préparer une intervention en coactivité",  "Identifier les risques liés à la présence simultanée de plusieurs équipes ou prestataires."],
+        ["Coordonner les zones et les accès",        "Gérer les interférences entre activités parallèles, baliser et vérifier les habilitations."],
+        ["Intégrer les intervenants externes",       "Accueillir, informer et contrôler les prestataires et sous-traitants présents sur le site."],
+        ["Réagir à un incident en coactivité",       "Alerter, sécuriser et gérer les responsabilités quand plusieurs équipes sont impliquées."]
+      ]
+    },
+    securiteEPI: {
+      domain: "securite",
+      chapters: [
+        ["Choisir et vérifier ses EPI",              "Identifier les équipements de protection requis, vérifier leur état avant toute utilisation."],
+        ["Maintenir ses réflexes sous contrainte",   "Conserver les bons gestes même sous pression opérationnelle, par fatigue ou en urgence."],
+        ["Signaler une anomalie matérielle",         "Détecter une défaillance d'EPI ou d'équipement de protection collectif et réagir sans délai."],
+        ["Contribuer à une culture EPI collective",  "Encourager les bonnes pratiques autour de soi sans créer de tensions ou de postures de contrôle."]
+      ]
+    },
+    securiteManagerArbitrage: {
+      domain: "securite",
+      chapters: [
+        ["Tenir les exigences face à la pression",  "Maintenir les standards de sécurité quand la production, les délais ou la hiérarchie créent une pression forte."],
+        ["Traiter les écarts de façon constructive","Analyser les causes d'un non-respect de consigne sans culpabiliser, pour agir efficacement sur les causes réelles."],
+        ["Animer la vigilance dans les périodes calmes", "Maintenir l'attention sécurité de l'équipe entre deux incidents, quand la routine tend à s'installer."],
+        ["Détecter les glissements silencieux",     "Repérer les dérives progressives de pratique avant qu'elles ne créent une situation grave."]
+      ]
+    },
+    securiteNucleaire: {
+      domain: "sec_nucl",
+      chapters: [
+        ["Adopter une posture de questionnement",   "Exercer une questioning attitude, ne jamais laisser passer un doute sans le formaliser."],
+        ["Appliquer la rigueur procédurale",        "Respecter les gammes et modes opératoires sans raccourci, même sous pression de délai ou d'expérience."],
+        ["Gérer les situations non prévues",        "Adopter la bonne posture face à une situation non couverte par les référentiels."],
+        ["Déclarer et tirer les enseignements",     "Signaler les écarts et événements précurseurs dans une culture de sûreté ouverte."]
+      ]
+    },
+    securiteChantierBTP: {
+      domain: "sec_btp",
+      chapters: [
+        ["Sécuriser son poste avant de démarrer",  "Analyser les risques, baliser sa zone, vérifier les EPC et les EPI avant toute intervention."],
+        ["Gérer la coactivité sur chantier",        "Coordonner avec les autres corps de métier, signaler les interférences et les zones partagées."],
+        ["Appliquer et faire respecter le PPSPS",  "Vérifier les habilitations, les permis de travail et les protections collectives prévues au plan."],
+        ["Réagir à un accident ou incident",        "Donner l'alerte, sécuriser les personnes et préserver les conditions pour l'analyse."]
       ]
     }
   };
@@ -846,10 +1008,15 @@
       ["donnees-confidentielles", "Protéger les données et informations sensibles", "Collaborateurs", "Faire les bons arbitrages face aux documents, transferts, exports et accès aux données.",                             { built: buildCyberChapters("donnees-confidentielles") }]
     ]],
     ["securite-surete", "Sécurité & sûreté au travail", "🦺", [
-      ["culture-securite-terrain",    "Sécurité & culture de sûreté au quotidien",          "Équipes terrain", "Identifier les risques, respecter les consignes et signaler les situations sensibles.",    templates.securiteSurete],
-      ["presquaccidents-signalement", "Signaler les incidents et presqu'accidents",           "Tous publics",    "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.",      templates.securiteSurete],
-      ["acces-sites-surete",          "Sûreté des sites, accès et comportements inhabituels","Tous publics",    "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.",templates.securiteSurete],
-      ["managers-securite",           "Manager la sécurité sans créer de tension",           "Managers",        "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.",templates.securiteSurete]
+      ["culture-securite-terrain",    "Sécurité & culture de sûreté au quotidien",          "Équipes terrain",          "Identifier les risques, respecter les consignes et signaler les situations sensibles.",                    templates.securiteSurete],
+      ["presquaccidents-signalement", "Signaler les incidents et presqu'accidents",           "Tous publics",             "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.",                      templates.securiteSurete],
+      ["acces-sites-surete",          "Sûreté des sites, accès et comportements inhabituels","Tous publics",             "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.",              templates.securiteSurete],
+      ["managers-securite",           "Manager la sécurité sans créer de tension",           "Managers",                 "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.",          templates.securiteSurete],
+      ["coactivite-sous-traitance",   "Travailler en coactivité et gérer les prestataires",  "Équipes terrain",          "Coordonner les interventions simultanées, intégrer les sous-traitants et gérer les zones partagées.",    templates.securiteCoactivite],
+      ["epi-gestes-securite",         "EPI et gestes de sécurité au quotidien",              "Collaborateurs",           "Porter les bons équipements, maintenir ses réflexes sous contrainte et signaler les anomalies matérielles.", templates.securiteEPI],
+      ["securite-manager-arbitrage",  "Arbitrer entre sécurité et pression opérationnelle",  "Managers / Encadrants",    "Tenir les exigences de sécurité face aux délais, traiter les écarts et détecter les dérives silencieuses.", templates.securiteManagerArbitrage],
+      ["securite-nucleaire",          "Culture de sûreté en environnement nucléaire",         "Tous publics — Nucléaire", "Adopter la posture de questionnement, appliquer la rigueur procédurale et déclarer les événements précurseurs.", templates.securiteNucleaire],
+      ["securite-chantier-btp",       "Sécurité sur chantier BTP",                           "Équipes terrain — BTP",    "Sécuriser son poste, gérer la coactivité chantier, respecter le PPSPS et réagir aux incidents.",          templates.securiteChantierBTP]
     ]],
     ["qvt-rps", "QVT & RPS", "🌿", [
       ["rps-signaux-faibles", "Repérer les signaux faibles de RPS",         "Tous publics",   "Identifier les tensions, alertes et situations d'isolement dans le quotidien professionnel.", templates.qvtRps],
