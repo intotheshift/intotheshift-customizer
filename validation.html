@@ -281,6 +281,34 @@ function formatPack(pack){
   }
   return String(pack);
 }
+
+function pickFirstDefined(values){
+  return values.find(v => v !== undefined && v !== null && v !== '');
+}
+function findDeepPack(obj, depth = 0){
+  if(!obj || typeof obj !== 'object' || depth > 4) return undefined;
+  const wanted = /^(pack|packChoisi|pack_choisi|selectedPack|formule|offre|offreChoisie|offre_choisie|nombre_passations|nb_passations|passations)$/i;
+  for(const [key, value] of Object.entries(obj)){
+    if(wanted.test(key) && value !== undefined && value !== null && value !== '') return value;
+  }
+  for(const value of Object.values(obj)){
+    if(value && typeof value === 'object' && !Array.isArray(value)){
+      const found = findDeepPack(value, depth + 1);
+      if(found !== undefined && found !== null && found !== '') return found;
+    }
+  }
+  return undefined;
+}
+function getPackChoice(){
+  const param = getParam();
+  return pickFirstDefined([
+    param.pack, param.packChoisi, param.pack_choisi, param.selectedPack, param.formule, param.offre, param.offreChoisie,
+    state.pack, state.packChoisi, state.pack_choisi, state.selectedPack, state.formule, state.offre, state.offreChoisie,
+    state.campagne?.pack, state.campagne?.packChoisi, state.campagne?.pack_choisi, state.campagne?.selectedPack, state.campagne?.formule, state.campagne?.offre, state.campagne?.offreChoisie,
+    state.campaign?.pack, state.campaign?.packChoisi, state.campaign?.selectedPack, state.campaign?.formule, state.campaign?.offre,
+    findDeepPack(state)
+  ]);
+}
 function getParam(){
   state.parametrage = state.parametrage || {};
   return state.parametrage;
@@ -439,7 +467,7 @@ function buildPayload(){
     titre_repondants: getCollaboratorTitle(),
     date_lancement: param.date_lancement || param.dateLancement || '',
     date_cloture: param.date_cloture || param.dateCloture || '',
-    pack: formatPack(param.pack || state.pack || ''),
+    pack: formatPack(getPackChoice()),
     slug: getSlug(),
     url_prevue: getUrl(),
     chapters: getChapters(),
@@ -456,7 +484,7 @@ function refresh(){
   const company = getCompany();
   const launch = param.date_lancement || param.dateLancement || '';
   const close = param.date_cloture || param.dateCloture || '';
-  const pack = formatPack(param.pack || state.pack || '—');
+  const pack = formatPack(getPackChoice());
   const url = getUrl();
 
   document.getElementById('sum-company').textContent = company;
