@@ -1186,7 +1186,6 @@ function currentLib() {
   const existing = currentQuestionKeys();
 
   return bibliothequeQuestions()
-    .filter(q => !q.added && libraryMatchesContext(q))
     .filter(q => {
       const sameId = existing.has(String(q.id || ''));
       const sameText = existing.has(norm(q.text || ''));
