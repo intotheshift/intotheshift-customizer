@@ -436,7 +436,10 @@ function normalizeTags(tags){
         && !x.includes('création entreprise')
         && !x.includes('creation entreprise')
         && !x.includes('contribution client')
-        && !x.includes('validation obligatoire');
+        && !x.includes('validation obligatoire')
+        && !x.includes('relecture obligatoire')
+        && !x.includes('aide à la rédaction')
+        && !x.includes('aide a la redaction');
     })
     .slice(0,6)
     .map(t => ({t:String(t), ai:String(t).toLowerCase().includes('ia')}));
@@ -1185,12 +1188,21 @@ function currentQuestionKeys(){
 function currentLib() {
   const existing = currentQuestionKeys();
 
-  return bibliothequeQuestions()
-    .filter(q => {
-      const sameId = existing.has(String(q.id || ''));
-      const sameText = existing.has(norm(q.text || ''));
-      return !sameId && !sameText;
-    });
+  function notAlreadyInChapter(q){
+    const sameId = existing.has(String(q.id || ''));
+    const sameText = existing.has(norm(q.text || ''));
+    return !sameId && !sameText;
+  }
+
+  const allAvailable = bibliothequeQuestions()
+    .filter(q => !q.added)
+    .filter(notAlreadyInChapter);
+
+  const contextual = allAvailable.filter(q => libraryMatchesContext(q));
+
+  // UX propre : on affiche d'abord les situations qui correspondent au sujet/chapitre.
+  // Si le filtre ne trouve rien, on ne bloque pas la pioche : on affiche toute la bibliothèque disponible.
+  return contextual.length ? contextual : allAvailable;
 }
 
 function renderPanelTags() {
@@ -1290,6 +1302,9 @@ function addFromLib(qid) {
           && !x.includes('conçu par')
           && !x.includes('concu par')
           && !x.includes('validation obligatoire')
+          && !x.includes('relecture obligatoire')
+          && !x.includes('aide à la rédaction')
+          && !x.includes('aide a la redaction')
           && !x.includes('contribution client');
       })
       .map(t => ({t, ai:false})),
