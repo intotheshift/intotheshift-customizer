@@ -95,6 +95,16 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
 .progress-wrap{height:7px;background:#edf1f7;border-radius:20px;overflow:hidden;margin:8px 0}
 .progress-fill{height:100%;background:#007883;border-radius:20px;transition:width .2s}
 .hidden{display:none}
+
+.confirm-overlay{position:fixed;inset:0;background:rgba(15,30,55,.55);z-index:999;display:none;align-items:center;justify-content:center;padding:24px}
+.confirm-overlay.on{display:flex}
+.confirm-modal{width:min(480px,94vw);background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28);padding:28px 26px;text-align:center;border:1px solid #d8e0ea}
+.confirm-icon{width:56px;height:56px;border-radius:50%;background:#f0fbf2;color:#27823a;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;margin:0 auto 14px;border:1px solid #b8e8c0}
+.confirm-title{font-size:20px;font-weight:800;color:#18375d;margin-bottom:8px}
+.confirm-text{font-size:13px;color:#64748b;line-height:1.55;margin-bottom:18px}
+.confirm-btn{border:none;background:#18375d;color:#fff;border-radius:9px;padding:11px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Asap',sans-serif}
+.confirm-btn:hover{background:#102946}
+
 </style>
 </head>
 <body>
@@ -242,6 +252,18 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
         </div>
       </div>
     </aside>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="confirm-modal">
+    <div class="confirm-icon">✓</div>
+    <div class="confirm-title" id="confirm-title">Configuration transmise</div>
+    <div class="confirm-text">
+      Votre demande a bien été envoyée à l’équipe Into The Shift.<br>
+      Nous allons vérifier les éléments et préparer la mise en ligne de votre autodiagnostic.
+    </div>
+    <button class="confirm-btn" type="button" onclick="closeConfirmModal()">J’ai compris</button>
   </div>
 </div>
 
@@ -621,6 +643,15 @@ function updateReady(){
   document.getElementById('missing-alert').classList.toggle('hidden', ok);
 }
 
+function showConfirmModal(){
+  const overlay = document.getElementById('confirm-overlay');
+  if(overlay) overlay.classList.add('on');
+}
+function closeConfirmModal(){
+  const overlay = document.getElementById('confirm-overlay');
+  if(overlay) overlay.classList.remove('on');
+}
+
 async function transmit(){
   if(!validateClientInfo(true)){
     document.getElementById('missing-alert').classList.remove('hidden');
@@ -660,7 +691,7 @@ async function transmit(){
   document.getElementById('success-alert').classList.remove('hidden');
   document.getElementById('btn-transmit').disabled = true;
   document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
-  window.scrollTo({top:0,behavior:'smooth'});
+  showConfirmModal();
 }
 
 restoreClientInfo();
