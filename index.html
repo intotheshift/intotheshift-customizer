@@ -36,8 +36,8 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 <body>
 <div id="header"></div>
 <script src="header.js"></script>
-<script src="catalogue.js"></script>
 <script src="app.js"></script>
+<script src="catalogue.js?v=20260503-securite-surete"></script>
 
 <div class="subnav">
   <button class="sn on">Bibliothèque</button>
@@ -88,6 +88,29 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 <script>
 let currentTheme = "all";
 
+function getCatalogue(){
+  return Array.isArray(window.ITS_CATALOGUE) ? window.ITS_CATALOGUE : [];
+}
+
+function getThemes(){
+  const catalogue = getCatalogue();
+  if (Array.isArray(window.ITS_THEMES) && window.ITS_THEMES.length) {
+    return window.ITS_THEMES;
+  }
+  const seen = new Map();
+  catalogue.forEach(ad => {
+    if (!seen.has(ad.themeKey)) {
+      seen.set(ad.themeKey, { key: ad.themeKey, label: ad.theme, icon: ad.icon || "▣" });
+    }
+  });
+  return Array.from(seen.values());
+}
+
+function getAdById(id){
+  if (typeof window.itsGetAdById === "function") return window.itsGetAdById(id);
+  return getCatalogue().find(ad => ad.id === id);
+}
+
 function cleanTags(tags){
   const allowed = [];
   (tags || []).forEach(t => {
@@ -114,8 +137,9 @@ function renderTags(tags){
 
 function renderFilters(){
   const el = document.getElementById("themeFilters");
+  const themes = getThemes();
   el.innerHTML = `<button class="btn ${currentTheme==='all'?'btn-primary':'btn-secondary'}" onclick="setTheme('all')">Tous les thèmes</button>` +
-    ITS_THEMES.map(t => `<button class="btn ${currentTheme===t.key?'btn-primary':'btn-secondary'}" onclick="setTheme('${t.key}')">${t.icon} ${t.label}</button>`).join("");
+    themes.map(t => `<button class="btn ${currentTheme===t.key?'btn-primary':'btn-secondary'}" onclick="setTheme('${t.key}')">${t.icon} ${t.label}</button>`).join("");
 }
 
 function setTheme(key){
@@ -126,8 +150,9 @@ function setTheme(key){
 
 function renderCatalogue(){
   const grid = document.getElementById("catalogueGrid");
-  const ads = ITS_CATALOGUE.filter(ad => currentTheme === "all" || ad.themeKey === currentTheme);
-  document.getElementById('catalogueCount').textContent = `${ads.length} thème${ads.length>1?'s':''}`;
+  const catalogue = getCatalogue();
+  const ads = catalogue.filter(ad => currentTheme === "all" || ad.themeKey === currentTheme);
+  document.getElementById('catalogueCount').textContent = `${ads.length} base${ads.length>1?'s':''}`;
   grid.innerHTML = ads.map(ad => `
     <div class="ad-card card">
       <div class="audience">${ad.theme} · ${ad.audience}</div>
@@ -143,7 +168,8 @@ function renderCatalogue(){
 }
 
 function openPreview(id){
-  const ad = itsGetAdById(id);
+  const ad = getAdById(id);
+  if(!ad) return;
   const el = document.getElementById("previewContent");
   el.innerHTML = `
     <div class="audience">${ad.theme}</div>
@@ -168,7 +194,11 @@ function closePreview(){
 }
 
 function useAd(id){
-  itsStartFromCatalogue(id);
+  if (typeof window.itsStartFromCatalogue === "function") {
+    window.itsStartFromCatalogue(id);
+  } else {
+    localStorage.setItem("its_current_ad_id", id);
+  }
   window.location.href = "questions.html";
 }
 
@@ -181,3 +211,4 @@ renderCatalogue();
 </script>
 </body>
 </html>
+
