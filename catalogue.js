@@ -293,22 +293,67 @@
     ]
   };
 
-  function makeQuestions(prefix, domain, chapterIndex, extraTags){
-    const bank = questionBanks[domain] || questionBanks.management;
+  function makeVariantOffset(prefix, domain){
+  const variants = {
+    cyber: {
+      "reflexes-cybersecurite": 0,
+      "fraude-phishing": 5,
+      "mots-de-passe-acces": 10,
+      "donnees-confidentielles": 15,
+      "reflexes-risques-numeriques": 0
+    },
+    securite: {
+      "culture-securite-terrain": 0,
+      "presquaccidents-signalement": 5,
+      "acces-sites-surete": 10,
+      "managers-securite": 15
+    },
+    qvt: {
+      "rps-signaux-faibles": 0,
+      "charge-priorites": 5,
+      "cooperation-climat": 10,
+      "manager-qvt-rps": 15
+    },
+    management: {
+      "changement-reflexes": 0,
+      "feedback-managerial": 5,
+      "manager-engageant-tbf": 10,
+      "pilotage-projet": 15
+    },
+    environnement: {
+      "sobriete-quotidien": 0,
+      "dechets-ressources": 5,
+      "achats-responsables": 10,
+      "manager-transition-eco": 15
+    },
+    ethique: {
+      "conflits-interets": 0,
+      "cadeaux-invitations": 5,
+      "alerte-ethique": 10,
+      "manager-compliance": 15
+    }
+  };
 
-    return Array.from({length:5}, function(_, i){
-      const k = chapterIndex * 5 + i;
-      const text = bank[k % bank.length];
+  return variants[domain]?.[prefix] || 0;
+}
 
-      return {
-        id: prefix + "-q" + (chapterIndex + 1) + "-" + (i + 1),
-        type:"choix",
-        text:text,
-        answers:answerSets(domain, k),
-        tags:extraTags || [BADGES.IA, BADGES.VALIDATION]
-      };
-    });
-  }
+function makeQuestions(prefix, domain, chapterIndex, extraTags){
+  const bank = questionBanks[domain] || questionBanks.management;
+  const offset = makeVariantOffset(prefix, domain);
+
+  return Array.from({length:5}, function(_, i){
+    const k = offset + chapterIndex * 5 + i;
+    const text = bank[k % bank.length];
+
+    return {
+      id: prefix + "-q" + (chapterIndex + 1) + "-" + (i + 1),
+      type:"choix",
+      text:text,
+      answers:answerSets(domain, k),
+      tags:extraTags || [BADGES.IA, BADGES.VALIDATION]
+    };
+  });
+}
 
   function makeChapters(prefix, domain, chapters, tags){
     return chapters.map(function(c, i){
