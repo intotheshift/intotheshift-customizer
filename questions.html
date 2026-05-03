@@ -532,9 +532,9 @@ function getRawBibliotheque(){
 
       (ad.chapters || []).forEach(ch => {
         (ch.questions || []).forEach(q => {
-          const key = norm(q.text || '');
+          const key = norm(q.text || '') + '|' + norm(ch.title || '');
 
-          if (!key || seen.has(key)) return;
+          if (!norm(q.text || '') || seen.has(key)) return;
           seen.add(key);
 
           out.push({
@@ -1219,7 +1219,10 @@ function renderPanelList(search, tag) {
         <span class="tag-prov ${q.prov==='TBF'?'expert':''}" style="font-size:10px">${PROV[q.prov]?.ico||'🤖'} ${PROV[q.prov]?.label||''}</span>
         ${(q.subject ? [`Sujet : ${q.subject}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
         ${(q.chapter ? [`Partie : ${q.chapter}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
-        ${(q.tags||[]).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
+        ${(q.tags||[])
+  .filter(t => norm(t) !== norm(q.subject) && norm(t) !== norm(q.chapter))
+  .map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`)
+  .join('')}
       </div>
     </div>
     <button class="btn-add-from-base" onclick="addFromLib('${q.id}')" title="Ajouter">+</button>
