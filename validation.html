@@ -95,6 +95,23 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
 .progress-wrap{height:7px;background:#edf1f7;border-radius:20px;overflow:hidden;margin:8px 0}
 .progress-fill{height:100%;background:#007883;border-radius:20px;transition:width .2s}
 .hidden{display:none}
+
+
+/* Modal transmission */
+.transmit-modal-overlay{position:fixed;inset:0;background:rgba(24,55,93,.48);z-index:9999;display:none;align-items:center;justify-content:center;padding:24px}
+.transmit-modal-overlay.on{display:flex}
+.transmit-modal{width:min(460px,92vw);background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,30,55,.25);padding:28px 30px;text-align:center;border:1px solid #d8e0ea}
+.transmit-modal-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;background:#f0f8f7;color:#007883;font-size:24px;font-weight:800}
+.transmit-modal-icon.loading{background:#fff8ec;color:#b7840a}
+.transmit-modal-icon.error{background:#fceaea;color:#eb6366}
+.transmit-modal-title{font-size:18px;font-weight:800;color:#18375d;margin-bottom:8px}
+.transmit-modal-text{font-size:13px;color:#64748b;line-height:1.55;margin-bottom:18px}
+.transmit-modal-spinner{width:28px;height:28px;border:3px solid #ffe2b2;border-top-color:#b7840a;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.transmit-modal-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.transmit-modal-btn{border:none;border-radius:9px;padding:10px 16px;background:#18375d;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:'Asap',sans-serif}
+.transmit-modal-btn.secondary{background:#fff;color:#64748b;border:1px solid #d8e0ea}
+
 </style>
 </head>
 <body>
@@ -242,6 +259,20 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
         </div>
       </div>
     </aside>
+  </div>
+</div>
+
+
+
+<div class="transmit-modal-overlay" id="transmit-modal" aria-hidden="true">
+  <div class="transmit-modal" role="dialog" aria-modal="true" aria-labelledby="transmit-modal-title">
+    <div id="transmit-modal-spinner" class="transmit-modal-spinner"></div>
+    <div class="transmit-modal-icon loading" id="transmit-modal-icon">⏳</div>
+    <div class="transmit-modal-title" id="transmit-modal-title">Transmission en cours</div>
+    <div class="transmit-modal-text" id="transmit-modal-text">Nous préparons votre récapitulatif et transmettons votre configuration à l’équipe Into The Shift.</div>
+    <div class="transmit-modal-actions" id="transmit-modal-actions" style="display:none">
+      <button class="transmit-modal-btn" type="button" onclick="closeTransmitModal()">Fermer</button>
+    </div>
   </div>
 </div>
 
@@ -646,6 +677,27 @@ function updateReady(){
   document.getElementById('missing-alert').classList.toggle('hidden', ok);
 }
 
+
+function showTransmitModal(mode, title, text){
+  const modal = document.getElementById('transmit-modal');
+  const icon = document.getElementById('transmit-modal-icon');
+  const spinner = document.getElementById('transmit-modal-spinner');
+  const actions = document.getElementById('transmit-modal-actions');
+  document.getElementById('transmit-modal-title').textContent = title;
+  document.getElementById('transmit-modal-text').textContent = text;
+  icon.className = 'transmit-modal-icon ' + (mode === 'loading' ? 'loading' : mode === 'error' ? 'error' : '');
+  icon.textContent = mode === 'loading' ? '⏳' : mode === 'error' ? '!' : '✓';
+  spinner.style.display = mode === 'loading' ? 'block' : 'none';
+  actions.style.display = mode === 'loading' ? 'none' : 'flex';
+  modal.classList.add('on');
+  modal.setAttribute('aria-hidden','false');
+}
+function closeTransmitModal(){
+  const modal = document.getElementById('transmit-modal');
+  modal.classList.remove('on');
+  modal.setAttribute('aria-hidden','true');
+}
+
 async function transmit(){
   if(!validateClientInfo(true)){
     document.getElementById('missing-alert').classList.remove('hidden');
@@ -653,6 +705,7 @@ async function transmit(){
     return;
   }
   const payload = buildPayload();
+  showTransmitModal('loading', 'Transmission en cours', 'Nous préparons votre fichier Excel et transmettons la configuration à Into The Shift.');
 
   state.clientInfo = getClientInfo();
   state.transmission = state.transmission || {};
@@ -666,6 +719,7 @@ async function transmit(){
     else localStorage.setItem('its_state', JSON.stringify(state));
   } catch(e) {}
 
+  let sentOk = false;
   const webhook = 'https://hook.eu1.make.com/cs7ho799lf6mzkfurl1dcp9ai2pn1led';
   if (webhook) {
     try {
@@ -675,17 +729,24 @@ async function transmit(){
         body: JSON.stringify(payload)
       });
       state.transmission.status = 'sent';
+      sentOk = true;
       if (typeof itsSave === 'function') itsSave(state);
     } catch(e) {
       state.transmission.status = 'send_error';
+      sentOk = false;
       if (typeof itsSave === 'function') itsSave(state);
     }
   }
 
-  document.getElementById('success-alert').classList.remove('hidden');
-  document.getElementById('btn-transmit').disabled = true;
-  document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(sentOk){
+    document.getElementById('success-alert').classList.remove('hidden');
+    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Vous allez recevoir un récapitulatif et l’équipe Into The Shift va préparer la mise en ligne.');
+    document.getElementById('btn-transmit').disabled = true;
+    document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
+  } else {
+    showTransmitModal('error', 'Transmission non confirmée', 'La demande n’a pas pu être transmise automatiquement. Vérifiez Make ou réessayez dans quelques instants.');
+    document.getElementById('btn-transmit').disabled = false;
+  }
 }
 
 restoreClientInfo();
