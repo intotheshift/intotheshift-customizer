@@ -104,3 +104,37 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
 .modal-panel{width:66vw;max-width:900px;background:#eef0f4;height:100vh;overflow:auto;box-shadow:-8px 0 30px rgba(0,0,0,.22)}
 @media(max-width:900px){.modal-panel{width:100vw}}
 .close-x{position:sticky;top:0;background:#18375d;color:#fff;border:0;width:100%;padding:12px;font-weight:800;cursor:pointer}
+.main-nav{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-left:22px;
+}
+
+.main-nav a{
+  color:rgba(255,255,255,.78);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:700;
+  padding:8px 10px;
+  border-radius:999px;
+}
+
+.main-nav a:hover,
+.main-nav a.active{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+}
+
+@media(max-width:900px){
+  .main-nav{
+    overflow-x:auto;
+    max-width:calc(100vw - 120px);
+    padding-bottom:4px;
+  }
+
+  .main-nav a{
+    white-space:nowrap;
+    font-size:13px;
+  }
+}
