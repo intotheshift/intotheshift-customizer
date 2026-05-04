@@ -40,6 +40,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 .bc-link:hover{text-decoration:underline}
 .bc-sep{font-size:12px;color:#c5ccd5}
 .bc-cur{font-size:12px;color:#64748b;font-family:'Asap',sans-serif}
+.bc-title{font-size:12px;color:#18375d;font-weight:700;font-family:'Asap',sans-serif}
 
 /* ── LAYOUT ────────────────────────────────────── */
 .editor-layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 120px)}
@@ -243,7 +244,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 /* Panel latéral */
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,30,55,0.35);z-index:40;display:none}
 .overlay.on{display:block}
-.panel-right{position:fixed;top:0;right:-380px;width:360px;height:100%;background:#fff;border-left:1px solid #d8e0ea;z-index:50;transition:right 0.25s ease;display:flex;flex-direction:column}
+.panel-right{position:fixed;top:0;right:-560px;width:520px;max-width:92vw;height:100%;background:#fff;border-left:1px solid #d8e0ea;z-index:50;transition:right 0.25s ease;display:flex;flex-direction:column}
 .panel-right.on{right:0}
 .panel-head{padding:15px 18px;border-bottom:1px solid #e8edf4;display:flex;align-items:center;justify-content:space-between}
 .panel-title{font-size:14px;font-weight:600;color:#18375d;font-family:'Asap',sans-serif}
@@ -255,12 +256,12 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 .panel-search{padding:10px 16px;border-bottom:1px solid #f0f4f8}
 .search-inp{width:100%;padding:8px 12px;border:1px solid #d8e0ea;border-radius:8px;font-size:13px;font-family:'Asap',sans-serif;outline:none;color:#18375d}
 .search-inp:focus{border-color:#007883}
-.panel-tags{display:flex;flex-wrap:wrap;gap:5px;padding:8px 16px;border-bottom:1px solid #f0f4f8}
+.panel-tags{display:flex;flex-wrap:wrap;gap:5px;padding:8px 16px;border-bottom:1px solid #f0f4f8;max-height:168px;overflow:auto;flex-shrink:0}
 .panel-tags-lbl{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;width:100%;margin-bottom:3px;font-family:'Asap',sans-serif}
 .filter-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid #d8e0ea;background:#fff;color:#64748b;cursor:pointer;font-family:'Asap',sans-serif;transition:all 0.12s}
 .filter-tag.on{background:#18375d;color:#fff;border-color:#18375d}
 .filter-tag:hover:not(.on){background:#edf1f7}
-.panel-list{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.panel-list{flex:1;min-height:220px;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px;background:#fff}
 .panel-q{background:#fafbfc;border:1px solid #e8edf4;border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;transition:border-color 0.12s}
 .panel-q:hover{border-color:#b8c4d4}
 .panel-q-text{font-size:12px;color:#18375d;font-family:'Asap',sans-serif;font-weight:500;line-height:1.4;margin-bottom:4px}
@@ -325,6 +326,8 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 <div class="breadcrumb">
   <span class="bc-link" onclick="window.location.href='index.html'">Bibliothèque</span>
   <span class="bc-sep">›</span>
+  <span class="bc-title" id="bc-title" style="display:none"></span>
+  <span class="bc-sep" id="bc-title-sep" style="display:none">›</span>
   <span class="bc-cur" id="bc-cur">Questions</span>
 </div>
 
@@ -358,7 +361,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
     <input class="search-inp" id="panel-search-inp" placeholder="Rechercher par mot-clé…" oninput="filterPanel(this.value)">
   </div>
   <div class="panel-tags">
-    <div class="panel-tags-lbl">Filtrer par tag</div>
+    <div class="panel-tags-lbl">Filtrer par tag <span style="font-weight:500;text-transform:none;letter-spacing:0;color:#94a3b8">— zone défilante</span></div>
     <div id="panel-tags-wrap" style="display:flex;flex-wrap:wrap;gap:5px"></div>
   </div>
   <div class="panel-list" id="panel-list"></div>
@@ -390,7 +393,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 <div class="modal-overlay" id="modal-regen">
   <div class="modal">
     <div style="font-size:22px;margin-bottom:12px">⚠️</div>
-    <h3>Créer des brouillons avec l’aide rédactionnelle ?</h3>
+    <h3>Créer des brouillons avec l’aide IA ?</h3>
     <p>Les <strong id="modal-q-count"></strong> questions actuelles seront remplacées par des brouillons à adapter, relire et valider avant diffusion.</p>
     <div class="modal-acts">
       <button class="btn-cancel" onclick="closeRegenModal()">Annuler</button>
@@ -753,7 +756,7 @@ function makeBlankProfiles(){
 }
 
 function renderBlankSetup(){
-  document.getElementById('bc-cur').textContent = 'Cadrage de l’autodiag';
+  updateBreadcrumb('Cadrage de l’autodiag');
   document.getElementById('chap-nav').innerHTML = '<div style="font-size:12px;color:#94a3b8;line-height:1.5;padding:6px 4px;font-family:Asap,sans-serif">Définissez d’abord le cadre de votre autodiag.</div>';
   document.getElementById('sb-total').innerHTML = '<strong>0</strong> question';
   const saveBtn = document.getElementById('btn-save');
@@ -905,9 +908,27 @@ function setTab(i, tab) {
   updateSaveButton();
 }
 
+
+function updateBreadcrumb(label){
+  const titleEl = document.getElementById('bc-title');
+  const sepEl = document.getElementById('bc-title-sep');
+  const curEl = document.getElementById('bc-cur');
+  const title = String(state.title || '').trim();
+  if(title){
+    titleEl.textContent = title;
+    titleEl.style.display = 'inline';
+    sepEl.style.display = 'inline';
+  } else {
+    titleEl.textContent = '';
+    titleEl.style.display = 'none';
+    sepEl.style.display = 'none';
+  }
+  curEl.textContent = label;
+}
+
 function renderMain() {
   const ch = chapters[activeChap];
-  document.getElementById('bc-cur').textContent = activeTab === 'questions' ? `Questions — ${ch.name}` : `Profils — ${ch.name}`;
+  updateBreadcrumb(activeTab === 'questions' ? `Questions — ${ch.name}` : `Profils — ${ch.name}`);
   if (activeTab === 'questions') renderQuestions(ch);
   else renderProfils(ch);
 }
@@ -951,11 +972,11 @@ function aiUnavailableMessage(){
 }
 
 function aiActionLabel(){
-  return "Aide à la rédaction (brouillon)";
+  return "Aide IA à la rédaction (brouillon)";
 }
 
 function aiActionText(){
-  return "Une base de rédaction est proposée à partir du sujet et du chapitre. Elle doit être adaptée, relue et validée avant diffusion.";
+  return "L’IA propose un brouillon à partir du sujet et du chapitre. Il doit être adapté, relu et validé avant diffusion.";
 }
 
 function emptyActionCard(title, text, onclick, primary, disabled){
@@ -989,7 +1010,6 @@ function renderQuestions(ch) {
       </div>
       ${!isEmpty ? `<div class="chap-actions">
         <button class="btn-regen-all" onclick="askRegen()" ${!aiHelpAvailable() ? 'disabled title="' + aiUnavailableMessage() + '" style="opacity:.42;cursor:not-allowed"' : ''}>${aiActionLabel()}</button>
-        <button class="btn-add-ai-one" onclick="addOneAI()" ${n >= 10 || !aiHelpAvailable() ? 'disabled title="' + (n >= 10 ? 'Maximum 10 questions atteint' : aiUnavailableMessage()) + '"' : ''}>Ajouter un brouillon avec aide rédactionnelle</button>
         <button class="btn-pioche" onclick="openPanel()">Piocher dans la bibliothèque</button>
         <button class="btn-add-manual" onclick="addManual()">Ajouter manuellement</button>
       </div>` : ''}
