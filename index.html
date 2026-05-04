@@ -101,6 +101,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 
 <script>
 let currentTheme = "all";
+  let expertOnly = false;
 
 function getCatalogue(){
   return Array.isArray(window.ITS_CATALOGUE) ? window.ITS_CATALOGUE : [];
@@ -152,7 +153,8 @@ function renderTags(tags){
 function renderFilters(){
   const el = document.getElementById("themeFilters");
   const themes = getThemes();
-  el.innerHTML = `<button class="btn ${currentTheme==='all'?'btn-primary':'btn-secondary'}" onclick="setTheme('all')">Tous les thèmes</button>` +
+  el.innerHTML = `<button class="btn ${currentTheme==='all'?'btn-primary':'btn-secondary'}" onclick="setTheme('all')">Tous les thèmes</button>
+<button class="btn ${expertOnly?'btn-primary':'btn-secondary'}" onclick="toggleExpertFilter()">Conçus par un expert</button>` +
     themes.map(t => `<button class="btn ${currentTheme===t.key?'btn-primary':'btn-secondary'}" onclick="setTheme('${t.key}')">${t.icon} ${t.label}</button>`).join("");
 }
 
@@ -161,11 +163,20 @@ function setTheme(key){
   renderFilters();
   renderCatalogue();
 }
+  function toggleExpertFilter(){
+  expertOnly = !expertOnly;
+  renderFilters();
+  renderCatalogue();
+}
 
 function renderCatalogue(){
   const grid = document.getElementById("catalogueGrid");
   const catalogue = getCatalogue();
-  const ads = catalogue.filter(ad => currentTheme === "all" || ad.themeKey === currentTheme);
+  const ads = catalogue.filter(ad => {
+  const matchTheme = currentTheme === "all" || ad.themeKey === currentTheme;
+  const matchExpert = !expertOnly || (ad.tags || []).includes("Conçu par The Big Factory");
+  return matchTheme && matchExpert;
+});
   document.getElementById('catalogueCount').textContent = `${ads.length} base${ads.length>1?'s':''}`;
   grid.innerHTML = ads.map(ad => `
     <div class="ad-card card">
