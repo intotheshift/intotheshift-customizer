@@ -519,8 +519,52 @@ function normalizeTags(tags){
         && !x.includes('aide à la rédaction')
         && !x.includes('aide a la redaction');
     })
-    .slice(0,6)
+    .slice(0,10)
     .map(t => ({t:String(t), ai:String(t).toLowerCase().includes('ia')}));
+}
+
+function uniqTags(tags){
+  const seen = new Set();
+  return (tags || [])
+    .map(t => String(t || '').trim())
+    .filter(Boolean)
+    .filter(t => {
+      const k = norm(t);
+      if(seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+}
+
+function inferContentTags(text, subject, chapter){
+  const hay = norm([text, subject, chapter].join(' '));
+  const tags = [];
+
+  if(hay.includes('cyber') || hay.includes('securite numerique') || hay.includes('risque numerique') || hay.includes('email') || hay.includes('sms') || hay.includes('mot de passe') || hay.includes('piece jointe')) {
+    tags.push('Cybersécurité');
+  }
+  if(hay.includes('email') || hay.includes('mail') || hay.includes('sms') || hay.includes('message')) tags.push('Message suspect');
+  if(hay.includes('lien') || hay.includes('url')) tags.push('Lien suspect');
+  if(hay.includes('mot de passe') || hay.includes('acces') || hay.includes('réinitialiser') || hay.includes('reinitialiser')) tags.push('Accès');
+  if(hay.includes('piece jointe') || hay.includes('document') || hay.includes('fichier')) tags.push('Document');
+  if(hay.includes('virement') || hay.includes('rib') || hay.includes('paiement')) tags.push('Fraude');
+  if(hay.includes('donnee') || hay.includes('confidentiel') || hay.includes('sensible') || hay.includes('comptabilite')) tags.push('Données sensibles');
+  if(hay.includes('signaler') || hay.includes('alerte') || hay.includes('doute')) tags.push('Signalement');
+  if(hay.includes('qvt') || hay.includes('rps') || hay.includes('charge de travail') || hay.includes('épuisement') || hay.includes('epuisement')) tags.push('QVT / RPS');
+  if(hay.includes('management') || hay.includes('manager') || hay.includes('équipe') || hay.includes('equipe')) tags.push('Management');
+  if(hay.includes('environnement') || hay.includes('sobriete') || hay.includes('empreinte')) tags.push('Environnement');
+
+  return tags;
+}
+
+function panelSearchHaystack(q){
+  return norm([
+    q.text,
+    q.subject,
+    q.adTitle,
+    q.chapter,
+    ...(q.tags || [])
+  ].join(' '));
 }
 
 function normalizeAnswers(q){
@@ -625,6 +669,13 @@ function getRawBibliotheque(){
           if (!norm(q.text || '') || seen.has(key)) return;
           seen.add(key);
 
+          const contentTags = uniqTags([
+            ...normalizeTags(q.tags).map(t => t.t),
+            ...normalizeTags(ch.tags).map(t => t.t),
+            ...normalizeTags(ad.tags).map(t => t.t),
+            ...inferContentTags(q.text || '', ad.theme || ad.title || '', ch.title || '')
+          ]);
+
           out.push({
             id: q.id,
             prov: isTBF ? 'TBF' : 'AI',
@@ -632,7 +683,7 @@ function getRawBibliotheque(){
             adTitle: ad.title || '',
             chapter: ch.title || '',
             text: q.text || '',
-            tags: normalizeTags(q.tags).map(t => t.t),
+            tags: contentTags,
             answers: q.answers || [],
             type: q.type || 'choix',
             added: false
@@ -1517,9 +1568,9 @@ function currentLib() {
 
   const contextual = allAvailable.filter(q => libraryMatchesContext(q));
 
-  // UX propre : on affiche d'abord les situations qui correspondent au sujet/chapitre.
-  // Si le filtre ne trouve rien, on ne bloque pas la pioche : on affiche toute la bibliothèque disponible.
-  return contextual.length ? contextual : allAvailable;
+  // On ne retombe plus automatiquement sur toute la bibliothèque quand un sujet est connu :
+  // cela évite d'afficher des situations hors sujet dans une base de travail.
+  return norm(getCurrentSubject()) ? contextual : allAvailable;
 }
 
 function renderPanelTags() {
@@ -1539,10 +1590,12 @@ function filterPanel(val) {
 
 function renderPanelList(search, tag) {
   const s = norm(search);
-  const filtered = currentLib().filter(q =>
-    (!s || norm(q.text).includes(s) || (q.tags||[]).some(t => norm(t).includes(s))) &&
-    (!tag || (q.tags||[]).includes(tag))
-  );
+  const filtered = currentLib().filter(q => {
+    const haystack = panelSearchHaystack(q);
+    const tagOk = !tag || (q.tags || []).some(t => norm(t) === norm(tag));
+    const searchOk = !s || haystack.includes(s);
+    return searchOk && tagOk;
+  });
 
   const list = document.getElementById('panel-list');
 
@@ -1559,7 +1612,8 @@ function renderPanelList(search, tag) {
         ${(q.adTitle ? [`Base : ${q.adTitle}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
         ${(q.chapter ? [`Partie : ${q.chapter}`] : []).map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`).join('')}
         ${(q.tags||[])
-          .filter(t => norm(t) !== norm(q.subject) && norm(t) !== norm(q.chapter))
+          .filter(t => norm(t) !== norm(q.subject) && norm(t) !== norm(q.chapter) && !norm(q.adTitle).includes(norm(t)))
+          .slice(0,6)
           .map(t => `<span class="tag-pill" style="font-size:10px">${esc(t)}</span>`)
           .join('')}
       </div>
