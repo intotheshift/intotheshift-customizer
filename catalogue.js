@@ -624,7 +624,35 @@
         ["Appliquer les bons réflexes",        "Maintenir les gestes utiles même sous pression opérationnelle."],
         ["Contribuer à la sécurité collective","Intervenir avec tact et soutenir les pratiques sûres dans le collectif."],
         ["Réagir et signaler",                 "Faire remonter les incidents, anomalies et signaux faibles sans banaliser."]
+            ]
+    },
+    securiteSignalement: {
+      domain: "securite",
+      chapters: [
+        ["Repérer les signaux faibles", "Identifier les anomalies, écarts et situations qui pourraient annoncer un incident."],
+        ["Oser signaler sans attendre", "Dépasser les freins liés à la peur de déranger, d’accuser ou de ralentir l’activité."],
+        ["Décrire les faits utilement", "Formuler un signalement factuel, exploitable et sans jugement."],
+        ["Transformer le signalement en action", "Faire du retour d’expérience un levier d’amélioration collective."]
       ]
+    },
+    securiteAccesSites: {
+      domain: "securite",
+      chapters: [
+        ["Contrôler les accès sensibles", "Repérer les situations où une entrée, un badge ou une zone nécessitent une vigilance particulière."],
+        ["Réagir face à une présence inhabituelle", "Adopter la bonne posture face à une personne, un objet ou un comportement atypique."],
+        ["Protéger les zones et les informations", "Limiter les risques liés aux portes ouvertes, documents visibles ou circulations non maîtrisées."],
+        ["Alerter sans dramatiser", "Mobiliser les bons relais en cas de doute sur une intrusion ou une situation suspecte."]
+      ]
+    },
+    securiteManagers: {
+      domain: "securite",
+      chapters: [
+        ["Faire vivre les règles au quotidien", "Installer des repères clairs sans transformer la sécurité en contrôle permanent."],
+        ["Traiter les écarts sans culpabiliser", "Comprendre les causes d’un contournement et agir de manière constructive."],
+        ["Arbitrer sous pression opérationnelle", "Maintenir les exigences de sécurité face aux délais, urgences et contraintes terrain."],
+        ["Animer une culture de vigilance", "Encourager les remontées, les échanges et les apprentissages collectifs."]
+      ]
+    },
     },
     qvtRps: {
       domain: "qvt",
@@ -1284,10 +1312,10 @@ function buildCyberChapters(adId) {
       ["donnees-confidentielles", "Protéger les données et informations sensibles", "Collaborateurs", "Faire les bons arbitrages face aux documents, transferts, exports et accès aux données.",                             { built: buildCyberChapters("donnees-confidentielles") }]
     ]],
     ["securite-surete", "Sécurité & sûreté au travail", "🦺", [
-      ["culture-securite-terrain",   "Sécurité & culture de sûreté au quotidien",          "Équipes terrain",          "Identifier les risques, respecter les consignes et signaler les situations sensibles.",                    templates.securiteSurete],
-      ["presquaccidents-signalement","Signaler les incidents et presqu'accidents",           "Tous publics",             "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.",                      templates.securiteSurete],
-      ["acces-sites-surete",         "Sûreté des sites, accès et comportements inhabituels","Tous publics",             "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.",              templates.securiteSurete],
-      ["managers-securite",          "Manager la sécurité sans créer de tension",           "Managers",                 "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.",          templates.securiteSurete],
+      ["culture-securite-terrain",   "Sécurité & culture de sûreté au quotidien",          "Équipes terrain", "Identifier les risques, respecter les consignes et signaler les situations sensibles.", templates.securiteSurete],
+      ["presquaccidents-signalement","Signaler les incidents et presqu'accidents",          "Tous publics", "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.", templates.securiteSignalement],
+      ["acces-sites-surete",         "Sûreté des sites, accès et comportements inhabituels","Tous publics", "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.", templates.securiteAccesSites]
+      ["managers-securite",          "Manager la sécurité sans créer de tension",          "Managers", "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.", templates.securiteManagers],
       ["coactivite-sous-traitance",  "Travailler en coactivité et gérer les prestataires",  "Équipes terrain",          "Coordonner les interventions simultanées, intégrer les sous-traitants et gérer les zones partagées.",    templates.securiteCoactivite],
       ["epi-gestes-securite",        "EPI et gestes de sécurité au quotidien",              "Collaborateurs",           "Porter les bons équipements, maintenir ses réflexes sous contrainte et signaler les anomalies matérielles.", templates.securiteEPI],
       ["securite-manager-arbitrage", "Arbitrer entre sécurité et pression opérationnelle",  "Managers / Encadrants",    "Tenir les exigences de sécurité face aux délais, traiter les écarts et détecter les dérives silencieuses.", templates.securiteManagerArbitrage],
