@@ -390,11 +390,11 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 <div class="modal-overlay" id="modal-regen">
   <div class="modal">
     <div style="font-size:22px;margin-bottom:12px">⚠️</div>
-    <h3>Régénérer toutes les questions ?</h3>
-    <p>Les <strong id="modal-q-count"></strong> questions actuelles seront remplacées par de nouvelles questions générées par l'IA.</p>
+    <h3>Créer des brouillons avec l’aide rédactionnelle ?</h3>
+    <p>Les <strong id="modal-q-count"></strong> questions actuelles seront remplacées par des brouillons à adapter, relire et valider avant diffusion.</p>
     <div class="modal-acts">
       <button class="btn-cancel" onclick="closeRegenModal()">Annuler</button>
-      <button class="btn-confirm" onclick="confirmRegen()">Régénérer</button>
+      <button class="btn-confirm" onclick="confirmRegen()">Créer les brouillons</button>
     </div>
   </div>
 </div>
@@ -912,6 +912,66 @@ function renderMain() {
   else renderProfils(ch);
 }
 
+function isBlankFlow(){
+  return state && (state.mode === 'blank' || state.source === 'blank');
+}
+
+function getKnownThemeLabels(){
+  const labels = [];
+  if (Array.isArray(window.ITS_THEMES)) {
+    window.ITS_THEMES.forEach(t => {
+      if(t.label) labels.push(t.label);
+      if(t.key) labels.push(t.key);
+    });
+  }
+  if (Array.isArray(window.ITS_CATALOGUE)) {
+    window.ITS_CATALOGUE.forEach(ad => {
+      if(ad.theme) labels.push(ad.theme);
+      if(ad.themeKey) labels.push(ad.themeKey);
+      if(ad.title) labels.push(ad.title);
+    });
+  }
+  labels.push('cybersécurité','cybersecurite','sécurité numérique','securite numerique','risques numériques','risques numeriques','sécurité informatique','securite informatique');
+  return [...new Set(labels.map(norm).filter(Boolean))];
+}
+
+function isKnownTheme(subject){
+  const s = norm(subject);
+  if(!s) return false;
+  return getKnownThemeLabels().some(t => s === t || s.includes(t) || t.includes(s));
+}
+
+function aiHelpAvailable(){
+  if(!isBlankFlow()) return true;
+  return isKnownTheme(getCurrentSubject());
+}
+
+function aiUnavailableMessage(){
+  return "L’aide à la rédaction est disponible uniquement quand le sujet correspond à une thématique reconnue du catalogue. Ajoutez vos questions manuellement ou choisissez une base existante.";
+}
+
+function aiActionLabel(){
+  return "Aide à la rédaction (brouillon)";
+}
+
+function aiActionText(){
+  return "Une base de rédaction est proposée à partir du sujet et du chapitre. Elle doit être adaptée, relue et validée avant diffusion.";
+}
+
+function emptyActionCard(title, text, onclick, primary, disabled){
+  const bg = primary ? 'linear-gradient(135deg,#18375d 0%,#007883 100%)' : '#fff';
+  const color = primary ? '#fff' : '#18375d';
+  const sub = primary ? 'rgba(255,255,255,0.75)' : '#94a3b8';
+  const border = primary ? 'none' : '1px solid #d8e0ea';
+  const opacity = disabled ? '.45' : '1';
+  const cursor = disabled ? 'not-allowed' : 'pointer';
+  const click = disabled ? '' : `onclick="${onclick}"`;
+  return `<div ${click} style="background:${bg};border:${border};border-radius:14px;padding:${primary?'24px':'18px'} ${primary?'24px':'16px'};cursor:${cursor};opacity:${opacity}">
+    <div style="font-size:${primary?'15px':'13px'};font-weight:700;color:${color};font-family:Asap,sans-serif;margin-bottom:4px">${title}</div>
+    <div style="font-size:${primary?'12px':'11px'};color:${sub};font-family:Asap,sans-serif;line-height:1.4">${text}</div>
+  </div>`;
+}
+
 function renderQuestions(ch) {
   const n = ch.questions.length;
   const pct = Math.min(100, Math.round((n / 10) * 100));
@@ -928,28 +988,20 @@ function renderQuestions(ch) {
         <input class="chap-desc-inp" value="${esc(ch.desc)}" oninput="chapters[activeChap].desc=this.value;saveState()">
       </div>
       ${!isEmpty ? `<div class="chap-actions">
-        <button class="btn-regen-all" onclick="askRegen()">Régénérer avec l'IA</button>
-        <button class="btn-add-ai-one" onclick="addOneAI()" ${n >= 10 ? 'disabled title="Maximum 10 questions atteint"' : ''}>Ajouter une question avec l'IA</button>
+        <button class="btn-regen-all" onclick="askRegen()" ${!aiHelpAvailable() ? 'disabled title="' + aiUnavailableMessage() + '" style="opacity:.42;cursor:not-allowed"' : ''}>${aiActionLabel()}</button>
+        <button class="btn-add-ai-one" onclick="addOneAI()" ${n >= 10 || !aiHelpAvailable() ? 'disabled title="' + (n >= 10 ? 'Maximum 10 questions atteint' : aiUnavailableMessage()) + '"' : ''}>Ajouter un brouillon avec aide rédactionnelle</button>
         <button class="btn-pioche" onclick="openPanel()">Piocher dans la bibliothèque</button>
         <button class="btn-add-manual" onclick="addManual()">Ajouter manuellement</button>
       </div>` : ''}
     </div>`;
 
+  const aiAllowed = aiHelpAvailable();
   const emptyState = `
     <div style="padding:12px 0 0">
-      <div onclick="confirmRegen()" style="background:linear-gradient(135deg,#18375d 0%,#007883 100%);border-radius:14px;padding:28px 24px;cursor:pointer;margin-bottom:12px">
-        <div style="font-size:15px;font-weight:700;color:#fff;font-family:Asap,sans-serif;margin-bottom:4px">Générer les questions avec l'IA</div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.75);font-family:Asap,sans-serif;line-height:1.4">L'IA propose des mises en situation adaptées au chapitre, avec réponses et scores. Vous pourrez tout modifier ensuite.</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div onclick="openPanel()" style="background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:18px 16px;cursor:pointer">
-          <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Piocher dans la bibliothèque</div>
-          <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;line-height:1.4">Importez des questions existantes correspondant au sujet et au chapitre.</div>
-        </div>
-        <div onclick="addManual()" style="background:#fff;border:1px solid #d8e0ea;border-radius:12px;padding:18px 16px;cursor:pointer">
-          <div style="font-size:13px;font-weight:600;color:#18375d;font-family:Asap,sans-serif;margin-bottom:3px">Ajouter manuellement</div>
-          <div style="font-size:11px;color:#94a3b8;font-family:Asap,sans-serif;line-height:1.4">Rédigez vos propres mises en situation.</div>
-        </div>
+      ${emptyActionCard('Ajouter manuellement', 'Rédigez vos propres mises en situation, réponses et scores. C’est le parcours recommandé pour une création totalement de A à Z.', 'addManual()', true, false)}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        ${emptyActionCard('Piocher dans la bibliothèque', 'Importez uniquement des questions correspondant au sujet et au chapitre, si une base pertinente existe.', 'openPanel()', false, false)}
+        ${emptyActionCard(aiActionLabel(), aiAllowed ? aiActionText() : aiUnavailableMessage(), 'confirmRegen()', false, !aiAllowed)}
       </div>
     </div>`;
 
@@ -1012,7 +1064,7 @@ function renderCard(q, qi) {
       <div class="q-right" onclick="event.stopPropagation()">
         <button class="q-chevron-btn" onclick="toggleCard('${q.id}')">▾</button>
         <div class="q-vsep"></div>
-        <button class="qa-btn regen-q" title="Régénérer avec l'IA" onclick="regenOne('${q.id}',this)">${icoRegen}</button>
+        <button class="qa-btn regen-q" title="Créer un nouveau brouillon avec l’aide rédactionnelle" onclick="regenOne('${q.id}',this)">${icoRegen}</button>
         <button class="qa-btn del" title="Supprimer" onclick="deleteQ('${q.id}')">${icoTrash}</button>
       </div>
     </div>
@@ -1167,18 +1219,72 @@ function regenOne(id, btn) {
 }
 
 function makeAIQuestion(id){
-  return {
-    id: id || 'q' + Date.now(),
-    type:'choix',
-    prov:'AI',
-    text:"Une situation nouvelle apparaît dans votre quotidien professionnel. Que faites-vous en priorité ?",
-    tags:[{t:'Réflexe',ai:true},{t:'Situation concrète',ai:true}],
-    answers:[
-      {l:"J'agis vite avec les informations disponibles.",s:0},
-      {l:"Je demande un avis avant de décider.",s:1},
-      {l:"Je clarifie le cadre avant d'agir.",s:2}
-    ]
-  };
+  const subject = getCurrentSubject();
+  const ch = chapters[activeChap] || {name:'ce chapitre'};
+  const sid = String(id || 'q' + Date.now());
+  const variantsCyber = [
+    {
+      text:`Vous recevez un message contenant un lien urgent lié à ${ch.name}. Que faites-vous ?`,
+      tags:[{t:'Cybersécurité',ai:true},{t:'Lien suspect',ai:true}],
+      answers:[
+        {l:"Je clique rapidement pour vérifier de quoi il s’agit.",s:0},
+        {l:"Je demande à une personne autour de moi si le message semble fiable.",s:1},
+        {l:"Je vérifie l’expéditeur, l’adresse du lien et je signale le message en cas de doute.",s:2}
+      ]
+    },
+    {
+      text:`Un document sensible doit être partagé avec une personne externe dans le cadre de ${ch.name}. Que faites-vous ?`,
+      tags:[{t:'Cybersécurité',ai:true},{t:'Données sensibles',ai:true}],
+      answers:[
+        {l:"Je l’envoie par le canal le plus rapide pour ne pas bloquer le dossier.",s:0},
+        {l:"Je demande confirmation à mon interlocuteur avant l’envoi.",s:1},
+        {l:"Je vérifie le droit de partage, le canal sécurisé et les règles internes avant d’envoyer.",s:2}
+      ]
+    },
+    {
+      text:`Vous devez créer ou modifier un mot de passe pour accéder à un outil professionnel. Quel réflexe adoptez-vous ?`,
+      tags:[{t:'Cybersécurité',ai:true},{t:'Mot de passe',ai:true}],
+      answers:[
+        {l:"J’utilise un mot de passe simple dont je me souviens facilement.",s:0},
+        {l:"Je réutilise un ancien mot de passe en le modifiant légèrement.",s:1},
+        {l:"Je crée un mot de passe robuste ou j’utilise le gestionnaire validé par l’organisation.",s:2}
+      ]
+    },
+    {
+      text:`Une demande inhabituelle vous invite à transmettre rapidement une information confidentielle. Que faites-vous ?`,
+      tags:[{t:'Cybersécurité',ai:true},{t:'Vérification',ai:true}],
+      answers:[
+        {l:"Je réponds vite pour éviter de retarder la demande.",s:0},
+        {l:"Je vérifie seulement si le nom de l’expéditeur me semble connu.",s:1},
+        {l:"Je contrôle la demande par un autre canal et j’applique la procédure de signalement si nécessaire.",s:2}
+      ]
+    },
+    {
+      text:`Vous utilisez un outil numérique non validé pour gagner du temps sur une tâche liée à ${ch.name}. Quelle posture adoptez-vous ?`,
+      tags:[{t:'Cybersécurité',ai:true},{t:'Outil numérique',ai:true}],
+      answers:[
+        {l:"Je l’utilise si l’outil est pratique et gratuit.",s:0},
+        {l:"Je l’utilise seulement pour des informations qui me semblent peu sensibles.",s:1},
+        {l:"Je vérifie les règles internes avant d’y déposer des données professionnelles.",s:2}
+      ]
+    }
+  ];
+
+  const variantsGeneric = [
+    {
+      text:`Dans une situation liée à ${subject || ch.name}, vous devez choisir entre aller vite et vérifier un point important. Que faites-vous ?`,
+      tags:[{t:'Brouillon',ai:true},{t:'À adapter',ai:true}],
+      answers:[
+        {l:"J’avance rapidement avec les informations disponibles.",s:0},
+        {l:"Je demande un avis avant de décider.",s:1},
+        {l:"Je clarifie le cadre et les risques avant d’agir.",s:2}
+      ]
+    }
+  ];
+
+  const pool = norm(subject).includes('cyber') || norm(subject).includes('securite numerique') || norm(subject).includes('risques numeriques') || norm(subject).includes('securite informatique') ? variantsCyber : variantsGeneric;
+  const n = Math.abs([...sid].reduce((a,c)=>a+c.charCodeAt(0),0)) % pool.length;
+  return { id: sid, type:'choix', prov:'AI', ...pool[n] };
 }
 
 function addManual() {
@@ -1207,6 +1313,7 @@ function addManual() {
 }
 
 function addOneAI() {
+  if (!aiHelpAvailable()) { alert(aiUnavailableMessage()); return; }
   if (chapters[activeChap].questions.length >= 10) return;
   const q = makeAIQuestion('q' + Date.now());
   chapters[activeChap].questions.push(q);
@@ -1235,6 +1342,7 @@ function addTag(qid) {
 }
 
 function askRegen() {
+  if (!aiHelpAvailable()) { alert(aiUnavailableMessage()); return; }
   const n = chapters[activeChap].questions.length;
   document.getElementById('modal-q-count').textContent = `${n} question${n!==1?'s':''}`;
   document.getElementById('modal-regen').classList.add('on');
@@ -1245,6 +1353,7 @@ function closeRegenModal() {
 }
 
 function confirmRegen() {
+  if (!aiHelpAvailable()) { alert(aiUnavailableMessage()); return; }
   closeRegenModal();
   chapters[activeChap].questions = [
     makeAIQuestion('qr1'),
