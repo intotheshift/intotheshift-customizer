@@ -651,8 +651,7 @@
         ["Traiter les écarts sans culpabiliser", "Comprendre les causes d’un contournement et agir de manière constructive."],
         ["Arbitrer sous pression opérationnelle", "Maintenir les exigences de sécurité face aux délais, urgences et contraintes terrain."],
         ["Animer une culture de vigilance", "Encourager les remontées, les échanges et les apprentissages collectifs."]
-      ]
-    },
+      ]    
     },
     qvtRps: {
       domain: "qvt",
