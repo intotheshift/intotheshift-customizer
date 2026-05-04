@@ -1228,24 +1228,49 @@
     }
   };
 
-  const CYBER_CHAPTER_DEFS = [
-    ["reperer-signaux",       "Repérer les signaux numériques sensibles",    "Identifier les demandes inhabituelles, les urgences artificielles et les signaux faibles."],
-    ["proteger-acces",        "Protéger ses accès",                          "Adopter des réflexes fiables sur les mots de passe, appareils et connexions."],
-    ["partager-discernement", "Partager les informations avec discernement", "Choisir le bon canal, limiter les transmissions inutiles et protéger les données."],
-    ["reagir-signaler",       "Réagir et signaler",                          "Savoir quoi faire quand un doute, une erreur ou un incident numérique apparaît."]
-  ];
+  const CYBER_CHAPTER_DEFS_BY_AD = {
+  "reflexes-cybersecurite": [
+    ["reperer-signaux", "Repérer les situations à risque", "Identifier les signaux numériques sensibles dans les situations du quotidien."],
+    ["proteger-acces", "Adopter les bons réflexes de protection", "Protéger ses accès, ses appareils et ses habitudes numériques."],
+    ["partager-discernement", "Partager sans exposer inutilement", "Limiter les risques liés aux documents, destinataires et canaux de partage."],
+    ["reagir-signaler", "Réagir sans paniquer", "Savoir quoi faire en cas de doute, d’erreur ou d’incident numérique."]
+  ],
 
-  function buildCyberChapters(adId) {
-    return CYBER_CHAPTER_DEFS.map(function (def, i) {
-      return {
-        id:          adId + "-chap-" + (i + 1),
-        title:       def[1],
-        description: def[2],
-        questions:   CQ[adId][def[0]],
-        profiles:    CYBER_PROFILES[def[0]]
-      };
-    });
-  }
+  "fraude-phishing": [
+    ["reperer-signaux", "Détecter une tentative de manipulation", "Repérer les faux signaux de confiance, les demandes atypiques et les indices de fraude."],
+    ["proteger-acces", "Résister aux pièges de connexion", "Éviter de saisir ses identifiants sur de faux liens ou de faux espaces sécurisés."],
+    ["partager-discernement", "Vérifier avant d’agir", "Confirmer une identité, une demande urgente ou une preuve numérique avant toute action."],
+    ["reagir-signaler", "Signaler et apprendre de l’incident", "Transformer une tentative de fraude ou un clic à risque en apprentissage collectif."]
+  ],
+
+  "mots-de-passe-acces": [
+    ["reperer-signaux", "Repérer les alertes sur ses accès", "Identifier les demandes suspectes, connexions inhabituelles et signaux de compromission."],
+    ["proteger-acces", "Créer et sécuriser ses mots de passe", "Utiliser des mots de passe robustes, uniques et protégés par les bons outils."],
+    ["partager-discernement", "Gérer les droits et accès temporaires", "Limiter les accès aux besoins réels, éviter les partages et supprimer les accès inutiles."],
+    ["reagir-signaler", "Réagir à une compromission", "Changer, signaler et sécuriser ses accès dès qu’un doute apparaît."]
+  ],
+
+  "donnees-confidentielles": [
+    ["reperer-signaux", "Identifier les informations sensibles", "Reconnaître les données, documents ou demandes qui nécessitent une vigilance particulière."],
+    ["proteger-acces", "Limiter l’exposition des données", "Éviter que des informations sensibles soient visibles, accessibles ou partagées hors cadre."],
+    ["partager-discernement", "Choisir le bon canal de transmission", "Partager les données avec les bons droits, les bons destinataires et les bons outils."],
+    ["reagir-signaler", "Réagir à une fuite ou une erreur de partage", "Signaler rapidement une erreur d’envoi, un accès non autorisé ou un incident de données."]
+  ]
+};
+
+function buildCyberChapters(adId) {
+  const defs = CYBER_CHAPTER_DEFS_BY_AD[adId] || CYBER_CHAPTER_DEFS_BY_AD["reflexes-cybersecurite"];
+
+  return defs.map(function (def, i) {
+    return {
+      id:          adId + "-chap-" + (i + 1),
+      title:       def[1],
+      description: def[2],
+      questions:   CQ[adId][def[0]],
+      profiles:    CYBER_PROFILES[def[0]]
+    };
+  });
+}
 
   // ─────────────────────────────────────────────────────────────────────────
   //  CATALOGUE RAW
