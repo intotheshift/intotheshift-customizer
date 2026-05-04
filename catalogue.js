@@ -1313,7 +1313,7 @@ function buildCyberChapters(adId) {
     ["securite-surete", "Sécurité & sûreté au travail", "🦺", [
       ["culture-securite-terrain",   "Sécurité & culture de sûreté au quotidien",          "Équipes terrain", "Identifier les risques, respecter les consignes et signaler les situations sensibles.", templates.securiteSurete],
       ["presquaccidents-signalement","Signaler les incidents et presqu'accidents",          "Tous publics", "Transformer les signaux faibles en actions utiles, sans culpabiliser ni banaliser.", templates.securiteSignalement],
-      ["acces-sites-surete",         "Sûreté des sites, accès et comportements inhabituels","Tous publics", "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.", templates.securiteAccesSites]
+      ["acces-sites-surete",         "Sûreté des sites, accès et comportements inhabituels","Tous publics", "Réagir face aux accès non autorisés, intrusions, objets suspects ou situations atypiques.", templates.securiteAccesSites],
       ["managers-securite",          "Manager la sécurité sans créer de tension",          "Managers", "Faire vivre les règles, traiter les écarts et soutenir les équipes dans les moments à risque.", templates.securiteManagers],
       ["coactivite-sous-traitance",  "Travailler en coactivité et gérer les prestataires",  "Équipes terrain",          "Coordonner les interventions simultanées, intégrer les sous-traitants et gérer les zones partagées.",    templates.securiteCoactivite],
       ["epi-gestes-securite",        "EPI et gestes de sécurité au quotidien",              "Collaborateurs",           "Porter les bons équipements, maintenir ses réflexes sous contrainte et signaler les anomalies matérielles.", templates.securiteEPI],
