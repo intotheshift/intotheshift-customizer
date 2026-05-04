@@ -751,14 +751,40 @@
         ["Donner et recevoir du feedback utile", "Formuler et accueillir des retours concrets, recevables et orientés action."],
         ["Ancrer les nouvelles pratiques",       "Transformer les intentions en habitudes professionnelles observables."]
       ]
-    },
-    mgmtChangement: {
-      domain: "management",
-      chapters: [
-        ["Comprendre les résistances au changement", "Distinguer l'opposition de fond du besoin d'information, et agir en conséquence sans forcer l'adhésion."],
-        ["Relayer et incarner la transformation",    "Transmettre un changement décidé sans l'avoir choisi tout en préservant sa crédibilité de proximité."],
-        ["Accompagner les transitions individuelles","Repérer les personnes qui décrochent et créer les conditions d'un soutien sans paternalisme ni contrôle."],
-        ["Ancrer les nouvelles pratiques dans la durée", "Empêcher que les anciennes habitudes reprennent le dessus une fois l'attention de la direction retombée."]
+ mgmtFeedback: {
+   domain: "management",
+   chapters: [
+     ["Créer les conditions d’un feedback utile", "Installer un cadre propice à des retours réguliers, concrets et recevables."],
+     ["Formuler un retour factuel", "S’appuyer sur des faits observables plutôt que sur des jugements ou impressions générales."],
+     ["Recevoir un feedback sans se fermer", "Accueillir un retour, même inconfortable, pour en faire un levier d’apprentissage."],
+     ["Ancrer les apprentissages", "Transformer les retours reçus en ajustements visibles dans les pratiques."]
+  ]
+},
+  mgmtManagerEngageant: {
+    domain: "management",
+    chapters: [
+      ["Créer un cadre mobilisateur", "Clarifier les attentes, le sens et les marges de manœuvre de l’équipe."],
+      ["Responsabiliser sans surcontrôler", "Développer l’autonomie sans abandonner l’accompagnement."],
+      ["Soutenir l’engagement au quotidien", "Reconnaître les efforts, traiter les irritants et maintenir l’énergie collective."],
+      ["Faire évoluer sa posture managériale", "Ajuster ses pratiques pour renforcer confiance, coopération et initiative."]
+    ]
+  },
+  mgmtProjet: {
+    domain: "management",
+    chapters: [
+      ["Clarifier le besoin et le périmètre", "Comprendre les attentes, les rôles et les livrables avant d’agir."],
+      ["Coopérer dans un cadre mouvant", "Avancer avec plusieurs interlocuteurs malgré les imprévus et zones de flou."],
+      ["Anticiper les risques et dépendances", "Identifier ce qui peut bloquer le projet et alerter au bon moment."],
+      ["Contribuer jusqu’à la livraison", "Tenir ses engagements, ajuster les priorités et capitaliser sur l’expérience."]
+     ]
+   },
+   mgmtChangement: {
+     domain: "management",
+     chapters: [
+       ["Comprendre les résistances au changement", "Distinguer l'opposition de fond du besoin d'information, et agir en conséquence sans forcer l'adhésion."],
+       ["Relayer et incarner la transformation",    "Transmettre un changement décidé sans l'avoir choisi tout en préservant sa crédibilité de proximité."],
+       ["Accompagner les transitions individuelles","Repérer les personnes qui décrochent et créer les conditions d'un soutien sans paternalisme ni contrôle."],
+       ["Ancrer les nouvelles pratiques dans la durée", "Empêcher que les anciennes habitudes reprennent le dessus une fois l'attention de la direction retombée."]
       ]
     },
     mgmtResponsabilisation: {
@@ -1332,10 +1358,10 @@ function buildCyberChapters(adId) {
       ["manager-signaux-rps",    "Détecter et orienter sans psychologiser",                 "Managers / Encadrants", "Repérer les signaux faibles, intervenir sur le travail et orienter vers les bons relais sans se substituer aux spécialistes.", templates.qvtManagerSignaux]
     ]],
     ["management", "Transformation & management", "🔄", [
-      ["changement-reflexes",        "Changer sans se crisper",                             "Tous publics",          "Comprendre ses réflexes face aux changements de méthode, d'outil ou d'organisation.",                              templates.management],
-      ["feedback-managerial",        "Donner et recevoir du feedback utile",                "Managers",              "Installer des échanges réguliers, factuels et mobilisables sans créer de posture défensive.",                      templates.management],
-      ["manager-engageant-tbf",      "Êtes-vous un manager engageant ?",                   "Managers",              "Questionner sa posture d'engagement, de responsabilisation et de soutien au collectif.",                          templates.management, BADGES.TBF],
-      ["pilotage-projet",            "Contribuer efficacement à un projet",                "Collaborateurs",        "Clarifier les rôles, gérer les imprévus et coopérer dans un cadre mouvant.",                                      templates.management],
+      ["changement-reflexes",        "Changer sans se crisper",              "Tous publics",   "Comprendre ses réflexes face aux changements de méthode, d'outil ou d'organisation.", templates.management],
+      ["feedback-managerial",        "Donner et recevoir du feedback utile", "Managers",       "Installer des échanges réguliers, factuels et mobilisables sans créer de posture défensive.", templates.mgmtFeedback],
+      ["manager-engageant-tbf",      "Êtes-vous un manager engageant ?",      "Managers",       "Questionner sa posture d'engagement, de responsabilisation et de soutien au collectif.", templates.mgmtManagerEngageant, BADGES.TBF],
+      ["pilotage-projet",            "Contribuer efficacement à un projet",   "Collaborateurs", "Clarifier les rôles, gérer les imprévus et coopérer dans un cadre mouvant.", templates.mgmtProjet],
       ["conduite-changement",        "Accompagner son équipe dans la transformation",       "Managers",              "Comprendre les résistances, relayer les décisions et ancrer les nouvelles pratiques dans la durée.",                templates.mgmtChangement],
       ["responsabilisation-equipe",  "Responsabiliser sans contrôler",                     "Managers",              "Déléguer avec confiance, développer l'autonomie de décision et valoriser l'initiative sans créer de dépendance.",  templates.mgmtResponsabilisation],
       ["collaboration-interequipes", "Coopérer avec les autres équipes",                   "Tous publics",          "Identifier les frictions interéquipes, gérer les dépendances et dépasser les logiques de silos.",                  templates.mgmtCollaboration],
