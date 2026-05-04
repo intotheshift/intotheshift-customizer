@@ -190,6 +190,29 @@ function openPreview(id){
     <h2 style="font-size:24px;margin:8px 0">${ad.title}</h2>
     <p style="color:#64748b;line-height:1.6;margin-bottom:18px">${ad.description}</p>
     <div>${renderTags(ad.tags)}</div>
+
+${ad.tags && ad.tags.includes("Conçu par The Big Factory") ? `
+  <div style="
+    margin-top:18px;
+    padding:16px;
+    border:1px solid #d8e0ea;
+    border-radius:10px;
+    background:#f8fbfc;
+  ">
+    <div style="font-size:12px;font-weight:700;color:#007883;margin-bottom:6px">
+      EXPERT PARTENAIRE
+    </div>
+    <div style="font-size:14px;font-weight:700;color:#18375d;margin-bottom:6px">
+      The Big Factory
+    </div>
+    <div style="font-size:13px;color:#475569;line-height:1.5;margin-bottom:10px">
+      Cette thématique s’appuie sur l’expertise de The Big Factory en management, collaboration et transformation des pratiques.
+    </div>
+    <a href="mailto:contact@thebigfactory.fr" class="btn btn-secondary">
+      Discuter avec un expert
+    </a>
+  </div>
+` : ''}
     <h3 style="margin:24px 0 12px">Chapitres</h3>
     ${ad.chapters.map((c,i)=>`
       <div class="card" style="margin-bottom:10px">
