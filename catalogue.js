@@ -214,6 +214,11 @@
     "dechets-ressources":           5,
     "achats-responsables":         10,
     "manager-transition-eco":      15,
+    "numerique-responsable":       20,
+    "deplacements-sobriete":       25,
+    "achats-impact":               30,
+    "engagement-rse":              37,
+    "manager-rse-equipe":          44,
     "conflits-interets":            0,
     "cadeaux-invitations":          5,
     "alerte-ethique":              10,
@@ -263,10 +268,10 @@
         ["Pratiques", "Ancrage", "Autonomie", "Collaboration interéquipes", "Transformation digitale"]
       ],
       environnement: [
-        ["Impact",      "Gestes quotidiens", "Empreinte"],
-        ["Sobriété",    "Arbitrage",         "Choix"],
-        ["Coopération", "Usages",            "Parties prenantes"],
-        ["Durabilité",  "Habitudes",         "Long terme"]
+        ["RSE", "Impact", "Gestes quotidiens", "Empreinte", "Énergie"],
+        ["Sobriété", "Arbitrage", "Choix", "Déchets", "Numérique responsable"],
+        ["Coopération", "Achats responsables", "Déplacements", "Engagement", "Fournisseurs"],
+        ["Durabilité", "Habitudes", "Long terme", "Managers", "Transition"]
       ],
       ethique: [
         ["Zone grise",    "Conformité",        "Risque"],
@@ -513,7 +518,39 @@
       "Un process oblige à produire des documents rarement consultés. Quelle réaction adoptez-vous ?",
       "Une initiative écologique repose toujours sur les mêmes volontaires. Que faites-vous ?",
       "Une contrainte environnementale est vécue comme une injonction de plus. Comment réagissez-vous ?",
-      "Une décision rapide risque d'entraîner des achats ou déplacements évitables. Que faites-vous ?"
+      "Une décision rapide risque d'entraîner des achats ou déplacements évitables. Que faites-vous ?",
+      "Votre ordinateur ou téléphone professionnel fonctionne encore bien mais un renouvellement est prévu. Que faites-vous ?",
+      "Vous avez accumulé plusieurs centaines de mails non lus dans votre boîte professionnelle. Quelle réaction adoptez-vous ?",
+      "Un dossier numérique de plusieurs gigaoctets est envoyé en pièce jointe alors qu'un lien suffirait. Que faites-vous ?",
+      "Plusieurs applications restent ouvertes sur vos appareils sans utilisation réelle. Comment réagissez-vous ?",
+      "Des réunions en visio sont organisées alors que tout le monde est dans le même bâtiment. Quelle réaction adoptez-vous ?",
+      "Un espace de stockage cloud partagé déborde de fichiers obsolètes. Que faites-vous ?",
+      "Une réunion est planifiée à distance pour un sujet qui nécessite peu d'échanges. Comment vous positionnez-vous ?",
+      "Vous utilisez la visioconférence depuis un espace ouvert sans nécessité. Que faites-vous ?",
+      "Des notifications permanentes vous empêchent de travailler sans connexion continue. Quelle réaction adoptez-vous ?",
+      "Vous devez vous déplacer pour une réunion de deux heures à 300 km. Comment vous positionnez-vous ?",
+      "Un véhicule est utilisé pour un court trajet facilement réalisable autrement. Quelle réaction adoptez-vous ?",
+      "Un vol est réservé sans que les options train ou visio n'aient été étudiées. Que faites-vous ?",
+      "Une politique de déplacements existe dans votre organisation mais elle est peu appliquée. Quelle réaction adoptez-vous ?",
+      "Des billets d'avion ont été achetés pour un trajet qui aurait pu être en train. Que faites-vous a posteriori ?",
+      "Un fournisseur retenu ne publie aucune information sur ses pratiques environnementales. Que faites-vous ?",
+      "Un achat groupé réduirait l'empreinte logistique mais demande une coordination supplémentaire. Comment réagissez-vous ?",
+      "Un produit moins impactant coûte 15 % de plus. La décision vous appartient. Que faites-vous ?",
+      "Des fournitures sont commandées fréquemment en petites quantités, générant des livraisons répétées. Quelle réaction adoptez-vous ?",
+      "Un prestataire propose une offre compétitive mais ses conditions de travail semblent floues. Que faites-vous ?",
+      "Un achat est justifié par le budget disponible plutôt que par le besoin réel. Comment vous positionnez-vous ?",
+      "Des emballages non recyclables sont utilisés systématiquement pour les envois internes. Que faites-vous ?",
+      "Vous devez choisir entre un fournisseur local plus cher et un fournisseur importé moins coûteux. Que faites-vous ?",
+      "Un équipement de bureau est en panne mais réparable. Un remplacement neuf serait plus rapide. Comment réagissez-vous ?",
+      "Une démarche RSE est lancée mais repose entièrement sur des volontaires. Que faites-vous ?",
+      "Un collègue remarque que les efforts individuels sont dérisoires face aux émissions industrielles. Comment réagissez-vous ?",
+      "Une initiative environnementale peine à trouver des participants au-delà du cercle habituel. Quelle réaction adoptez-vous ?",
+      "Votre organisation affiche des engagements RSE ambitieux mais les pratiques internes ne sont pas alignées. Que faites-vous ?",
+      "Un client vous demande l'empreinte carbone de votre offre. Vous n'avez pas de données précises. Comment réagissez-vous ?",
+      "Une action collective RSE s'ajoute à une charge déjà lourde. Quelle réaction adoptez-vous ?",
+      "Une habitude d'équipe génère un impact que personne ne questionne. Que faites-vous ?",
+      "Un bilan carbone révèle que les émissions viennent surtout des déplacements et du numérique. Quelle réaction adoptez-vous ?",
+      "Vous êtes sollicité pour porter un projet RSE transverse hors de votre cœur de mission. Que faites-vous ?"
     ],
     ethique: [
       "Un fournisseur vous propose une invitation personnelle avant un renouvellement de contrat. Que faites-vous ?",
@@ -731,6 +768,51 @@
         ["Gérer les injonctions contradictoires",    "Trouver une position cohérente et tenable quand les demandes reçues sont incompatibles entre elles."],
         ["Expliquer et tenir ses arbitrages",        "Communiquer une décision d'arbitrage de façon à ne pas créer de frustration inutile ni fragiliser la confiance."],
         ["Revoir ses priorités sans déstabiliser",   "Adapter le plan en cours de route sans perdre la confiance de l'équipe ni créer un sentiment d'instabilité."]
+      ]
+    },
+    envNumerique: {
+      domain: "environnement",
+      chapters: [
+        ["Réduire son empreinte numérique",              "Questionner les habitudes de stockage, d'envoi et de communication."],
+        ["Arbitrer entre distanciel et présentiel",      "Décider quand organiser une réunion physique ou la remplacer à distance."],
+        ["Allonger la durée de vie de ses équipements",  "Retarder le renouvellement et éviter les remplacements par défaut."],
+        ["Réduire le bruit numérique collectif",         "Contribuer à un environnement numérique sobre en réduisant les échanges superflus."]
+      ]
+    },
+    envDeplacements: {
+      domain: "environnement",
+      chapters: [
+        ["Questionner la nécessité d'un déplacement",        "Évaluer si un trajet est réellement nécessaire ou si une alternative existe."],
+        ["Choisir le mode de déplacement le moins impactant", "Comparer les options sans attendre que la politique de l'organisation le demande."],
+        ["Organiser ses déplacements avec sobriété",          "Regrouper les trajets et réduire les allers-retours inutiles."],
+        ["Contribuer à une culture sobre des déplacements",   "Partager ses pratiques et questionner les habitudes collectives sans moraliser."]
+      ]
+    },
+    envAchats: {
+      domain: "environnement",
+      chapters: [
+        ["Questionner le besoin avant d'acheter",             "Distinguer le besoin réel du besoin perçu et explorer la réutilisation."],
+        ["Évaluer l'impact de ses choix fournisseurs",        "Intégrer les critères environnementaux dans les décisions d'achat."],
+        ["Réduire les emballages et la logistique inutile",   "Agir sur la fréquence des commandes et les modes de livraison."],
+        ["Ancrer les achats responsables dans les pratiques", "Rendre les critères RSE praticables dans les décisions du quotidien."]
+      ]
+    },
+    envEngagement: {
+      domain: "environnement",
+      chapters: [
+        ["Situer son propre engagement RSE",                "Identifier ce qui motive à agir, ce qui freine et à quel niveau on se reconnaît."],
+        ["Agir sans attendre une politique formalisée",     "Trouver les marges de manœuvre à son niveau sans cadre institutionnel complet."],
+        ["Embarquer ses collègues sans les culpabiliser",   "Partager des pratiques et créer de l'envie sans être donneur de leçon."],
+        ["Tenir dans la durée malgré les contraintes",      "Maintenir des gestes cohérents quand la pression opérationnelle reprend le dessus."]
+      ]
+    },
+    envManagerRSE: {
+      domain: "environnement",
+      chapters: [
+        ["Incarner la transition sans surjouer",             "Montrer l'exemple sans créer de pression ni décalage entre discours et pratiques."],
+        ["Créer les conditions d'un engagement collectif",   "Faciliter l'appropriation des enjeux RSE sans imposer ni infantiliser."],
+        ["Arbitrer entre performance et impact",             "Tenir une position tenable quand contraintes économiques et enjeux environnementaux s'affrontent."],
+        ["Faire vivre la RSE dans les rituels d'équipe",     "Intégrer les questions d'impact dans les pratiques habituelles sans en faire un sujet à part."]
       ]
     },
     environnement: {
@@ -1209,10 +1291,15 @@
       ["arbitrage-priorisation",     "Prioriser et arbitrer quand tout est urgent",         "Managers / Encadrants", "Hiérarchiser les demandes, gérer les injonctions contradictoires et tenir ses arbitrages dans la durée.",           templates.mgmtArbitrage]
     ]],
     ["environnement", "RSE — environnement", "🌍", [
-      ["sobriete-quotidien",     "Sobriété environnementale au quotidien",         "Tous publics",    "Identifier ses arbitrages concrets sur l'énergie, les déplacements, les achats et les usages.", templates.environnement],
-      ["dechets-ressources",     "Réduire les déchets et préserver les ressources","Tous publics",    "Agir sur les petits gestes sans tomber dans l'affichage ou la culpabilisation.",               templates.environnement],
-      ["achats-responsables",    "Achats et choix responsables",                   "Fonctions support","Interroger les choix fournisseurs, volumes, usages et impacts dans les décisions courantes.",  templates.environnement],
-      ["manager-transition-eco", "Manager la transition environnementale",         "Managers",         "Faire évoluer les pratiques de l'équipe sans injonction ni greenwashing.",                     templates.environnement]
+      ["sobriete-quotidien",     "Sobriété environnementale au quotidien",              "Tous publics",     "Identifier ses arbitrages concrets sur l'énergie, les déplacements, les achats et les usages.",              templates.environnement],
+      ["dechets-ressources",     "Réduire les déchets et préserver les ressources",    "Tous publics",     "Agir sur les petits gestes sans tomber dans l'affichage ou la culpabilisation.",                            templates.environnement],
+      ["achats-responsables",    "Achats et choix responsables",                        "Fonctions support", "Interroger les choix fournisseurs, volumes, usages et impacts dans les décisions courantes.",               templates.environnement],
+      ["manager-transition-eco", "Manager la transition environnementale",              "Managers",          "Faire évoluer les pratiques de l'équipe sans injonction ni greenwashing.",                                  templates.environnement],
+      ["numerique-responsable",  "Réduire son empreinte numérique",                    "Tous publics",     "Questionner ses usages numériques, arbitrer présentiel et distanciel, allonger la durée de vie des équipements.", templates.envNumerique],
+      ["deplacements-sobriete",  "Déplacements professionnels et sobriété",            "Tous publics",     "Questionner la nécessité des déplacements, choisir les options les moins impactantes et réduire les trajets inutiles.", templates.envDeplacements],
+      ["achats-impact",          "Achats responsables et impact fournisseurs",          "Fonctions support", "Questionner le besoin, évaluer les fournisseurs sur leurs critères RSE et réduire la logistique inutile.",   templates.envAchats],
+      ["engagement-rse",         "S’engager dans la transition sans se décourager",    "Collaborateurs",   "Situer son propre niveau d’engagement, agir à son niveau et embarquer ses collègues sans culpabiliser.",      templates.envEngagement],
+      ["manager-rse-equipe",     "Animer la RSE dans son équipe",                      "Managers",          "Incarner la transition sans surjouer, créer un engagement collectif et arbitrer entre performance et impact.", templates.envManagerRSE]
     ]],
     ["ethique", "Éthique & compliance", "⚖️", [
       ["conflits-interets",  "Repérer les conflits d'intérêts",       "Tous publics", "Identifier les zones grises, déclarer et demander conseil avant que la situation ne s'installe.", templates.ethique],
