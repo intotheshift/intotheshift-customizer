@@ -751,6 +751,7 @@
         ["Donner et recevoir du feedback utile", "Formuler et accueillir des retours concrets, recevables et orientés action."],
         ["Ancrer les nouvelles pratiques",       "Transformer les intentions en habitudes professionnelles observables."]
       ]
+  },
  mgmtFeedback: {
    domain: "management",
    chapters: [
