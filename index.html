@@ -66,7 +66,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
     <div class="badges-title">🏷 Comprendre les badges</div>
     <div class="badges-grid">
       <div class="badge-item"><span class="tag ai">Base IA</span><div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l'IA. À adapter avant utilisation.</div></div>
-      <div class="badge-item"><span class="tag tbf">TBF</span><div class="badge-copy"><strong>Conçu par un expert</strong>Contenu conçu par un expert. Base robuste et exploitable après relecture.</div></div>
+      <div class="badge-item"><span class="tag conçu par un expert">Expert</span><div class="badge-copy"><strong>Conçu par un expert</strong>Contenu conçu par un expert. Base robuste et exploitable après relecture.</div></div>
       <div class="badge-item"><span class="tag help">Aide rédaction</span><div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n'est pas destiné à être publié tel quel.</div></div>
       <div class="badge-item"><span class="tag review">Relecture</span><div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l'adéquation terrain.</div></div>
     </div>
@@ -131,7 +131,10 @@ function cleanTags(tags){
   (tags || []).forEach(t => {
     const x = String(t || '').toLowerCase();
     if (x.includes('base assistée') || x.includes('base assistee')) allowed.push('Base assistée par IA');
-    else if (x.includes('the big factory')) allowed.push('Conçu par The Big Factory');
+    else if (x.includes('the big factory')) {
+  allowed.push('Conçu par un expert');
+  allowed.push('Conçu par The Big Factory');
+}
     else if (x.includes('aide à la rédaction') || x.includes('aide a la redaction')) allowed.push('Aide à la rédaction');
     else if (x.includes('relecture obligatoire')) allowed.push('Relecture obligatoire');
   });
@@ -139,7 +142,7 @@ function cleanTags(tags){
 }
 
 function tagClass(t){
-  if(t.includes('Factory')) return 'tbf';
+  if(t.includes('Factory') || t.includes('expert')) return 'tbf';
   if(t.includes('IA')) return 'ai';
   if(t.includes('Aide')) return 'help';
   if(t.includes('Relecture')) return 'review';
