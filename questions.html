@@ -48,6 +48,9 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
 /* ── SIDEBAR ───────────────────────────────────── */
 .sidebar{border-right:1px solid #e8edf4;padding:16px 12px;background:#fafbfc;display:flex;flex-direction:column;gap:5px}
 .sb-title{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;padding:0 4px;font-family:'Asap',sans-serif}
+.btn-add-chapter{width:100%;margin:6px 0 10px;background:#fff;color:#18375d;border:1px dashed #b8c4d4;border-radius:9px;padding:9px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Asap',sans-serif;transition:all .15s}
+.btn-add-chapter:hover{background:#edf1f7;border-color:#18375d}
+.btn-add-chapter:disabled{opacity:.45;cursor:not-allowed;background:#f7f9fc;color:#94a3b8}
 
 .cni{border-radius:10px;border:1px solid transparent;font-family:'Asap',sans-serif;transition:all 0.15s;background:transparent;overflow:hidden}
 .cni.on{background:#fff;border-color:#d8e0ea;box-shadow:0 2px 8px rgba(24,55,93,0.08)}
@@ -333,6 +336,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;min-height:100vh}
   <div class="sidebar">
     <div class="sb-title">Chapitres</div>
     <div id="chap-nav"></div>
+    <button class="btn-add-chapter" id="btn-add-chapter" onclick="addChapter()">+ Ajouter un chapitre</button>
     <div class="sb-bot">
       <div class="sb-total" id="sb-total"></div>
       <div class="btn-save-hint" id="btn-save-hint">4 questions min. par chapitre</div>
@@ -809,6 +813,45 @@ function makeBlankProfiles(){
   ];
 }
 
+function makeEmptyChapter(index){
+  const subject = getCurrentSubject();
+  return {
+    id: index + 1,
+    name: `Chapitre ${index + 1}`,
+    desc: subject ? `À préciser — ${subject}` : 'À préciser',
+    questions: [],
+    profils: [0,1,2].map(i => ({
+      niveau: i + 1,
+      titre: '',
+      phrase: '',
+      description: '',
+      motscles: []
+    })),
+    seuils: [{min:0,max:0.66},{min:0.66,max:1.32},{min:1.32,max:2}]
+  };
+}
+
+function addChapter(){
+  if(!Array.isArray(chapters)) chapters = [];
+  if(chapters.length >= 10){
+    alert('Vous pouvez créer jusqu’à 10 chapitres dans cette version.');
+    return;
+  }
+
+  const newIndex = chapters.length;
+  chapters.push(makeEmptyChapter(newIndex));
+  activeChap = newIndex;
+  activeTab = 'questions';
+  openCards = {};
+
+  state.chapterCount = chapters.length;
+  saveState();
+  renderNav();
+  renderMain();
+  updateSaveButton();
+}
+
+
 function renderBlankSetup(){
   updateBreadcrumb('Cadrage de l’autodiag');
   document.getElementById('chap-nav').innerHTML = '<div style="font-size:12px;color:#94a3b8;line-height:1.5;padding:6px 4px;font-family:Asap,sans-serif">Définissez d’abord le cadre de votre autodiag.</div>';
@@ -816,6 +859,8 @@ function renderBlankSetup(){
   const saveBtn = document.getElementById('btn-save');
   const hint = document.getElementById('btn-save-hint');
   saveBtn.disabled = true;
+  const addChapBtn = document.getElementById('btn-add-chapter');
+  if(addChapBtn) addChapBtn.disabled = true;
   saveBtn.textContent = 'Cadrage requis';
   hint.classList.add('visible');
   hint.textContent = 'Complétez le cadrage pour créer les chapitres';
@@ -909,6 +954,12 @@ function completeBlankSetup(){
 }
 
 function renderNav() {
+  const addChapBtn = document.getElementById('btn-add-chapter');
+  if(addChapBtn){
+    addChapBtn.disabled = needsBlankSetup() || chapters.length >= 10;
+    addChapBtn.textContent = chapters.length >= 10 ? 'Maximum 10 chapitres' : '+ Ajouter un chapitre';
+  }
+
   const nav = document.getElementById('chap-nav');
   nav.innerHTML = '';
 
