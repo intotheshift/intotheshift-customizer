@@ -877,6 +877,34 @@
         ["Coopérer autour des pratiques", "Faire évoluer les usages avec les collègues, clients et prestataires."],
         ["Faire durer les changements",   "Installer des réflexes simples et mesurables dans le temps."]
       ]
+          envDechets: {
+      domain: "environnement",
+      chapters: [
+        ["Identifier les sources de gaspillage", "Repérer les déchets, consommations inutiles et pertes de ressources dans les pratiques du quotidien."],
+        ["Réduire à la source", "Agir avant même la production du déchet : besoins réels, volumes, réutilisation et sobriété."],
+        ["Trier sans complexifier", "Installer des gestes simples, compréhensibles et réellement applicables par le collectif."],
+        ["Ancrer les nouvelles habitudes", "Faire durer les pratiques de réduction des déchets sans dépendre uniquement de la bonne volonté individuelle."]
+      ]
+    },
+
+    envAchatsResponsables: {
+      domain: "environnement",
+      chapters: [
+        ["Questionner le besoin réel", "Distinguer l’achat nécessaire de l’achat automatique, confortable ou budgétaire."],
+        ["Comparer les impacts fournisseurs", "Intégrer les critères environnementaux, sociaux et logistiques dans les choix."],
+        ["Arbitrer entre coût, usage et impact", "Décider sans réduire l’achat responsable à une opposition entre prix et conviction."],
+        ["Sécuriser les pratiques d’achat", "Formaliser des repères simples pour rendre les choix responsables plus réguliers."]
+      ]
+    },
+
+    envManagerTransition: {
+      domain: "environnement",
+      chapters: [
+        ["Donner du sens sans culpabiliser", "Expliquer les enjeux environnementaux sans injonction, moralisation ou affichage."],
+        ["Créer des marges d’action réalistes", "Identifier ce que l’équipe peut réellement changer dans son quotidien professionnel."],
+        ["Arbitrer les tensions opérationnelles", "Gérer les contradictions entre délais, performance, confort et réduction d’impact."],
+        ["Installer une dynamique collective", "Faire vivre la transition dans les rituels, décisions et habitudes de l’équipe."]
+      ]
     },
     ethique: {
       domain: "ethique",
@@ -1370,10 +1398,10 @@ function buildCyberChapters(adId) {
       ["arbitrage-priorisation",     "Prioriser et arbitrer quand tout est urgent",         "Managers / Encadrants", "Hiérarchiser les demandes, gérer les injonctions contradictoires et tenir ses arbitrages dans la durée.",           templates.mgmtArbitrage]
     ]],
     ["environnement", "RSE — environnement", "🌍", [
-      ["sobriete-quotidien",     "Sobriété environnementale au quotidien",              "Tous publics",     "Identifier ses arbitrages concrets sur l'énergie, les déplacements, les achats et les usages.",              templates.environnement],
-      ["dechets-ressources",     "Réduire les déchets et préserver les ressources",    "Tous publics",     "Agir sur les petits gestes sans tomber dans l'affichage ou la culpabilisation.",                            templates.environnement],
-      ["achats-responsables",    "Achats et choix responsables",                        "Fonctions support", "Interroger les choix fournisseurs, volumes, usages et impacts dans les décisions courantes.",               templates.environnement],
-      ["manager-transition-eco", "Manager la transition environnementale",              "Managers",          "Faire évoluer les pratiques de l'équipe sans injonction ni greenwashing.",                                  templates.environnement],
+      ["sobriete-quotidien",     "Sobriété environnementale au quotidien",           "Tous publics",     "Identifier ses arbitrages concrets sur l'énergie, les déplacements, les achats et les usages.", templates.environnement],
+      ["dechets-ressources",     "Réduire les déchets et préserver les ressources", "Tous publics",     "Agir sur les petits gestes sans tomber dans l'affichage ou la culpabilisation.", templates.envDechets],
+      ["achats-responsables",    "Achats et choix responsables",                     "Fonctions support", "Interroger les choix fournisseurs, volumes, usages et impacts dans les décisions courantes.", templates.envAchatsResponsables],
+      ["manager-transition-eco", "Manager la transition environnementale",           "Managers",          "Faire évoluer les pratiques de l'équipe sans injonction ni greenwashing.", templates.envManagerTransition],
       ["numerique-responsable",  "Réduire son empreinte numérique",                    "Tous publics",     "Questionner ses usages numériques, arbitrer présentiel et distanciel, allonger la durée de vie des équipements.", templates.envNumerique],
       ["deplacements-sobriete",  "Déplacements professionnels et sobriété",            "Tous publics",     "Questionner la nécessité des déplacements, choisir les options les moins impactantes et réduire les trajets inutiles.", templates.envDeplacements],
       ["achats-impact",          "Achats responsables et impact fournisseurs",          "Fonctions support", "Questionner le besoin, évaluer les fournisseurs sur leurs critères RSE et réduire la logistique inutile.",   templates.envAchats],
