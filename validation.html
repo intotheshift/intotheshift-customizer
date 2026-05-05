@@ -381,7 +381,7 @@ function getCollaboratorTitle(){
   return getParam().titre_repondants || getParam().titre || getThemeTitle();
 }
 function getCompany(){
-  return getClientInfo().entreprise || getParam().entreprise || getParam().company || state.company || 'nomdelentreprise';
+  return getClientInfo().entreprise || getParam().entreprise || getParam().company || state.company || '';
 }
 function getSlug(){
   return getParam().slug || state.slug || slugify(getThemeTitle()) || 'autodiagnostic';
