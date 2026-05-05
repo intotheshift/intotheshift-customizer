@@ -631,7 +631,7 @@ function validateClientInfo(showErrors){
 function restoreClientInfo(){
   const info = state.clientInfo || state.transmission?.clientInfo || {};
   const map = {
-    'client-company': info.entreprise || getParam().entreprise || getParam().company || state.company || '',
+    'client-company': info.entreprise || '',
     'client-firstname': info.prenom || '',
     'client-lastname': info.nom || '',
     'client-email': info.email || '',
