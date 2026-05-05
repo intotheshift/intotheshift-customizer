@@ -663,7 +663,28 @@ function buildPdfHtml(){
   }
   function resourceList(){
     if(!resources.length) return '<li>Aucune ressource renseignée</li>';
-    return resources.map(r => `<li>${safe(r.titre || r.title || r.url)}</li>`).join('');
+    return resources.map(r => {
+      const title = safe(r.titre || r.title || r.nom || r.name || r.url, 'Ressource');
+      const link = String(r.url || r.lien || r.link || '').trim();
+      if(link){
+        return `<li><span class="res-title">${title}</span><br><a class="res-link" href="${h(link)}">${h(link)}</a></li>`;
+      }
+      return `<li><span class="res-title">${title}</span></li>`;
+    }).join('');
+  }
+  function questionsContent(){
+    if(!chapters.length) return '<div class="bloc">Aucune question renseignée</div>';
+    return chapters.map((ch, ci) => {
+      const questions = ch.questions || [];
+      const qHtml = questions.length ? questions.map((q, qi) => {
+        const answers = q.answers || [];
+        const aHtml = answers.length
+          ? `<ul class="answers">${answers.map((a, ai) => `<li><strong>Réponse ${ai+1} :</strong> ${safe(a.text || a.label || a.reponse || a)}</li>`).join('')}</ul>`
+          : '<div class="sub">Aucune réponse renseignée</div>';
+        return `<div class="question-card"><div class="question-title">Question ${qi+1} : ${safe(q.text || q.question)}</div>${aHtml}</div>`;
+      }).join('') : '<div class="bloc">Aucune question renseignée pour ce chapitre</div>';
+      return `<div class="chapter-detail"><h3>Chapitre ${ci+1} — ${safe(ch.title, 'Sans titre')}</h3>${qHtml}</div>`;
+    }).join('');
   }
 
   return `<!DOCTYPE html>
@@ -690,6 +711,13 @@ function buildPdfHtml(){
   li{margin-bottom:4px}
   .notice{font-size:11px;color:#64748b;border-top:1px solid #dce5ee;margin-top:24px;padding-top:12px}
   .url{word-break:break-all;color:#007883;font-weight:700}
+  .res-title{font-weight:800;color:#18375d}
+  .res-link{word-break:break-all;color:#007883;font-size:12px}
+  .chapter-detail{page-break-inside:avoid;margin-bottom:14px}
+  .chapter-detail h3{font-size:13px;color:#18375d;margin:10px 0 7px}
+  .question-card{border:1px solid #dce5ee;border-radius:8px;padding:9px 10px;margin:8px 0;background:#fff;page-break-inside:avoid}
+  .question-title{font-weight:800;color:#18375d;margin-bottom:5px}
+  .answers{margin:6px 0 0 18px;padding:0}
 </style>
 </head>
 <body>
@@ -705,7 +733,7 @@ function buildPdfHtml(){
     <div class="row"><span class="label">Contact :</span> <span class="value">${safe([client.prenom, client.nom].filter(Boolean).join(' '))}</span></div>
     <div class="row"><span class="label">Email :</span> <span class="value">${safe(client.email)}</span></div>
     <div class="row"><span class="label">Fonction :</span> <span class="value">${safe(client.fonction)}</span></div>
-    <div class="row"><span class="label">Titre du diagnostic :</span> <span class="value">${safe(theme)}</span></div>
+    <div class="row"><span class="label">Titre de l’autodiagnostic :</span> <span class="value">${safe(theme)}</span></div>
     <div class="row"><span class="label">Titre visible répondants :</span> <span class="value">${safe(collaboratorTitle)}</span></div>
   </div>
 
@@ -719,7 +747,7 @@ function buildPdfHtml(){
     <div class="row"><span class="label">Slug :</span> <span class="value">${safe(getSlug())}</span></div>
   </div>
 
-  <h2>3. Structure du diagnostic</h2>
+  <h2>3. Structure de l’autodiagnostic</h2>
   <table>
     <thead><tr><th style="width:60px">N°</th><th>Chapitre</th><th style="width:90px">Questions</th></tr></thead>
     <tbody>${chapterRows()}</tbody>
@@ -734,7 +762,10 @@ function buildPdfHtml(){
   <h2>5. Ressources associées</h2>
   <div class="bloc"><ul>${resourceList()}</ul></div>
 
-  <h2>6. Paramétrage de campagne</h2>
+  <h2>6. Questions et réponses choisies</h2>
+  ${questionsContent()}
+
+  <h2>7. Paramétrage de campagne</h2>
   <div class="bloc grid">
     <div class="row"><span class="label">Date de lancement souhaitée :</span> <span class="value">${safe(formatDateFr(param.date_lancement || param.dateLancement || ''))}</span></div>
     <div class="row"><span class="label">Date de clôture :</span> <span class="value">${safe(formatDateFr(param.date_cloture || param.dateCloture || ''))}</span></div>
@@ -742,11 +773,12 @@ function buildPdfHtml(){
     <div class="row"><span class="label">URL prévue :</span> <span class="url">${safe(url)}</span></div>
   </div>
 
-  <h2>7. Commentaire transmis</h2>
+  <h2>8. Commentaire transmis</h2>
   <div class="bloc">${safe(client.commentaire, 'Aucun commentaire renseigné')}</div>
 
   <div class="notice">
-    Ce document récapitule les éléments renseignés dans Shift Studio. Il ne constitue pas une proposition commerciale ni une validation définitive des contenus. Le lien affiché correspond à l’adresse prévue et pourra être confirmé après mise en ligne.
+    Ce document récapitule les éléments renseignés dans Shift Studio. Il ne constitue pas une proposition commerciale. Into The Shift n'est pas responsable des contenus que vous avez choisi d'intégrer. Le lien affiché correspond à l’adresse prévue mais devra être confirmé par notre équipe après mise en ligne. Ne communiquez pas le lien avant sa confirmation.<br><br>
+    Pour toute question, contactez-nous : <a href="mailto:contact@intotheshift.io">contact@intotheshift.io</a>
   </div>
 </body>
 </html>`;
@@ -880,11 +912,11 @@ async function transmit(){
 
   if(sentOk){
     document.getElementById('success-alert').classList.remove('hidden');
-    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et vous allez recevoir le récapitulatif PDF de vos choix.');
+    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et le récapitulatif PDF pourra être envoyé au contact renseigné.');
     document.getElementById('btn-transmit').disabled = true;
     document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
   } else {
-    showTransmitModal('error', 'Transmission non confirmée', 'La demande n’a pas pu être transmise automatiquement. Vérifiez si vous avez reçu le document par mail pour nous le transmettre directement.');
+    showTransmitModal('error', 'Transmission non confirmée', 'La demande n’a pas pu être transmise automatiquement. Vérifiez Make ou réessayez dans quelques instants.');
     document.getElementById('btn-transmit').disabled = false;
   }
 }
