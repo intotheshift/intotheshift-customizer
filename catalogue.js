@@ -877,6 +877,7 @@
         ["Coopérer autour des pratiques", "Faire évoluer les usages avec les collègues, clients et prestataires."],
         ["Faire durer les changements",   "Installer des réflexes simples et mesurables dans le temps."]
       ]
+    },
           envDechets: {
       domain: "environnement",
       chapters: [
