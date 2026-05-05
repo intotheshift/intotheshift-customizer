@@ -912,11 +912,11 @@ async function transmit(){
 
   if(sentOk){
     document.getElementById('success-alert').classList.remove('hidden');
-    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et le récapitulatif PDF pourra être envoyé au contact renseigné.');
+    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et le récapitulatif PDF va vous être adressé.');
     document.getElementById('btn-transmit').disabled = true;
     document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
   } else {
-    showTransmitModal('error', 'Transmission non confirmée', 'La demande n’a pas pu être transmise automatiquement. Vérifiez Make ou réessayez dans quelques instants.');
+    showTransmitModal('error', 'Transmission non confirmée', 'La demande n’a pas pu être transmise automatiquement. Vérifiez votre email et transférez nous le document si nécessaire.');
     document.getElementById('btn-transmit').disabled = false;
   }
 }
