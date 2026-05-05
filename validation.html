@@ -39,6 +39,7 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
 .alert-neutral{background:#f0f8f7;border:1px solid #b8dfe0;color:#007883}
 .alert-warning{background:#fff8ec;border:1px solid #ffd490;color:#8a6408}
 .alert-success{background:#f0fbf2;border:1px solid #b8e8c0;color:#27823a}
+.alert-pdf{background:#f7f9fc;border:1px solid #d8e0ea;color:#18375d}
 .alert-ico{font-size:15px;flex-shrink:0;margin-top:1px}
 
 .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -134,7 +135,7 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
   <h1 class="page-title">Transmettre votre autodiagnostic pour mise en ligne</h1>
   <p class="page-sub">
     Votre autodiagnostic est prêt à être finalisé. Une fois transmis, l’équipe Into The Shift vérifiera les derniers éléments,
-    configurera la mise en ligne et vous enverra prochainement le lien de passation à diffuser auprès de vos collaborateurs.
+    configurera la mise en ligne et vous recevrez un récapitulatif PDF des choix renseignés.
   </p>
 
   <div class="grid">
@@ -204,6 +205,10 @@ body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18
           <label class="check-row"><input type="checkbox" checked onchange="updateReady()"><span><span class="check-title">Canaux de diffusion vérifiés</span><span class="check-sub">Email, managers, intranet, Teams / Slack ou autres canaux internes sont identifiés.</span></span></label>
           <label class="check-row"><input type="checkbox" onchange="updateReady()"><span><span class="check-title">Visuels demandés si besoin</span><span class="check-sub">Vous pouvez nous demander des visuels prêts à diffuser pour accompagner le lancement.</span></span></label>
           <label class="check-row"><input type="checkbox" onchange="updateReady()"><span><span class="check-title">Transmission à Into The Shift validée</span><span class="check-sub">Vous confirmez que les éléments peuvent être transmis pour préparation de la mise en ligne.</span></span></label>
+        </div>
+        <div class="alert alert-pdf">
+          <span class="alert-ico">📄</span>
+          <span>À la transmission, l’équipe Into The Shift reçoit le fichier de configuration complet et le contact renseigné reçoit un PDF récapitulatif neutre de ses choix.</span>
         </div>
         <div class="alert alert-warning" id="missing-alert">
           <span class="alert-ico">⚠️</span>
@@ -607,6 +612,146 @@ function restoreClientInfo(){
   });
 }
 
+
+function buildPdfHtml(){
+  const param = getParam();
+  const client = getClientInfo();
+  const chapters = getChapters();
+  const resources = Array.isArray(param.resources) ? param.resources : [];
+  const campagne = state.campagne || state.campaign || {};
+  const submitted = new Date().toLocaleDateString('fr-FR');
+  const qCount = chapters.reduce((a,c)=>a+(c.questions||[]).length,0);
+  const pCount = chapters.reduce((a,c)=>a+(c.profiles||[]).length,0);
+  const pack = formatPack(getPackChoice());
+  const url = getUrl();
+  const theme = getThemeTitle();
+  const collaboratorTitle = getCollaboratorTitle();
+
+  function h(v){
+    return String(v ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+  function safe(v, fallback='—'){
+    const s = String(v ?? '').trim();
+    return s ? h(s) : fallback;
+  }
+  function chapterRows(){
+    if(!chapters.length) return '<tr><td colspan="3">Aucun chapitre renseigné</td></tr>';
+    return chapters.map((ch, i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td><strong>${safe(ch.title, 'Chapitre ' + (i+1))}</strong><br><span>${safe(ch.description, '')}</span></td>
+        <td>${(ch.questions || []).length}</td>
+      </tr>`).join('');
+  }
+  function profileRows(){
+    const rows = [];
+    chapters.forEach((ch, ci) => {
+      (ch.profiles || []).forEach((p, pi) => {
+        rows.push(`
+          <tr>
+            <td>${safe(ch.title, 'Chapitre ' + (ci+1))}</td>
+            <td>${safe(profileTitle(p), 'Profil ' + (pi+1))}</td>
+            <td>${safe(profileMin(ch,p,pi))} – ${safe(profileMax(ch,p,pi))}</td>
+          </tr>`);
+      });
+    });
+    return rows.length ? rows.join('') : '<tr><td colspan="3">Aucun profil renseigné</td></tr>';
+  }
+  function resourceList(){
+    if(!resources.length) return '<li>Aucune ressource renseignée</li>';
+    return resources.map(r => `<li>${safe(r.titre || r.title || r.url)}</li>`).join('');
+  }
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Récapitulatif Shift Studio</title>
+<style>
+  @page { margin: 28px; }
+  body{font-family:Arial,Helvetica,sans-serif;color:#18375d;background:#fff;margin:0;font-size:13px;line-height:1.45}
+  .cover{border-bottom:5px solid #0d4c72;padding:0 0 18px;margin-bottom:22px}
+  .brand{font-size:20px;font-weight:800;color:#0d4c72;letter-spacing:.2px}
+  h1{font-size:26px;margin:18px 0 6px;color:#18375d;line-height:1.15}
+  .sub{color:#64748b;font-size:12px}
+  h2{font-size:15px;color:#0d4c72;margin:22px 0 9px;padding-bottom:5px;border-bottom:1px solid #dce5ee}
+  .bloc{background:#f7f9fc;border:1px solid #dce5ee;border-radius:10px;padding:13px 15px;margin-bottom:10px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+  .row{margin-bottom:6px}.label{font-weight:800;color:#18375d}.value{color:#18375d}
+  table{width:100%;border-collapse:collapse;margin-top:6px;background:#fff}
+  th{background:#18375d;color:#fff;text-align:left;font-size:11px;padding:8px;border:1px solid #18375d}
+  td{padding:8px;border:1px solid #dce5ee;vertical-align:top}
+  td span{font-size:11px;color:#64748b}
+  ul{margin:6px 0 0 18px;padding:0}
+  li{margin-bottom:4px}
+  .notice{font-size:11px;color:#64748b;border-top:1px solid #dce5ee;margin-top:24px;padding-top:12px}
+  .url{word-break:break-all;color:#007883;font-weight:700}
+</style>
+</head>
+<body>
+  <div class="cover">
+    <div class="brand">Into The Shift — Shift Studio</div>
+    <h1>Récapitulatif de votre configuration</h1>
+    <div class="sub">Document généré automatiquement le ${h(submitted)}</div>
+  </div>
+
+  <h2>1. Informations générales</h2>
+  <div class="bloc grid">
+    <div class="row"><span class="label">Entreprise :</span> <span class="value">${safe(client.entreprise || getCompany())}</span></div>
+    <div class="row"><span class="label">Contact :</span> <span class="value">${safe([client.prenom, client.nom].filter(Boolean).join(' '))}</span></div>
+    <div class="row"><span class="label">Email :</span> <span class="value">${safe(client.email)}</span></div>
+    <div class="row"><span class="label">Fonction :</span> <span class="value">${safe(client.fonction)}</span></div>
+    <div class="row"><span class="label">Titre du diagnostic :</span> <span class="value">${safe(theme)}</span></div>
+    <div class="row"><span class="label">Titre visible répondants :</span> <span class="value">${safe(collaboratorTitle)}</span></div>
+  </div>
+
+  <h2>2. Configuration choisie</h2>
+  <div class="bloc grid">
+    <div class="row"><span class="label">Thématique / base :</span> <span class="value">${safe(theme)}</span></div>
+    <div class="row"><span class="label">Pack choisi :</span> <span class="value">${safe(pack)}</span></div>
+    <div class="row"><span class="label">Nombre de chapitres :</span> <span class="value">${chapters.length}</span></div>
+    <div class="row"><span class="label">Nombre de questions :</span> <span class="value">${qCount}</span></div>
+    <div class="row"><span class="label">Nombre de profils :</span> <span class="value">${pCount}</span></div>
+    <div class="row"><span class="label">Slug :</span> <span class="value">${safe(getSlug())}</span></div>
+  </div>
+
+  <h2>3. Structure du diagnostic</h2>
+  <table>
+    <thead><tr><th style="width:60px">N°</th><th>Chapitre</th><th style="width:90px">Questions</th></tr></thead>
+    <tbody>${chapterRows()}</tbody>
+  </table>
+
+  <h2>4. Profils et scoring</h2>
+  <table>
+    <thead><tr><th>Chapitre</th><th>Profil</th><th style="width:130px">Seuil</th></tr></thead>
+    <tbody>${profileRows()}</tbody>
+  </table>
+
+  <h2>5. Ressources associées</h2>
+  <div class="bloc"><ul>${resourceList()}</ul></div>
+
+  <h2>6. Paramétrage de campagne</h2>
+  <div class="bloc grid">
+    <div class="row"><span class="label">Date de lancement souhaitée :</span> <span class="value">${safe(formatDateFr(param.date_lancement || param.dateLancement || ''))}</span></div>
+    <div class="row"><span class="label">Date de clôture :</span> <span class="value">${safe(formatDateFr(param.date_cloture || param.dateCloture || ''))}</span></div>
+    <div class="row"><span class="label">Template kit actif :</span> <span class="value">${safe(campagne.activeTemplate)}</span></div>
+    <div class="row"><span class="label">URL prévue :</span> <span class="url">${safe(url)}</span></div>
+  </div>
+
+  <h2>7. Commentaire transmis</h2>
+  <div class="bloc">${safe(client.commentaire, 'Aucun commentaire renseigné')}</div>
+
+  <div class="notice">
+    Ce document récapitule les éléments renseignés dans Shift Studio. Il ne constitue pas une proposition commerciale ni une validation définitive des contenus. Le lien affiché correspond à l’adresse prévue et pourra être confirmé après mise en ligne.
+  </div>
+</body>
+</html>`;
+}
+
 function buildPayload(){
   const param = getParam();
   return {
@@ -621,7 +766,10 @@ function buildPayload(){
     slug: getSlug(),
     url_prevue: getUrl(),
     chapters: getChapters(),
-    excel_html: buildExcelHtml()
+    excel_html: buildExcelHtml(),
+    pdf_html: buildPdfHtml(),
+    excel_filename: 'configuration-shift-studio-' + slugify(getCompany()) + '.xls',
+    pdf_filename: 'recapitulatif-shift-studio-' + slugify(getCompany()) + '.pdf'
   };
 }
 
@@ -697,7 +845,7 @@ async function transmit(){
     return;
   }
   const payload = buildPayload();
-  showTransmitModal('loading', 'Transmission en cours', 'Nous préparons votre fichier Excel et transmettons la configuration à Into The Shift.');
+  showTransmitModal('loading', 'Transmission en cours', 'Nous préparons votre fichier Excel interne et le récapitulatif PDF destiné au contact renseigné.');
 
   state.clientInfo = getClientInfo();
   state.transmission = state.transmission || {};
@@ -732,7 +880,7 @@ async function transmit(){
 
   if(sentOk){
     document.getElementById('success-alert').classList.remove('hidden');
-    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Vous allez recevoir un récapitulatif et l’équipe Into The Shift va préparer la mise en ligne.');
+    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et le récapitulatif PDF pourra être envoyé au contact renseigné.');
     document.getElementById('btn-transmit').disabled = true;
     document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
   } else {
