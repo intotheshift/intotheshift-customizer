@@ -138,6 +138,32 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
   background:rgba(255,255,255,.14);
   color:#fff;
 }
+.main-nav .nav-cta{
+  background:#ffc000;
+  color:#18375d;
+}
+
+.main-nav .nav-cta:hover,
+.main-nav .nav-cta.active{
+  background:#ffd24a;
+  color:#18375d;
+}
+
+.logout-btn{
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  border-radius:999px;
+  padding:8px 12px;
+  font-family:'Asap',sans-serif;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.logout-btn:hover{
+  background:rgba(255,255,255,.18);
+}
 
 @media(max-width:900px){
   .main-nav{
