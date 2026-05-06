@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <a class="${active("home.html")}" href="home.html">Accueil</a>
     <a class="${active("index.html")}" href="index.html">Bibliothèque</a>
     <a class="${active("login.html")}" href="login.html">Se connecter</a>
-    <a href="register.html" class="btn btn-register">Première connexion</a>
+    <a href="register.html" class="btn-register">Première connexion</a>
   `;
 
   const userNav = `
