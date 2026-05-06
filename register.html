@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer un compte — The Shift Studio</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6f9;color:#18375d;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.auth-card{background:white;width:100%;max-width:460px;padding:32px;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.12)}
+h1{margin-bottom:10px}
+p{color:#607089;margin-bottom:22px}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input{width:100%;padding:13px;border:1px solid #d8e0ea;border-radius:10px;font-size:15px}
+button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:12px;background:#0d4c72;color:#fff;font-weight:800;font-size:16px;cursor:pointer}
+.small{margin-top:16px;text-align:center;font-size:14px}
+.error{color:#b42318;margin-top:12px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="auth-card">
+  <h1>Créer votre accès</h1>
+  <p>Créez votre espace The Shift Studio pour sauvegarder votre configuration et la retrouver plus tard.</p>
+
+  <form id="register-form">
+    <label>Prénom</label>
+    <input id="firstName" required>
+
+    <label>Nom</label>
+    <input id="lastName" required>
+
+    <label>Entreprise</label>
+    <input id="companyName" required>
+
+    <label>Email professionnel</label>
+    <input id="email" type="email" required>
+
+    <label>Mot de passe</label>
+    <input id="password" type="password" required minlength="8">
+
+    <button type="submit">Créer mon espace</button>
+    <div id="error" class="error"></div>
+  </form>
+
+  <div class="small">
+    Déjà un compte ? <a href="login.html">Se connecter</a>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+
+document.getElementById("register-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  document.getElementById("error").textContent = "";
+
+  const payload = {
+    firstName: document.getElementById("firstName").value.trim(),
+    lastName: document.getElementById("lastName").value.trim(),
+    companyName: document.getElementById("companyName").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    password: document.getElementById("password").value
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/api/register`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      document.getElementById("error").textContent = data.error || "Erreur inscription";
+      return;
+    }
+
+    localStorage.setItem("shiftstudio_token", data.token);
+    localStorage.setItem("shiftstudio_user", JSON.stringify(data.user));
+    localStorage.setItem("shiftstudio_current_project", JSON.stringify(data.project));
+
+    window.location.href = "dashboard.html";
+  } catch (err) {
+    document.getElementById("error").textContent = "Impossible de contacter le serveur.";
+  }
+});
+</script>
+
+</body>
+</html>
