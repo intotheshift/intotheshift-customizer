@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
 
   const userNav = `
-    <a class="${active("dashboard.html")}" href="dashboard.html">Dashboard</a>
+    <a class="${active("dashboard.html")}" href="dashboard.html">Mon Dashboard</a>
     <a class="${active("index.html")}" href="index.html">Bibliothèque</a>
     <a class="${active("questions.html")}" href="questions.html">Création</a>
     <a class="${active("parametrage.html")}" href="parametrage.html">Paramétrage</a>
