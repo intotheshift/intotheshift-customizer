@@ -116,10 +116,15 @@ body{
   font-size:13px;
 }
 
-.dash-mini-row:last-child{border-bottom:0}
+.dash-mini-row:last-of-type{border-bottom:0}
 
 .dash-mini-row span:first-child{color:#64748b}
-.dash-mini-row span:last-child{font-weight:900;color:#18375d}
+.dash-mini-row span:last-child{font-weight:900;color:#18375d;text-align:right}
+
+.dash-mini-btn{
+  width:100%;
+  margin-top:14px;
+}
 
 .dash-section{
   margin-top:26px;
@@ -361,10 +366,12 @@ body{
     </div>
 
     <aside class="dash-mini-card">
-      <div class="dash-mini-title">Votre parcours</div>
-      <div class="dash-mini-row"><span>Statut</span><span>Découverte</span></div>
-      <div class="dash-mini-row"><span>Projet</span><span id="mini-project">À créer</span></div>
+      <div class="dash-mini-title">Mon parcours</div>
+      <div class="dash-mini-row"><span>Type d’accès</span><span>Découverte</span></div>
+      <div class="dash-mini-row"><span>Projet en cours</span><span id="mini-project">Aucun projet démarré</span></div>
+      <div class="dash-mini-row"><span>Avancement</span><span id="mini-progress">À démarrer</span></div>
       <div class="dash-mini-row"><span>Prochaine étape</span><span id="mini-next">Choisir une base</span></div>
+      <a href="index.html" class="btn btn-primary dash-mini-btn" id="mini-action">Commencer un autodiag</a>
     </aside>
   </section>
 
@@ -493,14 +500,29 @@ document.addEventListener("DOMContentLoaded", function(){
   const chapters = Array.isArray(state?.chapters) ? state.chapters : [];
   const qCount = chapters.reduce((sum, ch) => sum + ((ch.questions || []).length), 0);
 
+  const miniAction = document.getElementById("mini-action");
+
   if(title){
-    document.getElementById("mini-project").textContent = "Brouillon";
+    document.getElementById("mini-project").textContent = title;
+    document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
     document.getElementById("mini-next").textContent = "Continuer la création";
+    if(miniAction){
+      miniAction.textContent = "Continuer la création";
+      miniAction.href = "questions.html";
+    }
     document.getElementById("draft-status").textContent = "Brouillon en cours";
     document.getElementById("draft-title").textContent = title;
     document.getElementById("draft-theme").textContent = theme;
     document.getElementById("draft-questions").textContent = qCount + " question" + (qCount > 1 ? "s" : "");
     document.getElementById("draft-step").textContent = "Étape 2/5";
+  } else {
+    document.getElementById("mini-project").textContent = "Aucun projet démarré";
+    document.getElementById("mini-progress").textContent = "À démarrer";
+    document.getElementById("mini-next").textContent = "Choisir une base";
+    if(miniAction){
+      miniAction.textContent = "Commencer un autodiag";
+      miniAction.href = "index.html";
+    }
   }
 });
 </script>
