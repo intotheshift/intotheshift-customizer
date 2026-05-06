@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — Into The Shift</title>
+<title>Mon dashboard — Into The Shift</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
 <link rel="stylesheet" href="style.css">
 
@@ -253,7 +253,55 @@ body{
   gap:8px;
   flex-wrap:wrap;
   justify-content:flex-end;
-  <button class="btn btn-danger" type="button" onclick="openDeleteDraftModal()">Supprimer le brouillon</button>
+}
+
+.btn-danger{
+  background:#fff;
+  color:#b42318;
+  border:1px solid #f3b4ad;
+}
+
+.btn-danger:hover{
+  background:#fff1ef;
+}
+
+.expert-card{
+  background:linear-gradient(135deg,#ffffff 0%,#fff7df 100%);
+  border:1px solid #ffd978;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 10px 26px rgba(24,55,93,.06);
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:center;
+}
+
+.expert-card h2{
+  font-size:22px;
+  color:#18375d;
+  margin-bottom:6px;
+}
+
+.expert-card p{
+  color:#5b6b7f;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.expert-contact{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+  flex-shrink:0;
+}
+
+.expert-contact span{
+  font-size:12px;
+  font-weight:900;
+  color:#8a5a00;
+  text-transform:uppercase;
 }
 
 .path-grid{
@@ -323,12 +371,54 @@ body{
   flex-shrink:0;
 }
 
+.delete-modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:30000;
+  background:rgba(15,30,55,.58);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.delete-modal{
+  width:min(480px,100%);
+  background:#fff;
+  border-radius:22px;
+  border:1px solid #d8e0ea;
+  box-shadow:0 28px 80px rgba(0,0,0,.28);
+  padding:26px;
+}
+
+.delete-modal h2{
+  font-size:22px;
+  color:#18375d;
+  margin-bottom:10px;
+}
+
+.delete-modal p{
+  font-size:14px;
+  color:#5b6b7f;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+.delete-modal-actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+
 @media(max-width:980px){
   .dash-hero{grid-template-columns:1fr}
   .quick-grid{grid-template-columns:1fr}
   .path-grid{grid-template-columns:1fr 1fr}
   .draft-card{grid-template-columns:1fr}
   .draft-actions{justify-content:flex-start}
+  .expert-card{display:block}
+  .expert-contact{align-items:flex-start;margin-top:16px}
 }
 
 @media(max-width:620px){
@@ -339,6 +429,7 @@ body{
   .path-grid{grid-template-columns:1fr}
   .help-card{display:block}
   .help-card .btn{margin-top:16px;width:100%;justify-content:center}
+  .delete-modal-actions .btn{width:100%}
 }
 </style>
 </head>
@@ -362,7 +453,7 @@ body{
       <div class="dash-actions">
         <a href="index.html" class="btn btn-primary">Explorer les bases</a>
         <a href="questions.html?mode=blank" class="btn btn-secondary">Créer de zéro</a>
-        <a href="apercu-passation.html" class="btn btn-secondary">Voir un exemple</a>
+        <a id="preview-link-hero" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Voir un exemple</a>
       </div>
     </div>
 
@@ -408,9 +499,9 @@ body{
         <div>
           <div class="quick-icon">◎</div>
           <h3>Voir un exemple</h3>
-          <p>Visualisez l’expérience côté répondant avant de configurer votre propre campagne.</p>
+          <p>Visualisez l’expérience côté répondant. Sans brouillon, une démo QVT s’affiche ; avec un brouillon, l’aperçu reprend votre autodiagnostic.</p>
         </div>
-        <a id="preview-link" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Ouvrir l’aperçu</a>
+        <a id="preview-link-card" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Ouvrir l’aperçu</a>
       </div>
     </div>
   </section>
@@ -435,8 +526,27 @@ body{
       </div>
 
       <div class="draft-actions">
-        <a href="questions.html" class="btn btn-primary">Reprendre</a>
-        <a href="parametrage.html" class="btn btn-secondary">Paramétrer</a>
+        <a href="questions.html" class="btn btn-primary" id="resume-draft-btn">Reprendre la création</a>
+        <a href="parametrage.html" class="btn btn-secondary" id="settings-draft-btn">Paramétrer</a>
+        <button id="delete-draft-btn" class="btn btn-danger" type="button" onclick="openDeleteDraftModal()" style="display:none">
+          Supprimer le brouillon
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="dash-section">
+    <div class="expert-card">
+      <div>
+        <div class="dash-section-kicker">Accompagnement éditorial</div>
+        <h2>Besoin d’un expert contenu ?</h2>
+        <p>
+          Vous pouvez solliciter un appui pour cadrer votre thématique, reformuler vos situations, relire les réponses ou sécuriser la cohérence pédagogique de votre autodiagnostic.
+        </p>
+      </div>
+      <div class="expert-contact">
+        <span>Contact</span>
+        <a href="mailto:contact@intotheshift.io" class="btn btn-secondary">contact@intotheshift.io</a>
       </div>
     </div>
   </section>
@@ -492,39 +602,100 @@ body{
 
 </main>
 
+<div class="delete-modal-overlay" id="deleteDraftModal">
+  <div class="delete-modal">
+    <h2>Supprimer ce brouillon ?</h2>
+    <p>
+      Attention, vous allez supprimer votre autodiagnostic en cours.
+      Cette action est définitive : les questions, profils, ressources et paramètres déjà saisis ne pourront pas être récupérés.
+    </p>
+
+    <div class="delete-modal-actions">
+      <button class="btn btn-secondary" type="button" onclick="closeDeleteDraftModal()">Annuler</button>
+      <button class="btn btn-danger" type="button" onclick="confirmDeleteDraft()">Oui, supprimer le brouillon</button>
+    </div>
+  </div>
+</div>
+
 <script>
+function openDeleteDraftModal(){
+  const modal = document.getElementById("deleteDraftModal");
+  if(modal) modal.style.display = "flex";
+}
+
+function closeDeleteDraftModal(){
+  const modal = document.getElementById("deleteDraftModal");
+  if(modal) modal.style.display = "none";
+}
+
+function confirmDeleteDraft(){
+  localStorage.removeItem("intotheshift_customizer_state_v1");
+  localStorage.removeItem("its_current_ad_id");
+  localStorage.removeItem("its_selected_pack");
+  localStorage.removeItem("its_campaign_config");
+  localStorage.removeItem("its_generated_excel");
+  localStorage.removeItem("its_generated_pdf");
+  window.location.reload();
+}
+
 document.addEventListener("DOMContentLoaded", function(){
   const state = typeof itsLoad === "function" ? itsLoad() : {};
 
-  const title = state?.title || state?.meta?.nom || "";
-  const theme = state?.theme || "Thématique à choisir";
+  const title = state?.title || state?.subject || state?.meta?.nom || "";
+  const theme = state?.theme || state?.selectedTheme || "Thématique à choisir";
   const chapters = Array.isArray(state?.chapters) ? state.chapters : [];
   const qCount = chapters.reduce((sum, ch) => sum + ((ch.questions || []).length), 0);
 
   const miniAction = document.getElementById("mini-action");
+  const previewHero = document.getElementById("preview-link-hero");
+  const previewCard = document.getElementById("preview-link-card");
+  const deleteBtn = document.getElementById("delete-draft-btn");
 
   if(title){
     document.getElementById("mini-project").textContent = title;
-    document.getElementById("preview-link").href = "apercu-passation.html";
     document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
     document.getElementById("mini-next").textContent = "Continuer la création";
+
+    if(previewHero) previewHero.href = "apercu-passation.html";
+    if(previewCard) previewCard.href = "apercu-passation.html";
+
     if(miniAction){
       miniAction.textContent = "Continuer la création";
       miniAction.href = "questions.html";
     }
+
     document.getElementById("draft-status").textContent = "Brouillon en cours";
     document.getElementById("draft-title").textContent = title;
     document.getElementById("draft-theme").textContent = theme;
     document.getElementById("draft-questions").textContent = qCount + " question" + (qCount > 1 ? "s" : "");
     document.getElementById("draft-step").textContent = "Étape 2/5";
+
+    if(deleteBtn) deleteBtn.style.display = "inline-flex";
   } else {
     document.getElementById("mini-project").textContent = "Aucun projet démarré";
     document.getElementById("mini-progress").textContent = "À démarrer";
     document.getElementById("mini-next").textContent = "Choisir une base";
+
+    if(previewHero) previewHero.href = "apercu-passation.html?demo=qvt";
+    if(previewCard) previewCard.href = "apercu-passation.html?demo=qvt";
+
     if(miniAction){
       miniAction.textContent = "Commencer un autodiag";
       miniAction.href = "index.html";
     }
+
+    if(deleteBtn) deleteBtn.style.display = "none";
+  }
+
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closeDeleteDraftModal();
+  });
+
+  const modal = document.getElementById("deleteDraftModal");
+  if(modal){
+    modal.addEventListener("click", function(e){
+      if(e.target === this) closeDeleteDraftModal();
+    });
   }
 });
 </script>
