@@ -253,16 +253,14 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
   .main-editor{padding:16px 14px 42px!important;}
 }
 /* Bouton Première connexion dans le header */
-.main-nav .btn-register,
-.btn-register{
+.main-nav a.btn-register{
   background:#fff !important;
   color:#0d4c72 !important;
   border:2px solid #0d4c72 !important;
   box-shadow:0 8px 20px rgba(13,76,114,.10);
 }
 
-.main-nav .btn-register:hover,
-.btn-register:hover{
+.main-nav a.btn-register:hover{
   background:#eef6fb !important;
   color:#0d4c72 !important;
 }
