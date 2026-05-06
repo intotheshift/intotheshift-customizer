@@ -398,6 +398,55 @@ body{
   line-height:1.45;
 }
 
+
+.preview-modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:30000;
+  background:rgba(15,30,55,.62);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.preview-modal{
+  position:relative;
+  width:min(980px,100%);
+  height:min(760px,92vh);
+  background:#fff;
+  border-radius:24px;
+  box-shadow:0 28px 80px rgba(0,0,0,.28);
+  overflow:hidden;
+}
+
+.preview-modal iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  background:#fff;
+}
+
+.preview-close{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:2;
+  width:38px;
+  height:38px;
+  border-radius:999px;
+  border:1px solid #d8e0ea;
+  background:#fff;
+  color:#18375d;
+  font-size:24px;
+  font-weight:900;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(24,55,93,.16);
+}
+
+.preview-close:hover{background:#f4f6f9}
+
 .delete-modal-overlay{
   position:fixed;
   inset:0;
@@ -455,6 +504,8 @@ body{
   .path-grid{grid-template-columns:1fr}
   .support-actions .btn{width:100%}
   .delete-modal-actions .btn{width:100%}
+  .preview-modal-overlay{padding:10px}
+  .preview-modal{height:94vh;border-radius:18px}
 }
 </style>
 </head>
@@ -525,7 +576,7 @@ body{
           <h3>Voir un exemple répondant</h3>
           <p>Visualisez une expérience répondant prête à l’emploi avant de préparer votre propre diffusion.</p>
         </div>
-        <a id="preview-link-card" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Ouvrir l’aperçu</a>
+        <button id="preview-link-card" type="button" class="btn btn-secondary" onclick="openPreviewModal()">Ouvrir l’aperçu</button>
       </div>
     </div>
   </section>
@@ -646,6 +697,14 @@ body{
 
 </main>
 
+
+<div class="preview-modal-overlay" id="previewModal">
+  <div class="preview-modal">
+    <button class="preview-close" type="button" onclick="closePreviewModal()" aria-label="Fermer l’aperçu">×</button>
+    <iframe id="previewFrame" src="" title="Aperçu de la passation"></iframe>
+  </div>
+</div>
+
 <div class="delete-modal-overlay" id="deleteDraftModal">
   <div class="delete-modal">
     <h2>Supprimer ce brouillon ?</h2>
@@ -670,6 +729,29 @@ function openDeleteDraftModal(){
 function closeDeleteDraftModal(){
   const modal = document.getElementById("deleteDraftModal");
   if(modal) modal.style.display = "none";
+}
+
+
+function getCurrentDraftTitle(){
+  const state = typeof itsLoad === "function" ? itsLoad() : {};
+  return state?.title || state?.subject || state?.meta?.nom || "";
+}
+
+function openPreviewModal(){
+  const modal = document.getElementById("previewModal");
+  const frame = document.getElementById("previewFrame");
+  if(!modal || !frame) return;
+
+  const hasDraft = !!getCurrentDraftTitle();
+  frame.src = hasDraft ? "apercu-passation.html" : "apercu-passation.html?demo=qvt";
+  modal.style.display = "flex";
+}
+
+function closePreviewModal(){
+  const modal = document.getElementById("previewModal");
+  const frame = document.getElementById("previewFrame");
+  if(modal) modal.style.display = "none";
+  if(frame) frame.src = "";
 }
 
 function confirmDeleteDraft(){
@@ -709,8 +791,6 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
     document.getElementById("mini-next").textContent = "Continuer la création";
 
-    if(previewCard) previewCard.href = "apercu-passation.html";
-
     if(miniAction){
       miniAction.textContent = "Continuer la création";
       miniAction.href = "questions.html";
@@ -732,8 +812,6 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("mini-progress").textContent = "À démarrer";
     document.getElementById("mini-next").textContent = "Choisir une base";
 
-    if(previewCard) previewCard.href = "apercu-passation.html?demo=qvt";
-
     if(miniAction){
       miniAction.textContent = "Commencer un autodiag";
       miniAction.href = "index.html";
@@ -747,13 +825,23 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   document.addEventListener("keydown", function(e){
-    if(e.key === "Escape") closeDeleteDraftModal();
+    if(e.key === "Escape"){
+      closeDeleteDraftModal();
+      closePreviewModal();
+    }
   });
 
   const modal = document.getElementById("deleteDraftModal");
   if(modal){
     modal.addEventListener("click", function(e){
       if(e.target === this) closeDeleteDraftModal();
+    });
+  }
+
+  const previewModal = document.getElementById("previewModal");
+  if(previewModal){
+    previewModal.addEventListener("click", function(e){
+      if(e.target === this) closePreviewModal();
     });
   }
 });
