@@ -409,7 +409,7 @@ body{
           <h3>Voir un exemple</h3>
           <p>Visualisez l’expérience côté répondant avant de configurer votre propre campagne.</p>
         </div>
-        <a href="apercu-passation.html" class="btn btn-secondary">Ouvrir l’aperçu</a>
+        <a id="preview-link" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Ouvrir l’aperçu</a>
       </div>
     </div>
   </section>
@@ -504,6 +504,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   if(title){
     document.getElementById("mini-project").textContent = title;
+    document.getElementById("preview-link").href = "apercu-passation.html";
     document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
     document.getElementById("mini-next").textContent = "Continuer la création";
     if(miniAction){
