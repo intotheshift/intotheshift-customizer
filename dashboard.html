@@ -470,7 +470,7 @@ body{
   <section class="dash-hero">
     <div>
       <div class="dash-kicker">Espace découverte</div>
-      <h1>Bienvenue dans votre espace <span>Shift Studio</span></h1>
+      <h1>Bienvenue<span id="user-firstname-inline"></span> dans votre espace <span>Shift Studio</span></h1>
       <p>
         Créez votre premier autodiagnostic comportemental, partez d’une base existante ou reprenez une configuration en cours.
       </p>
@@ -684,6 +684,12 @@ function confirmDeleteDraft(){
 
 document.addEventListener("DOMContentLoaded", function(){
   const state = typeof itsLoad === "function" ? itsLoad() : {};
+
+  const firstname = localStorage.getItem("its_user_firstname") || "";
+  const firstnameInline = document.getElementById("user-firstname-inline");
+  if(firstnameInline && firstname.trim()){
+    firstnameInline.textContent = " " + firstname.trim() + ",";
+  }
 
   const title = state?.title || state?.subject || state?.meta?.nom || "";
   const theme = state?.theme || state?.selectedTheme || "Thématique à choisir";
