@@ -478,7 +478,6 @@ body{
       <div class="dash-actions">
         <a href="index.html" class="btn btn-primary">Explorer les bases</a>
         <a href="questions.html?mode=blank" class="btn btn-secondary">Créer de zéro</a>
-        <a id="preview-link-hero" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Voir un exemple</a>
       </div>
     </div>
 
@@ -498,7 +497,7 @@ body{
         <div class="dash-section-kicker">Démarrer rapidement</div>
         <h2 class="dash-section-title">Que souhaitez-vous faire ?</h2>
       </div>
-      <p class="dash-section-sub">Trois entrées simples pour tester la plateforme.</p>
+      <p class="dash-section-sub">Choisissez votre point de départ ou ouvrez un aperçu côté répondant.</p>
     </div>
 
     <div class="quick-grid">
@@ -523,8 +522,8 @@ body{
       <div class="quick-card">
         <div>
           <div class="quick-icon">◎</div>
-          <h3>Voir un exemple</h3>
-          <p>Visualisez l’expérience côté répondant. Sans brouillon, une démo QVT s’affiche ; avec un brouillon, l’aperçu reprend votre autodiagnostic.</p>
+          <h3>Voir un exemple répondant</h3>
+          <p>Visualisez une expérience répondant prête à l’emploi avant de préparer votre propre diffusion.</p>
         </div>
         <a id="preview-link-card" href="apercu-passation.html?demo=qvt" class="btn btn-secondary">Ouvrir l’aperçu</a>
       </div>
@@ -692,7 +691,6 @@ document.addEventListener("DOMContentLoaded", function(){
   const qCount = chapters.reduce((sum, ch) => sum + ((ch.questions || []).length), 0);
 
   const miniAction = document.getElementById("mini-action");
-  const previewHero = document.getElementById("preview-link-hero");
   const previewCard = document.getElementById("preview-link-card");
   const deleteBtn = document.getElementById("delete-draft-btn");
   const resumeBtn = document.getElementById("resume-draft-btn");
@@ -705,7 +703,6 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
     document.getElementById("mini-next").textContent = "Continuer la création";
 
-    if(previewHero) previewHero.href = "apercu-passation.html";
     if(previewCard) previewCard.href = "apercu-passation.html";
 
     if(miniAction){
@@ -729,7 +726,6 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("mini-progress").textContent = "À démarrer";
     document.getElementById("mini-next").textContent = "Choisir une base";
 
-    if(previewHero) previewHero.href = "apercu-passation.html?demo=qvt";
     if(previewCard) previewCard.href = "apercu-passation.html?demo=qvt";
 
     if(miniAction){
