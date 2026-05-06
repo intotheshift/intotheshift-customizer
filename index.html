@@ -41,7 +41,15 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 
 .filters-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
 
-/* Aperçu thème corrigé */
+.faq-wrap{
+  margin-top:42px;
+  background:#fff;
+  border:1px solid #d8e0ea;
+  border-radius:18px;
+  padding:28px;
+  overflow:hidden;
+}
+
 #previewModal.modal-overlay{
   position:fixed;
   inset:0;
@@ -56,7 +64,6 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 #previewModal .modal-panel{
   position:relative;
   width:min(980px,100%);
-  height:auto;
   max-height:calc(100vh - 44px);
   overflow:auto;
   background:#fff;
@@ -86,44 +93,16 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   box-shadow:0 8px 18px rgba(24,55,93,.12);
 }
 
-.modal-close:hover{background:#f0f2f5;color:#18375d}
-
 .preview-inner{padding:8px 32px 32px}
-
-.preview-title{
-  font-size:28px;
-  line-height:1.15;
-  margin:8px 0 10px;
-  color:#18375d;
-}
-
-.preview-desc{
-  color:#64748b;
-  line-height:1.6;
-  margin-bottom:18px;
-  font-size:15px;
-}
-
-.preview-chapter{
-  background:#fff;
-  border:1px solid #d8e0ea;
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:12px;
-}
-
-.preview-actions{
-  margin-top:20px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
+.preview-title{font-size:28px;line-height:1.15;margin:8px 0 10px;color:#18375d}
+.preview-desc{color:#64748b;line-height:1.6;margin-bottom:18px;font-size:15px}
+.preview-chapter{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:18px;margin-bottom:12px}
+.preview-actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
 
 @media(max-width:900px){
   .badges-grid{grid-template-columns:1fr 1fr}
   .library-hero{flex-direction:column}
   .blank-create-card{flex-direction:column;align-items:flex-start}
-  .blank-create-actions{justify-content:flex-start}
 }
 
 @media(max-width:560px){
@@ -131,10 +110,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   .badge-item{grid-template-columns:1fr}
   .badges-card .tag{width:max-content;min-width:118px}
   .blank-create-actions .btn{width:100%;justify-content:center}
-  #previewModal.modal-overlay{padding:12px}
-  #previewModal .modal-panel{max-height:calc(100vh - 24px);border-radius:16px}
-  .preview-inner{padding:4px 18px 22px}
-  .preview-title{font-size:22px}
+  .faq-wrap{padding:20px}
 }
 </style>
 </head>
@@ -155,7 +131,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
         Cette bibliothèque propose des bases de situations pour construire vos autodiagnostics. Les contenus servent d’aide à la rédaction : ils doivent être adaptés, relus et validés dans leur contexte avant diffusion. Le client reste responsable du contenu final publié.
       </div>
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <a href="#mode-emploi" class="btn btn-secondary">Mode d’emploi</a>
+        <a href="#faq" class="btn btn-secondary">Mode d’emploi</a>
       </div>
     </div>
   </div>
@@ -167,22 +143,10 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   <div class="badges-card">
     <div class="badges-title">🏷 Comprendre les badges</div>
     <div class="badges-grid">
-      <div class="badge-item">
-        <span class="tag ai">Base IA</span>
-        <div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l’IA. À adapter avant utilisation.</div>
-      </div>
-      <div class="badge-item">
-        <span class="tag tbf">Expert</span>
-        <div class="badge-copy"><strong>Conçu par un expert</strong>Contenu conçu par un expert. Base robuste et exploitable après relecture.</div>
-      </div>
-      <div class="badge-item">
-        <span class="tag help">Aide rédaction</span>
-        <div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n’est pas destiné à être publié tel quel.</div>
-      </div>
-      <div class="badge-item">
-        <span class="tag review">Relecture</span>
-        <div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l’adéquation terrain.</div>
-      </div>
+      <div class="badge-item"><span class="tag ai">Base IA</span><div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l’IA. À adapter avant utilisation.</div></div>
+      <div class="badge-item"><span class="tag tbf">Expert</span><div class="badge-copy"><strong>Conçu par un expert</strong>Contenu conçu par un expert. Base robuste et exploitable après relecture.</div></div>
+      <div class="badge-item"><span class="tag help">Aide rédaction</span><div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception.</div></div>
+      <div class="badge-item"><span class="tag review">Relecture</span><div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion.</div></div>
     </div>
   </div>
 
@@ -200,7 +164,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 
   <h1 class="page-title">Ou choisir une base d’autodiagnostic</h1>
   <p class="page-sub">
-    Sélectionnez une base de travail, personnalisez les situations et préparez votre campagne. Into The Shift finalisera ensuite le lien de votre autodiag à diffuser auprès de vos collaborateurs et le dashboard des résultats.
+    Sélectionnez une base de travail, personnalisez les situations et préparez votre campagne.
   </p>
 
   <div class="filters-row">
@@ -209,6 +173,10 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   </div>
 
   <div class="grid" id="catalogueGrid"></div>
+
+  <div class="faq-wrap">
+    <div id="faq"></div>
+  </div>
 
 </div>
 
@@ -238,23 +206,14 @@ function getCatalogue(){
 
 function getThemes(){
   const catalogue = getCatalogue();
-
-  if(Array.isArray(window.ITS_THEMES) && window.ITS_THEMES.length){
-    return window.ITS_THEMES;
-  }
+  if(Array.isArray(window.ITS_THEMES) && window.ITS_THEMES.length) return window.ITS_THEMES;
 
   const seen = new Map();
-
   catalogue.forEach(ad => {
     if(!seen.has(ad.themeKey)){
-      seen.set(ad.themeKey, {
-        key:ad.themeKey,
-        label:ad.theme,
-        icon:ad.icon || "▣"
-      });
+      seen.set(ad.themeKey,{key:ad.themeKey,label:ad.theme,icon:ad.icon || "▣"});
     }
   });
-
   return Array.from(seen.values());
 }
 
@@ -265,24 +224,14 @@ function getAdById(id){
 
 function cleanTags(tags){
   const allowed = [];
-
   (tags || []).forEach(t => {
     const x = String(t || "").toLowerCase();
-
-    if(x.includes("base assistée") || x.includes("base assistee")){
-      allowed.push("Base assistée par IA");
-    } else if(x.includes("the big factory")){
-      allowed.push("Conçu par un expert");
-      allowed.push("Conçu par The Big Factory");
-    } else if(x.includes("expert")){
-      allowed.push("Conçu par un expert");
-    } else if(x.includes("aide à la rédaction") || x.includes("aide a la redaction")){
-      allowed.push("Aide à la rédaction");
-    } else if(x.includes("relecture obligatoire")){
-      allowed.push("Relecture obligatoire");
-    }
+    if(x.includes("base assistée") || x.includes("base assistee")) allowed.push("Base assistée par IA");
+    else if(x.includes("the big factory")){allowed.push("Conçu par un expert");allowed.push("Conçu par The Big Factory")}
+    else if(x.includes("expert")) allowed.push("Conçu par un expert");
+    else if(x.includes("aide à la rédaction") || x.includes("aide a la redaction")) allowed.push("Aide à la rédaction");
+    else if(x.includes("relecture obligatoire")) allowed.push("Relecture obligatoire");
   });
-
   return [...new Set(allowed)];
 }
 
@@ -359,18 +308,12 @@ function openPreview(id){
 
   const expertBlock = isTBF ? `
     <div style="margin-top:18px;padding:16px;border:1px solid #d8e0ea;border-radius:12px;background:#f8fbfc;">
-      <div style="font-size:12px;font-weight:800;color:#007883;margin-bottom:6px;text-transform:uppercase">
-        Expert partenaire
-      </div>
-      <div style="font-size:15px;font-weight:800;color:#18375d;margin-bottom:6px">
-        The Big Factory
-      </div>
+      <div style="font-size:12px;font-weight:800;color:#007883;margin-bottom:6px;text-transform:uppercase">Expert partenaire</div>
+      <div style="font-size:15px;font-weight:800;color:#18375d;margin-bottom:6px">The Big Factory</div>
       <div style="font-size:13px;color:#475569;line-height:1.5;margin-bottom:10px">
         Cette thématique s’appuie sur l’expertise de The Big Factory en management, collaboration et transformation des pratiques.
       </div>
-      <a href="mailto:contact@thebigfactory.fr" class="btn btn-secondary">
-        Discuter avec l’expert auteur du contenu
-      </a>
+      <a href="mailto:contact@thebigfactory.fr" class="btn btn-secondary">Discuter avec l’expert auteur du contenu</a>
     </div>
   ` : "";
 
@@ -378,13 +321,9 @@ function openPreview(id){
     <div class="audience">${ad.theme}</div>
     <h2 class="preview-title">${ad.title}</h2>
     <p class="preview-desc">${ad.description}</p>
-
     <div>${renderTags(ad.tags)}</div>
-
     ${expertBlock}
-
     <h3 style="margin:26px 0 12px;font-size:20px;color:#18375d">Chapitres</h3>
-
     ${ad.chapters.map((c,i) => `
       <div class="preview-chapter">
         <div class="audience">Chapitre ${i + 1}</div>
@@ -392,7 +331,6 @@ function openPreview(id){
         <div class="ad-desc">${c.description}</div>
       </div>
     `).join("")}
-
     <div class="preview-actions">
       <button class="btn btn-primary" onclick="useAd('${ad.id}')">Utiliser comme base de travail</button>
       <button class="btn btn-secondary" onclick="closePreview()">Fermer</button>
@@ -449,11 +387,8 @@ function startBlankDiagnostic(){
 }
 
 function useAd(id){
-  if(typeof window.itsStartFromCatalogue === "function"){
-    window.itsStartFromCatalogue(id);
-  } else {
-    localStorage.setItem("its_current_ad_id", id);
-  }
+  if(typeof window.itsStartFromCatalogue === "function") window.itsStartFromCatalogue(id);
+  else localStorage.setItem("its_current_ad_id", id);
 
   if(!isLoggedIn()){
     redirectToLogin("questions.html");
@@ -475,9 +410,7 @@ renderFilters();
 renderCatalogue();
 </script>
 
-<div id="faq"></div>
 <script src="FAQ.JS"></script>
 
 </body>
 </html>
-
