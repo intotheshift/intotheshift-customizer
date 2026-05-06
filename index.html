@@ -41,14 +41,18 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 
 .filters-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
 
-.faq-wrap{
-  margin-top:42px;
-  background:#fff;
-  border:1px solid #d8e0ea;
-  border-radius:18px;
-  padding:28px;
-  overflow:hidden;
-}
+.faq-section{background:#fff;border:1px solid #d8e0ea;border-radius:22px;padding:28px;margin-top:34px;box-shadow:0 8px 24px rgba(24,55,93,.05)}
+.faq-header{text-align:center;margin-bottom:22px}
+.faq-kicker{display:inline-flex;padding:7px 13px;border-radius:999px;background:#e6f0f6;color:#0d4c72;font-weight:800;font-size:13px;margin-bottom:12px}
+.faq-header h2{font-size:28px;line-height:1.15;color:#18375d;margin:0 0 10px}
+.faq-header p{max-width:720px;margin:0 auto;color:#5b6b7f;font-size:15px;line-height:1.6}
+.faq-list{display:grid;gap:10px}
+.faq-item{background:#f8fbfd;border:1px solid #dce4ee;border-radius:14px;overflow:hidden}
+.faq-item summary{cursor:pointer;padding:16px 18px;font-weight:900;color:#18375d;list-style:none;display:flex;justify-content:space-between;gap:18px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font-size:22px;color:#0d4c72;font-weight:900;flex-shrink:0}
+.faq-item[open] summary::after{content:"–"}
+.faq-item p{padding:0 18px 18px;margin:0;color:#4d5f73;line-height:1.6;font-size:14px}
 
 #previewModal.modal-overlay{
   position:fixed;
@@ -110,7 +114,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   .badge-item{grid-template-columns:1fr}
   .badges-card .tag{width:max-content;min-width:118px}
   .blank-create-actions .btn{width:100%;justify-content:center}
-  .faq-wrap{padding:20px}
+  .faq-section{padding:20px}
 }
 </style>
 </head>
@@ -174,9 +178,7 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
 
   <div class="grid" id="catalogueGrid"></div>
 
-  <div class="faq-wrap">
-    <div id="faq"></div>
-  </div>
+  <div id="faq"></div>
 
 </div>
 
