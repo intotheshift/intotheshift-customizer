@@ -6,106 +6,192 @@
 <title>Bibliothèque — Into The Shift</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
 <link rel="stylesheet" href="style.css">
+
 <style>
 html{scroll-behavior:smooth}
 body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
+
 .library-hero{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:26px 28px;margin-bottom:18px;display:flex;gap:18px;align-items:flex-start}
 .library-icon{width:52px;height:52px;border-radius:10px;background:#0f6878;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
 .library-title{font-size:22px;font-weight:800;color:#18375d;margin-bottom:8px}
 .library-text{font-size:14px;line-height:1.6;color:#475569;max-width:980px}
+
 .notice{background:#fff7e8;border:1px solid #ffc866;border-radius:10px;padding:14px 18px;margin-bottom:22px;color:#7a4b00;font-size:13px;line-height:1.5}
+
 .badges-card{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:22px 26px;margin-bottom:24px}
 .badges-title{font-size:14px;font-weight:800;color:#18375d;margin-bottom:16px}
 .badges-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
 .badge-item{display:grid;grid-template-columns:118px 1fr;align-items:flex-start;gap:12px;min-width:0}
 .badge-copy{font-size:13px;line-height:1.45;color:#475569;min-width:0}
 .badge-copy strong{display:block;color:#18375d;margin-bottom:4px;font-size:13px}
+
 .tag{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700;margin:0 5px 5px 0;border:1px solid #d8e0ea;background:#edf1f7;color:#18375d;line-height:1.2;white-space:nowrap}
 .badges-card .tag{width:118px;height:28px;margin:0;padding:0 10px}
 .tag.ai{background:#f0edff;border-color:#c4b5fd;color:#6d28d9}
 .tag.tbf{background:#e5f4f5;border-color:#0097a7;color:#007883}
 .tag.help{background:#eef6ff;border-color:#b7d4f3;color:#18375d}
 .tag.review{background:#fff7e8;border-color:#ffc866;color:#8a5a00}
+
 .catalogue-count{font-size:12px;color:#64748b;margin-left:auto;align-self:center}
+
 .blank-create-card{background:#fff;border:1px solid #d8e0ea;border-radius:14px;padding:20px 22px;margin:22px 0 24px;display:flex;justify-content:space-between;align-items:center;gap:18px;box-shadow:0 8px 24px rgba(24,55,93,.05)}
 .blank-create-title{font-size:17px;font-weight:800;color:#18375d;margin-bottom:5px}
 .blank-create-text{font-size:13px;color:#64748b;line-height:1.5;max-width:780px}
 .blank-create-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+
 .filters-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
-@media(max-width:900px){.badges-grid{grid-template-columns:1fr 1fr}.library-hero{flex-direction:column}.blank-create-card{flex-direction:column;align-items:flex-start}.blank-create-actions{justify-content:flex-start}}
-@media(max-width:560px){.badges-grid{grid-template-columns:1fr}.badge-item{grid-template-columns:1fr}.badges-card .tag{width:max-content;min-width:118px}.blank-create-actions .btn{width:100%;justify-content:center}}
-.modal-panel{position:relative}
-.modal-close{position:absolute;top:12px;right:14px;width:32px;height:32px;border:1px solid #d8e0ea;border-radius:8px;background:#fff;font-size:18px;font-weight:700;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
+
+/* Aperçu thème corrigé */
+#previewModal.modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  background:rgba(15,30,55,.58);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
+
+#previewModal .modal-panel{
+  position:relative;
+  width:min(980px,100%);
+  height:auto;
+  max-height:calc(100vh - 44px);
+  overflow:auto;
+  background:#fff;
+  border-radius:22px;
+  box-shadow:0 28px 80px rgba(0,0,0,.28);
+}
+
+.modal-close{
+  position:sticky;
+  top:12px;
+  margin-left:auto;
+  margin-right:14px;
+  margin-top:12px;
+  width:36px;
+  height:36px;
+  border:1px solid #d8e0ea;
+  border-radius:999px;
+  background:#fff;
+  font-size:22px;
+  font-weight:900;
+  color:#64748b;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  box-shadow:0 8px 18px rgba(24,55,93,.12);
+}
+
 .modal-close:hover{background:#f0f2f5;color:#18375d}
 
+.preview-inner{padding:8px 32px 32px}
 
-/* ── Correctifs responsive iPhone / mobile ───────────────── */
-@media (max-width: 760px){
-  body{overflow-x:hidden;}
-  .topbar{height:auto;min-height:54px;padding:10px 14px;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:80;}
-  .logo-img{height:26px;max-width:150px;object-fit:contain;}
-  .main-nav{order:3;width:100%;margin-left:0;overflow-x:auto;max-width:100%;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
-  .main-nav a{white-space:nowrap;font-size:12px;padding:7px 9px;}
-  .acct{padding:4px 8px 4px 4px;}
-  .acct-n{display:none;}
-  .subnav{padding:8px 12px;-webkit-overflow-scrolling:touch;}
-  .breadcrumb{padding:9px 14px;}
-  .stepper-wrap{padding:12px 14px;-webkit-overflow-scrolling:touch;}
-  .stepper{min-width:520px;}
-  .step-label{font-size:11px;}
-  .page-wrap{padding:18px 14px 46px;max-width:100%;}
-  .page-title{font-size:19px;line-height:1.2;}
-  .page-sub{font-size:12px;margin-bottom:16px;}
-  .block,.card{padding:16px 14px;border-radius:12px;}
-  .bottom-actions{justify-content:stretch;}
-  .bottom-actions .btn,.bottom-actions button,.btn-back,.btn-continue{width:100%;justify-content:center;}
-  .sidebar{position:static;top:auto;}
-  .launch-url-box,.template-head,.chap-head,.q-header,.profile-head{align-items:flex-start;}
-  .btn-copy,.btn-test,.btn-secondary,.btn-ai,.btn-primary,.btn-add,.btn-danger{width:100%;justify-content:center;}
-  input,select,textarea,button{font-size:16px;}
-}
-@media (max-width: 520px){
-  .stepper{min-width:470px;}
-  .step-circle{width:24px;height:24px;font-size:11px;}
-  .step-connector{margin:0 7px;min-width:12px;}
+.preview-title{
+  font-size:28px;
+  line-height:1.15;
+  margin:8px 0 10px;
+  color:#18375d;
 }
 
+.preview-desc{
+  color:#64748b;
+  line-height:1.6;
+  margin-bottom:18px;
+  font-size:15px;
+}
+
+.preview-chapter{
+  background:#fff;
+  border:1px solid #d8e0ea;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:12px;
+}
+
+.preview-actions{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+@media(max-width:900px){
+  .badges-grid{grid-template-columns:1fr 1fr}
+  .library-hero{flex-direction:column}
+  .blank-create-card{flex-direction:column;align-items:flex-start}
+  .blank-create-actions{justify-content:flex-start}
+}
+
+@media(max-width:560px){
+  .badges-grid{grid-template-columns:1fr}
+  .badge-item{grid-template-columns:1fr}
+  .badges-card .tag{width:max-content;min-width:118px}
+  .blank-create-actions .btn{width:100%;justify-content:center}
+  #previewModal.modal-overlay{padding:12px}
+  #previewModal .modal-panel{max-height:calc(100vh - 24px);border-radius:16px}
+  .preview-inner{padding:4px 18px 22px}
+  .preview-title{font-size:22px}
+}
 </style>
 </head>
+
 <body>
 <div id="header"></div>
 <script src="header.js"></script>
 <script src="app.js"></script>
-<script src="catalogue.js?v=20260505-custom-questions"></script>
+<script src="catalogue.js?v=20260506-auth-preview-fix"></script>
 
 <div class="page-wrap">
+
   <div class="library-hero">
     <div class="library-icon">▣</div>
     <div>
       <div class="library-title">Bibliothèque de situations</div>
-      <div class="library-text">Cette bibliothèque propose des bases de situations pour construire vos autodiagnostics. Les contenus servent d'aide à la rédaction : ils doivent être adaptés, relus et validés dans leur contexte avant diffusion. Le client reste responsable du contenu final publié.</div>
+      <div class="library-text">
+        Cette bibliothèque propose des bases de situations pour construire vos autodiagnostics. Les contenus servent d’aide à la rédaction : ils doivent être adaptés, relus et validés dans leur contexte avant diffusion. Le client reste responsable du contenu final publié.
+      </div>
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
         <a href="#mode-emploi" class="btn btn-secondary">Mode d’emploi</a>
       </div>
     </div>
   </div>
 
-  <div class="notice"><strong>Important :</strong> les contenus proposés sont des bases de travail, y compris lorsqu’ils sont conçus par un expert partenaire. Ils doivent être adaptés, relus et validés dans leur contexte avant diffusion. Into The Shift ne peut être tenu responsable du contenu final publié par le client.</div>
+  <div class="notice">
+    <strong>Important :</strong> les contenus proposés sont des bases de travail, y compris lorsqu’ils sont conçus par un expert partenaire. Ils doivent être adaptés, relus et validés dans leur contexte avant diffusion. Into The Shift ne peut être tenu responsable du contenu final publié par le client.
+  </div>
 
   <div class="badges-card">
     <div class="badges-title">🏷 Comprendre les badges</div>
     <div class="badges-grid">
-      <div class="badge-item"><span class="tag ai">Base IA</span><div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l'IA. À adapter avant utilisation.</div></div>
-      <div class="badge-item"><span class="tag conçu par un expert">Expert</span><div class="badge-copy"><strong>Conçu par un expert</strong>Contenu conçu par un expert. Base robuste et exploitable après relecture.</div></div>
-      <div class="badge-item"><span class="tag help">Aide rédaction</span><div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n'est pas destiné à être publié tel quel.</div></div>
-      <div class="badge-item"><span class="tag review">Relecture</span><div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l'adéquation terrain.</div></div>
+      <div class="badge-item">
+        <span class="tag ai">Base IA</span>
+        <div class="badge-copy"><strong>Base assistée par IA</strong>Contenu généré ou structuré avec l’IA. À adapter avant utilisation.</div>
+      </div>
+      <div class="badge-item">
+        <span class="tag tbf">Expert</span>
+        <div class="badge-copy"><strong>Conçu par un expert</strong>Contenu conçu par un expert. Base robuste et exploitable après relecture.</div>
+      </div>
+      <div class="badge-item">
+        <span class="tag help">Aide rédaction</span>
+        <div class="badge-copy"><strong>Aide à la rédaction</strong>Support de réflexion pour accélérer la conception. Le contenu n’est pas destiné à être publié tel quel.</div>
+      </div>
+      <div class="badge-item">
+        <span class="tag review">Relecture</span>
+        <div class="badge-copy"><strong>Relecture obligatoire</strong>Une relecture est nécessaire avant diffusion pour garantir la pertinence et l’adéquation terrain.</div>
+      </div>
     </div>
   </div>
 
   <div class="blank-create-card">
     <div>
       <div class="blank-create-title">Créer un autodiag de A à Z</div>
-      <div class="blank-create-text">Partez d’une page vierge pour créer vos propres chapitres, questions, réponses, profils et ressources, sans reprendre une base du catalogue.</div>
+      <div class="blank-create-text">
+        Partez d’une page vierge pour créer vos propres chapitres, questions, réponses, profils et ressources, sans reprendre une base du catalogue.
+      </div>
     </div>
     <div class="blank-create-actions">
       <button class="btn btn-secondary" onclick="startBlankDiagnostic()">Créer depuis une page vierge</button>
@@ -113,25 +199,38 @@ body{font-family:'Asap',sans-serif;background:#f4f6f9;color:#18375d}
   </div>
 
   <h1 class="page-title">Ou choisir une base d’autodiagnostic</h1>
-  <p class="page-sub">Sélectionnez une base de travail, personnalisez les situations et préparez votre campagne. Into The Shift finalisera ensuite le lien de votre autodiag à diffuser auprès de vos collaborateurs et le dashboard des résultats.</p>
+  <p class="page-sub">
+    Sélectionnez une base de travail, personnalisez les situations et préparez votre campagne. Into The Shift finalisera ensuite le lien de votre autodiag à diffuser auprès de vos collaborateurs et le dashboard des résultats.
+  </p>
 
   <div class="filters-row">
     <div id="themeFilters" style="display:flex;gap:8px;flex-wrap:wrap"></div>
     <div class="catalogue-count" id="catalogueCount"></div>
   </div>
+
   <div class="grid" id="catalogueGrid"></div>
+
 </div>
 
 <div class="modal-overlay" id="previewModal">
-  <div class="modal-panel" style="background:#fff">
-    <button class="modal-close" onclick="closePreview()">×</button>
-    <div style="padding:28px" id="previewContent"></div>
+  <div class="modal-panel">
+    <button class="modal-close" onclick="closePreview()" aria-label="Fermer l’aperçu">×</button>
+    <div class="preview-inner" id="previewContent"></div>
   </div>
 </div>
 
 <script>
 let currentTheme = "all";
-  let expertOnly = false;
+let expertOnly = false;
+
+function isLoggedIn(){
+  return localStorage.getItem("its_logged_in") === "true";
+}
+
+function redirectToLogin(target){
+  localStorage.setItem("its_after_login_redirect", target || "dashboard.html");
+  window.location.href = "login.html";
+}
 
 function getCatalogue(){
   return Array.isArray(window.ITS_CATALOGUE) ? window.ITS_CATALOGUE : [];
@@ -139,56 +238,78 @@ function getCatalogue(){
 
 function getThemes(){
   const catalogue = getCatalogue();
-  if (Array.isArray(window.ITS_THEMES) && window.ITS_THEMES.length) {
+
+  if(Array.isArray(window.ITS_THEMES) && window.ITS_THEMES.length){
     return window.ITS_THEMES;
   }
+
   const seen = new Map();
+
   catalogue.forEach(ad => {
-    if (!seen.has(ad.themeKey)) {
-      seen.set(ad.themeKey, { key: ad.themeKey, label: ad.theme, icon: ad.icon || "▣" });
+    if(!seen.has(ad.themeKey)){
+      seen.set(ad.themeKey, {
+        key:ad.themeKey,
+        label:ad.theme,
+        icon:ad.icon || "▣"
+      });
     }
   });
+
   return Array.from(seen.values());
 }
 
 function getAdById(id){
-  if (typeof window.itsGetAdById === "function") return window.itsGetAdById(id);
+  if(typeof window.itsGetAdById === "function") return window.itsGetAdById(id);
   return getCatalogue().find(ad => ad.id === id);
 }
 
 function cleanTags(tags){
   const allowed = [];
+
   (tags || []).forEach(t => {
-    const x = String(t || '').toLowerCase();
-    if (x.includes('base assistée') || x.includes('base assistee')) allowed.push('Base assistée par IA');
-    else if (x.includes('the big factory')) {
-  allowed.push('Conçu par un expert');
-  allowed.push('Conçu par The Big Factory');
-}
-    else if (x.includes('aide à la rédaction') || x.includes('aide a la redaction')) allowed.push('Aide à la rédaction');
-    else if (x.includes('relecture obligatoire')) allowed.push('Relecture obligatoire');
+    const x = String(t || "").toLowerCase();
+
+    if(x.includes("base assistée") || x.includes("base assistee")){
+      allowed.push("Base assistée par IA");
+    } else if(x.includes("the big factory")){
+      allowed.push("Conçu par un expert");
+      allowed.push("Conçu par The Big Factory");
+    } else if(x.includes("expert")){
+      allowed.push("Conçu par un expert");
+    } else if(x.includes("aide à la rédaction") || x.includes("aide a la redaction")){
+      allowed.push("Aide à la rédaction");
+    } else if(x.includes("relecture obligatoire")){
+      allowed.push("Relecture obligatoire");
+    }
   });
+
   return [...new Set(allowed)];
 }
 
 function tagClass(t){
-  if(t.includes('Factory') || t.includes('expert')) return 'tbf';
-  if(t.includes('IA')) return 'ai';
-  if(t.includes('Aide')) return 'help';
-  if(t.includes('Relecture')) return 'review';
-  return '';
+  if(t.includes("Factory") || t.includes("expert")) return "tbf";
+  if(t.includes("IA")) return "ai";
+  if(t.includes("Aide")) return "help";
+  if(t.includes("Relecture")) return "review";
+  return "";
 }
 
 function renderTags(tags){
-  return cleanTags(tags).map(t => `<span class="tag ${tagClass(t)}">${t}</span>`).join('');
+  return cleanTags(tags).map(t => `<span class="tag ${tagClass(t)}">${t}</span>`).join("");
 }
 
 function renderFilters(){
   const el = document.getElementById("themeFilters");
   const themes = getThemes();
-  el.innerHTML = `<button class="btn ${currentTheme==='all'?'btn-primary':'btn-secondary'}" onclick="setTheme('all')">Tous les thèmes</button>
-<button class="btn ${expertOnly?'btn-primary':'btn-secondary'}" onclick="toggleExpertFilter()">Conçus par un expert</button>` +
-    themes.map(t => `<button class="btn ${currentTheme===t.key?'btn-primary':'btn-secondary'}" onclick="setTheme('${t.key}')">${t.icon} ${t.label}</button>`).join("");
+
+  el.innerHTML =
+    `<button class="btn ${currentTheme === "all" ? "btn-primary" : "btn-secondary"}" onclick="setTheme('all')">Tous les thèmes</button>
+     <button class="btn ${expertOnly ? "btn-primary" : "btn-secondary"}" onclick="toggleExpertFilter()">Conçus par un expert</button>` +
+    themes.map(t => `
+      <button class="btn ${currentTheme === t.key ? "btn-primary" : "btn-secondary"}" onclick="setTheme('${t.key}')">
+        ${t.icon} ${t.label}
+      </button>
+    `).join("");
 }
 
 function setTheme(key){
@@ -196,7 +317,8 @@ function setTheme(key){
   renderFilters();
   renderCatalogue();
 }
-  function toggleExpertFilter(){
+
+function toggleExpertFilter(){
   expertOnly = !expertOnly;
   renderFilters();
   renderCatalogue();
@@ -205,12 +327,16 @@ function setTheme(key){
 function renderCatalogue(){
   const grid = document.getElementById("catalogueGrid");
   const catalogue = getCatalogue();
+
   const ads = catalogue.filter(ad => {
-  const matchTheme = currentTheme === "all" || ad.themeKey === currentTheme;
-  const matchExpert = !expertOnly || (ad.tags || []).includes("Conçu par The Big Factory");
-  return matchTheme && matchExpert;
-});
-  document.getElementById('catalogueCount').textContent = `${ads.length} base${ads.length>1?'s':''}`;
+    const matchTheme = currentTheme === "all" || ad.themeKey === currentTheme;
+    const tags = cleanTags(ad.tags || []);
+    const matchExpert = !expertOnly || tags.some(t => t.includes("expert") || t.includes("Factory"));
+    return matchTheme && matchExpert;
+  });
+
+  document.getElementById("catalogueCount").textContent = `${ads.length} base${ads.length > 1 ? "s" : ""}`;
+
   grid.innerHTML = ads.map(ad => `
     <div class="ad-card card">
       <div class="audience">${ad.theme} · ${ad.audience}</div>
@@ -228,45 +354,51 @@ function renderCatalogue(){
 function openPreview(id){
   const ad = getAdById(id);
   if(!ad) return;
-  const el = document.getElementById("previewContent");
-  el.innerHTML = `
+
+  const isTBF = ad.tags && ad.tags.includes("Conçu par The Big Factory");
+
+  const expertBlock = isTBF ? `
+    <div style="margin-top:18px;padding:16px;border:1px solid #d8e0ea;border-radius:12px;background:#f8fbfc;">
+      <div style="font-size:12px;font-weight:800;color:#007883;margin-bottom:6px;text-transform:uppercase">
+        Expert partenaire
+      </div>
+      <div style="font-size:15px;font-weight:800;color:#18375d;margin-bottom:6px">
+        The Big Factory
+      </div>
+      <div style="font-size:13px;color:#475569;line-height:1.5;margin-bottom:10px">
+        Cette thématique s’appuie sur l’expertise de The Big Factory en management, collaboration et transformation des pratiques.
+      </div>
+      <a href="mailto:contact@thebigfactory.fr" class="btn btn-secondary">
+        Discuter avec l’expert auteur du contenu
+      </a>
+    </div>
+  ` : "";
+
+  document.getElementById("previewContent").innerHTML = `
     <div class="audience">${ad.theme}</div>
-    <h2 style="font-size:24px;margin:8px 0">${ad.title}</h2>
-    <p style="color:#64748b;line-height:1.6;margin-bottom:18px">${ad.description}</p>
+    <h2 class="preview-title">${ad.title}</h2>
+    <p class="preview-desc">${ad.description}</p>
+
     <div>${renderTags(ad.tags)}</div>
 
-${ad.tags && ad.tags.includes("Conçu par The Big Factory") ? `
-  <div style="
-    margin-top:18px;
-    padding:16px;
-    border:1px solid #d8e0ea;
-    border-radius:10px;
-    background:#f8fbfc;
-  ">
-    <div style="font-size:12px;font-weight:700;color:#007883;margin-bottom:6px">
-      EXPERT PARTENAIRE
-    </div>
-    <div style="font-size:14px;font-weight:700;color:#18375d;margin-bottom:6px">
-      The Big Factory
-    </div>
-    <div style="font-size:13px;color:#475569;line-height:1.5;margin-bottom:10px">
-      Cette thématique s’appuie sur l’expertise de The Big Factory en management, collaboration et transformation des pratiques.
-    </div>
-    <a href="mailto:contact@thebigfactory.fr" class="btn btn-secondary">
-      Discuter avec l'expert auteur du contenu
-    </a>
-  </div>
-` : ''}
-    <h3 style="margin:24px 0 12px">Chapitres</h3>
-    ${ad.chapters.map((c,i)=>`
-      <div class="card" style="margin-bottom:10px">
-        <div class="audience">Chapitre ${i+1}</div>
+    ${expertBlock}
+
+    <h3 style="margin:26px 0 12px;font-size:20px;color:#18375d">Chapitres</h3>
+
+    ${ad.chapters.map((c,i) => `
+      <div class="preview-chapter">
+        <div class="audience">Chapitre ${i + 1}</div>
         <div class="ad-title">${c.title}</div>
         <div class="ad-desc">${c.description}</div>
       </div>
     `).join("")}
-    <button class="btn btn-primary" onclick="useAd('${ad.id}')">Utiliser comme base de travail</button>
+
+    <div class="preview-actions">
+      <button class="btn btn-primary" onclick="useAd('${ad.id}')">Utiliser comme base de travail</button>
+      <button class="btn btn-secondary" onclick="closePreview()">Fermer</button>
+    </div>
   `;
+
   document.getElementById("previewModal").style.display = "flex";
 }
 
@@ -274,49 +406,69 @@ function closePreview(){
   document.getElementById("previewModal").style.display = "none";
 }
 
-function startBlankDiagnostic(){
-  const blankState = {
-    mode: "blank",
-    source: "blank",
-    selectedTheme: null,
-    selectedPack: null,
-    currentAdId: null,
-    title: "",
-    subject: "",
-    chapters: [
+function buildBlankState(){
+  return {
+    mode:"blank",
+    source:"blank",
+    selectedTheme:null,
+    selectedPack:null,
+    currentAdId:null,
+    title:"",
+    subject:"",
+    chapters:[
       {
-        title: "Chapitre 1",
-        description: "Décrivez ici le sujet de ce chapitre",
-        questions: [],
-        profiles: [
+        title:"Chapitre 1",
+        description:"Décrivez ici le sujet de ce chapitre",
+        questions:[],
+        profiles:[
           { level:"En développement", title:"", summary:"", description:"", min:0, max:0.66 },
           { level:"En progression", title:"", summary:"", description:"", min:0.66, max:1.32 },
           { level:"Ancré", title:"", summary:"", description:"", min:1.32, max:2 }
         ]
       }
     ],
-    resources: [],
-    campaign: {}
+    resources:[],
+    campaign:{}
   };
+}
 
-  if (typeof itsSave === "function") itsSave(blankState);
+function startBlankDiagnostic(){
+  const blankState = buildBlankState();
+
+  if(typeof itsSave === "function") itsSave(blankState);
   else localStorage.setItem("intotheshift_customizer_state_v1", JSON.stringify(blankState));
 
   localStorage.removeItem("its_current_ad_id");
+
+  if(!isLoggedIn()){
+    redirectToLogin("questions.html?mode=blank");
+    return;
+  }
+
   window.location.assign("questions.html?mode=blank");
 }
 
 function useAd(id){
-  if (typeof window.itsStartFromCatalogue === "function") {
+  if(typeof window.itsStartFromCatalogue === "function"){
     window.itsStartFromCatalogue(id);
   } else {
     localStorage.setItem("its_current_ad_id", id);
   }
+
+  if(!isLoggedIn()){
+    redirectToLogin("questions.html");
+    return;
+  }
+
   window.location.href = "questions.html";
 }
 
 document.getElementById("previewModal").addEventListener("click", function(e){
   if(e.target === this) closePreview();
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape") closePreview();
 });
 
 renderFilters();
