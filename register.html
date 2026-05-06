@@ -340,13 +340,13 @@ body{
         Quelques informations nous permettent de personnaliser votre espace découverte.
       </p>
 
-      <form>
+      <form onsubmit="event.preventDefault(); localStorage.setItem('its_logged_in','true'); localStorage.setItem('its_user_firstname', document.getElementById('firstname').value || 'Mon espace'); window.location.href='dashboard.html';">
 
         <div class="form-grid">
 
           <div class="form-group">
             <label class="form-label">Prénom</label>
-            <input class="input" type="text" placeholder="Carole">
+            <input id="firstname" class="input" type="text" placeholder="Carole">
           </div>
 
           <div class="form-group">
