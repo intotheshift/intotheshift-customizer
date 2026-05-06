@@ -912,7 +912,7 @@ async function transmit(){
 
   if(sentOk){
     document.getElementById('success-alert').classList.remove('hidden');
-    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et le récapitulatif PDF va vous être adressé.');
+    showTransmitModal('success', 'Configuration transmise', 'Votre configuration a bien été transmise. Le fichier de configuration a été transmis à l’équipe Into The Shift et le récapitulatif PDF va vous être adressé par mail.');
     document.getElementById('btn-transmit').disabled = true;
     document.getElementById('btn-transmit').textContent = 'Demande transmise ✓';
   } else {
