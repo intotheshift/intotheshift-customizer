@@ -9,183 +9,166 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0}
 
 body{
   font-family:'Asap',sans-serif;
-  background:linear-gradient(180deg,#eef6fb 0%,#f4f6f9 40%,#ffffff 100%);
-  min-height:100vh;
+  background:linear-gradient(180deg,#eef6fb 0%,#f4f6f9 42%,#ffffff 100%);
   color:#18375d;
-}
-
-.login-page{
   min-height:100vh;
-  display:grid;
-  grid-template-columns:1.1fr 480px;
 }
 
-.hero-side{
-  position:relative;
-  overflow:hidden;
-  padding:54px;
-  display:flex;
+.login-wrap{
+  max-width:1180px;
+  margin:0 auto;
+  padding:36px 22px 64px;
+}
+
+.login-shell{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:28px;
   align-items:center;
 }
 
-.hero-side::before{
-  content:"";
-  position:absolute;
-  right:-140px;
-  top:-140px;
-  width:380px;
-  height:380px;
-  border-radius:50%;
-  background:rgba(13,76,114,.10);
+.login-hero{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#ffffff 0%,#e6f0f6 62%,#d7ecf3 100%);
+  border:1px solid #cbddea;
+  border-radius:28px;
+  padding:38px;
+  box-shadow:0 18px 48px rgba(24,55,93,.11);
 }
 
-.hero-side::after{
+.login-hero::before{
   content:"";
   position:absolute;
-  left:-120px;
+  right:-90px;
+  top:-110px;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:rgba(13,76,114,.12);
+}
+
+.login-hero::after{
+  content:"";
+  position:absolute;
+  left:-80px;
   bottom:-120px;
-  width:300px;
-  height:300px;
+  width:230px;
+  height:230px;
   border-radius:50%;
   background:rgba(255,192,0,.18);
 }
 
-.hero-card{
+.login-hero-content{
   position:relative;
-  z-index:2;
-  width:100%;
-  max-width:760px;
-  background:linear-gradient(135deg,#ffffff 0%,#eef6fb 100%);
-  border:1px solid #d8e0ea;
-  border-radius:32px;
-  padding:42px;
-  box-shadow:0 24px 60px rgba(24,55,93,.12);
+  z-index:1;
 }
 
-.hero-logo{
-  width:340px;
+.login-logo{
+  width:320px;
   max-width:100%;
-  margin-bottom:28px;
+  margin-bottom:22px;
 }
 
-.hero-badge{
+.hero-kicker{
   display:inline-flex;
-  align-items:center;
-  gap:8px;
   padding:8px 14px;
   border-radius:999px;
   background:#e6f0f6;
   color:#0d4c72;
   font-size:13px;
-  font-weight:800;
+  font-weight:900;
   border:1px solid #c6deec;
-  margin-bottom:18px;
+  margin-bottom:16px;
 }
 
-.hero-title{
-  font-size:48px;
-  line-height:1.05;
+.login-hero h1{
+  font-size:40px;
+  line-height:1.08;
   color:#18375d;
-  margin-bottom:20px;
-  letter-spacing:-1px;
+  letter-spacing:-.6px;
+  margin-bottom:16px;
 }
 
-.hero-title span{
-  color:#0d4c72;
+.login-hero h1 span{color:#0d4c72}
+
+.login-hero p{
+  color:#4f6378;
+  font-size:16px;
+  line-height:1.65;
+  max-width:660px;
 }
 
-.hero-text{
-  font-size:17px;
-  line-height:1.7;
-  color:#4c6178;
-  max-width:640px;
-  margin-bottom:30px;
-}
-
-.hero-grid{
+.hero-points{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:14px;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:24px;
 }
 
-.hero-feature{
+.hero-point{
   background:#fff;
   border:1px solid #d8e0ea;
-  border-radius:18px;
-  padding:18px;
+  border-radius:16px;
+  padding:16px;
 }
 
-.hero-feature-step{
-  font-size:11px;
-  font-weight:900;
-  color:#0d4c72;
-  text-transform:uppercase;
-  margin-bottom:10px;
-}
-
-.hero-feature h3{
-  font-size:16px;
+.hero-point strong{
+  display:block;
   color:#18375d;
-  margin-bottom:8px;
+  font-size:14px;
+  margin-bottom:6px;
 }
 
-.hero-feature p{
-  font-size:13px;
-  line-height:1.55;
-  color:#5b6b7f;
+.hero-point span{
+  display:block;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.45;
 }
 
-.login-side{
-  background:rgba(255,255,255,.78);
-  backdrop-filter:blur(14px);
-  border-left:1px solid #dbe5ee;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:36px;
-}
-
-.login-panel{
-  width:100%;
-  max-width:390px;
-}
-
-.login-top{
-  margin-bottom:28px;
+.login-card{
+  background:#fff;
+  border:1px solid #d8e0ea;
+  border-radius:24px;
+  padding:28px;
+  box-shadow:0 18px 48px rgba(24,55,93,.10);
 }
 
 .login-kicker{
-  font-size:13px;
+  font-size:12px;
   font-weight:900;
   color:#0d4c72;
   text-transform:uppercase;
+  letter-spacing:.05em;
+  margin-bottom:8px;
+}
+
+.login-card h2{
+  font-size:28px;
+  line-height:1.12;
+  color:#18375d;
   margin-bottom:10px;
 }
 
-.login-title{
-  font-size:34px;
-  line-height:1.1;
-  color:#18375d;
-  margin-bottom:14px;
-}
-
 .login-sub{
-  font-size:15px;
-  line-height:1.6;
-  color:#5b6b7f;
+  font-size:14px;
+  line-height:1.55;
+  color:#64748b;
+  margin-bottom:22px;
 }
 
 .form-group{
-  margin-bottom:16px;
+  margin-bottom:14px;
 }
 
 .form-label{
   display:block;
-  margin-bottom:8px;
+  margin-bottom:7px;
   font-size:13px;
   font-weight:800;
   color:#18375d;
@@ -193,15 +176,14 @@ body{
 
 .input{
   width:100%;
-  height:54px;
+  height:50px;
   border-radius:14px;
   border:1px solid #d8e0ea;
   background:#fff;
-  padding:0 16px;
+  padding:0 14px;
   font-size:15px;
   font-family:'Asap',sans-serif;
   color:#18375d;
-  transition:.18s ease;
 }
 
 .input:focus{
@@ -210,34 +192,35 @@ body{
   box-shadow:0 0 0 4px rgba(13,76,114,.08);
 }
 
-.login-btn{
+.login-btn,
+.secondary-btn{
   width:100%;
-  height:54px;
-  border:none;
+  height:50px;
   border-radius:14px;
-  background:#0d4c72;
-  color:#fff;
+  font-family:'Asap',sans-serif;
   font-size:15px;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
-  margin-top:8px;
-  transition:.18s ease;
-  box-shadow:0 10px 24px rgba(13,76,114,.18);
 }
 
-.login-btn:hover{
-  background:#0a3f60;
-  transform:translateY(-1px);
+.login-btn{
+  border:none;
+  background:#0d4c72;
+  color:#fff;
+  box-shadow:0 10px 24px rgba(13,76,114,.18);
+  margin-top:6px;
 }
+
+.login-btn:hover{background:#0a3f60}
 
 .separator{
   display:flex;
   align-items:center;
-  gap:14px;
-  margin:26px 0;
+  gap:12px;
+  margin:22px 0;
   color:#94a3b8;
   font-size:12px;
-  font-weight:700;
+  font-weight:800;
 }
 
 .separator::before,
@@ -249,158 +232,135 @@ body{
 }
 
 .secondary-btn{
-  width:100%;
-  height:52px;
-  border-radius:14px;
   border:1px solid #d8e0ea;
   background:#fff;
   color:#18375d;
-  font-size:14px;
-  font-weight:800;
-  cursor:pointer;
-  transition:.18s ease;
 }
 
-.secondary-btn:hover{
-  background:#f8fbfd;
-}
+.secondary-btn:hover{background:#f8fbfd}
 
-.register-note{
+.login-note{
   margin-top:14px;
   text-align:center;
   font-size:13px;
   color:#64748b;
-  line-height:1.55;
+  line-height:1.45;
 }
 
 .bottom-points{
-  margin-top:30px;
+  margin-top:22px;
   display:grid;
-  gap:10px;
+  gap:8px;
 }
 
 .bottom-point{
-  display:flex;
-  gap:10px;
-  align-items:flex-start;
-  font-size:13px;
+  font-size:12px;
   color:#4c6178;
+  line-height:1.45;
 }
 
-.point-check{
+.bottom-point strong{
   color:#0d4c72;
-  font-weight:900;
 }
 
-@media(max-width:1100px){
-
-  .login-page{
+@media(max-width:980px){
+  .login-shell{
     grid-template-columns:1fr;
   }
 
-  .hero-side{
-    padding:24px 24px 0;
+  .login-card{
+    max-width:460px;
+    width:100%;
+    margin:0 auto;
   }
 
-  .login-side{
-    border-left:none;
-    padding-top:0;
-  }
-
-}
-
-@media(max-width:700px){
-
-  .hero-card{
-    padding:28px;
-    border-radius:22px;
-  }
-
-  .hero-title{
-    font-size:34px;
-  }
-
-  .hero-grid{
+  .hero-points{
     grid-template-columns:1fr;
   }
+}
 
-  .login-side{
+@media(max-width:620px){
+  .login-wrap{
+    padding:22px 14px 44px;
+  }
+
+  .login-hero{
     padding:24px;
+    border-radius:20px;
   }
 
+  .login-logo{
+    width:250px;
+  }
+
+  .login-hero h1{
+    font-size:30px;
+  }
+
+  .login-card{
+    padding:22px;
+    border-radius:20px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="login-page">
+<div id="header"></div>
+<script src="header.js"></script>
+<script src="app.js"></script>
 
-  <section class="hero-side">
+<main class="login-wrap">
 
-    <div class="hero-card">
+  <div class="login-shell">
 
-      <img src="into-the-shift-logo.png" alt="Into The Shift" class="hero-logo">
+    <section class="login-hero">
+      <div class="login-hero-content">
 
-      <div class="hero-badge">
-        Shift Studio · Version découverte
-      </div>
+        <img src="into-the-shift-logo.png" alt="Into The Shift" class="login-logo">
 
-      <h1 class="hero-title">
-        Créez des <span>autodiagnostics comportementaux</span> prêts à diffuser
-      </h1>
+        <div class="hero-kicker">Shift Studio · Version découverte</div>
 
-      <p class="hero-text">
-        Composez vos questionnaires à partir de situations concrètes, personnalisez vos profils de résultats puis préparez votre campagne en quelques étapes.
-      </p>
+        <h1>
+          Créez des <span>autodiagnostics comportementaux</span> prêts à diffuser
+        </h1>
 
-      <div class="hero-grid">
-
-        <div class="hero-feature">
-          <div class="hero-feature-step">Bibliothèque</div>
-          <h3>Situations prêtes à l’emploi</h3>
-          <p>Cybersécurité, management, inclusion, éthique, QVT, RSE et bien plus.</p>
-        </div>
-
-        <div class="hero-feature">
-          <div class="hero-feature-step">Personnalisation</div>
-          <h3>Aide à la rédaction</h3>
-          <p>Adaptez les questions, les profils, les ressources et les chapitres.</p>
-        </div>
-
-        <div class="hero-feature">
-          <div class="hero-feature-step">Diffusion</div>
-          <h3>QR code & dashboard</h3>
-          <p>Préparez votre campagne et récupérez vos résultats consolidés.</p>
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <aside class="login-side">
-
-    <div class="login-panel">
-
-      <div class="login-top">
-
-        <div class="login-kicker">
-          Connexion
-        </div>
-
-        <h2 class="login-title">
-          Bienvenue dans Shift Studio
-        </h2>
-
-        <p class="login-sub">
-          Connectez-vous pour retrouver vos projets ou créer votre premier autodiagnostic.
+        <p>
+          Connectez-vous pour créer votre autodiagnostic, partir d’une base existante ou reprendre une configuration en cours.
         </p>
 
-      </div>
+        <div class="hero-points">
+          <div class="hero-point">
+            <strong>Bibliothèque</strong>
+            <span>Des situations concrètes prêtes à adapter.</span>
+          </div>
 
-      <form onsubmit="event.preventDefault(); localStorage.setItem('its_logged_in','true'); window.location.href='dashboard.html';">
+          <div class="hero-point">
+            <strong>Personnalisation</strong>
+            <span>Questions, profils, ressources et campagne.</span>
+          </div>
+
+          <div class="hero-point">
+            <strong>Diffusion</strong>
+            <span>Lien, QR code et dashboard de résultats.</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <aside class="login-card">
+
+      <div class="login-kicker">Connexion</div>
+
+      <h2>Bienvenue dans Shift Studio</h2>
+
+      <p class="login-sub">
+        Connectez-vous pour continuer votre parcours.
+      </p>
+
+      <form onsubmit="event.preventDefault(); localStorage.setItem('its_logged_in','true'); const redirect = localStorage.getItem('its_after_login_redirect') || 'dashboard.html'; localStorage.removeItem('its_after_login_redirect'); window.location.href = redirect;">
 
         <div class="form-group">
           <label class="form-label">Adresse email</label>
@@ -418,42 +378,27 @@ body{
 
       </form>
 
-      <div class="separator">
-        ou
-      </div>
+      <div class="separator">ou</div>
 
       <button class="secondary-btn" onclick="window.location.href='register.html'">
         Première connexion
       </button>
 
-      <p class="register-note">
+      <p class="login-note">
         Créez gratuitement votre espace de travail et découvrez la plateforme.
       </p>
 
       <div class="bottom-points">
-
-        <div class="bottom-point">
-          <span class="point-check">✓</span>
-          <span>Aucune carte bancaire demandée</span>
-        </div>
-
-        <div class="bottom-point">
-          <span class="point-check">✓</span>
-          <span>Compatible multi-thématiques</span>
-        </div>
-
-        <div class="bottom-point">
-          <span class="point-check">✓</span>
-          <span>Certaines entreprises peuvent déjà vous avoir invité·e à rejoindre un espace Into The Shift.</span>
-        </div>
-
+        <div class="bottom-point"><strong>✓</strong> Aucune carte bancaire demandée</div>
+        <div class="bottom-point"><strong>✓</strong> Accès découverte multi-thématiques</div>
+        <div class="bottom-point"><strong>✓</strong> Vous pouvez consulter la bibliothèque avant connexion</div>
       </div>
 
-    </div>
+    </aside>
 
-  </aside>
+  </div>
 
-</div>
+</main>
 
 </body>
 </html>
