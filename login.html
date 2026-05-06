@@ -400,7 +400,7 @@ body{
 
       </div>
 
-      <form>
+      <form onsubmit="event.preventDefault(); localStorage.setItem('its_logged_in','true'); window.location.href='dashboard.html';">
 
         <div class="form-group">
           <label class="form-label">Adresse email</label>
