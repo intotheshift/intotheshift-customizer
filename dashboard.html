@@ -526,8 +526,12 @@ body{
       </div>
 
       <div class="draft-actions">
-        <a href="questions.html" class="btn btn-primary" id="resume-draft-btn">Reprendre la création</a>
-        <a href="parametrage.html" class="btn btn-secondary" id="settings-draft-btn">Paramétrer</a>
+        <a href="questions.html" class="btn btn-primary" id="resume-draft-btn" style="display:none">Reprendre la création</a>
+        <a href="parametrage.html" class="btn btn-secondary" id="settings-draft-btn" style="display:none">Paramétrer</a>
+
+        <a href="index.html" class="btn btn-primary" id="draft-library-btn">Explorer les bases</a>
+        <a href="questions.html?mode=blank" class="btn btn-secondary" id="draft-blank-btn">Créer de zéro</a>
+
         <button id="delete-draft-btn" class="btn btn-danger" type="button" onclick="openDeleteDraftModal()" style="display:none">
           Supprimer le brouillon
         </button>
@@ -546,7 +550,7 @@ body{
       </div>
       <div class="expert-contact">
         <span>Contact</span>
-        <a href="mailto:contact@intotheshift.io" class="btn btn-secondary">contact@intotheshift.io</a>
+        <a href="mailto:contact@intotheshift.io" class="btn btn-secondary">Contactez-nous</a>
       </div>
     </div>
   </section>
@@ -650,6 +654,10 @@ document.addEventListener("DOMContentLoaded", function(){
   const previewHero = document.getElementById("preview-link-hero");
   const previewCard = document.getElementById("preview-link-card");
   const deleteBtn = document.getElementById("delete-draft-btn");
+  const resumeBtn = document.getElementById("resume-draft-btn");
+  const settingsBtn = document.getElementById("settings-draft-btn");
+  const libraryBtn = document.getElementById("draft-library-btn");
+  const blankBtn = document.getElementById("draft-blank-btn");
 
   if(title){
     document.getElementById("mini-project").textContent = title;
@@ -670,7 +678,11 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("draft-questions").textContent = qCount + " question" + (qCount > 1 ? "s" : "");
     document.getElementById("draft-step").textContent = "Étape 2/5";
 
+    if(resumeBtn) resumeBtn.style.display = "inline-flex";
+    if(settingsBtn) settingsBtn.style.display = "inline-flex";
     if(deleteBtn) deleteBtn.style.display = "inline-flex";
+    if(libraryBtn) libraryBtn.style.display = "none";
+    if(blankBtn) blankBtn.style.display = "none";
   } else {
     document.getElementById("mini-project").textContent = "Aucun projet démarré";
     document.getElementById("mini-progress").textContent = "À démarrer";
@@ -684,7 +696,11 @@ document.addEventListener("DOMContentLoaded", function(){
       miniAction.href = "index.html";
     }
 
+    if(resumeBtn) resumeBtn.style.display = "none";
+    if(settingsBtn) settingsBtn.style.display = "none";
     if(deleteBtn) deleteBtn.style.display = "none";
+    if(libraryBtn) libraryBtn.style.display = "inline-flex";
+    if(blankBtn) blankBtn.style.display = "inline-flex";
   }
 
   document.addEventListener("keydown", function(e){
