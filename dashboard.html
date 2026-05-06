@@ -265,45 +265,6 @@ body{
   background:#fff1ef;
 }
 
-.expert-card{
-  background:linear-gradient(135deg,#ffffff 0%,#fff7df 100%);
-  border:1px solid #ffd978;
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 10px 26px rgba(24,55,93,.06);
-  display:flex;
-  justify-content:space-between;
-  gap:18px;
-  align-items:center;
-}
-
-.expert-card h2{
-  font-size:22px;
-  color:#18375d;
-  margin-bottom:6px;
-}
-
-.expert-card p{
-  color:#5b6b7f;
-  font-size:14px;
-  line-height:1.5;
-}
-
-.expert-contact{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:8px;
-  flex-shrink:0;
-}
-
-.expert-contact span{
-  font-size:12px;
-  font-weight:900;
-  color:#8a5a00;
-  text-transform:uppercase;
-}
-
 .support-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -315,47 +276,41 @@ body{
   overflow:hidden;
   border-radius:22px;
   padding:24px;
-  min-height:190px;
+  min-height:210px;
+  box-shadow:0 12px 30px rgba(24,55,93,.08);
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  box-shadow:0 12px 30px rgba(24,55,93,.08);
 }
 
 .support-card::after{
   content:"";
   position:absolute;
-  right:-42px;
-  top:-42px;
+  right:-54px;
+  top:-54px;
   width:150px;
   height:150px;
   border-radius:50%;
-  opacity:.35;
+  background:rgba(255,255,255,.36);
 }
 
 .support-card > *{position:relative;z-index:1}
 
-.support-card-content{max-width:560px}
-
-.support-card.editorial{
-  background:linear-gradient(135deg,#ffffff 0%,#fff7df 100%);
+.support-content{
+  background:linear-gradient(135deg,#fff8e4 0%,#ffffff 100%);
   border:1px solid #ffd978;
 }
 
-.support-card.editorial::after{background:#ffc000}
-
-.support-card.tool{
-  background:linear-gradient(135deg,#0d4c72 0%,#155b83 100%);
+.support-tool{
+  background:linear-gradient(135deg,#0d4c72 0%,#176b83 100%);
   border:1px solid #0d4c72;
   color:#fff;
 }
 
-.support-card.tool::after{background:#d7ecf3}
-
 .support-kicker{
   display:inline-flex;
   width:max-content;
-  padding:7px 11px;
+  padding:7px 12px;
   border-radius:999px;
   font-size:12px;
   font-weight:900;
@@ -364,35 +319,45 @@ body{
   margin-bottom:14px;
 }
 
-.support-card.editorial .support-kicker{background:#fff0c2;color:#8a5a00}
-.support-card.tool .support-kicker{background:rgba(255,255,255,.14);color:#e8f7fb;border:1px solid rgba(255,255,255,.22)}
-
-.support-card h2{
-  font-size:24px;
-  line-height:1.15;
-  margin-bottom:10px;
+.support-content .support-kicker{
+  background:#fff1bd;
+  color:#8a5a00;
+  border:1px solid #ffd978;
 }
 
-.support-card.editorial h2{color:#18375d}
-.support-card.tool h2{color:#fff}
+.support-tool .support-kicker{
+  background:rgba(255,255,255,.14);
+  color:#d8f1fb;
+  border:1px solid rgba(255,255,255,.22);
+}
+
+.support-card h2{
+  font-size:22px;
+  line-height:1.18;
+  margin-bottom:9px;
+}
+
+.support-content h2{color:#18375d}
+.support-tool h2{color:#fff}
 
 .support-card p{
   font-size:14px;
-  line-height:1.6;
+  line-height:1.55;
+  margin-bottom:18px;
 }
 
-.support-card.editorial p{color:#5b6b7f}
-.support-card.tool p{color:rgba(255,255,255,.86)}
+.support-content p{color:#5b6b7f}
+.support-tool p{color:rgba(255,255,255,.86)}
 
-.support-card .btn{
-  width:max-content;
-  margin-top:20px;
+.support-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.support-card.tool .btn{
+.support-tool .btn{
   background:#fff;
   color:#0d4c72;
-  border:1px solid rgba(255,255,255,.4);
 }
 
 .path-grid{
@@ -431,35 +396,6 @@ body{
   font-size:12px;
   color:#64748b;
   line-height:1.45;
-}
-
-.help-card{
-  background:#0d4c72;
-  color:#fff;
-  border-radius:22px;
-  padding:24px;
-  display:flex;
-  justify-content:space-between;
-  gap:18px;
-  align-items:center;
-  margin-top:26px;
-}
-
-.help-card h2{
-  font-size:22px;
-  margin-bottom:6px;
-}
-
-.help-card p{
-  color:rgba(255,255,255,.82);
-  font-size:14px;
-  line-height:1.5;
-}
-
-.help-card .btn{
-  background:#fff;
-  color:#0d4c72;
-  flex-shrink:0;
 }
 
 .delete-modal-overlay{
@@ -508,11 +444,8 @@ body{
   .path-grid{grid-template-columns:1fr 1fr}
   .draft-card{grid-template-columns:1fr}
   .draft-actions{justify-content:flex-start}
-  .expert-card{display:block}
-  .expert-contact{align-items:flex-start;margin-top:16px}
   .support-grid{grid-template-columns:1fr}
 }
-
 
 @media(max-width:620px){
   .dashboard-wrap{padding:20px 14px 46px}
@@ -520,9 +453,7 @@ body{
   .dash-hero h1{font-size:30px}
   .dash-section-head{display:block}
   .path-grid{grid-template-columns:1fr}
-  .help-card{display:block}
-  .help-card .btn{margin-top:16px;width:100%;justify-content:center}
-  .support-card .btn{width:100%;justify-content:center}
+  .support-actions .btn{width:100%}
   .delete-modal-actions .btn{width:100%}
 }
 </style>
@@ -634,28 +565,6 @@ body{
   </section>
 
   <section class="dash-section">
-    <div class="support-grid">
-      <div class="support-card editorial">
-        <div class="support-card-content">
-          <div class="support-kicker">Accompagnement éditorial</div>
-          <h2>Besoin d’un expert contenu ?</h2>
-          <p>Vous pouvez solliciter un appui pour cadrer votre thématique, reformuler vos situations, relire les réponses ou sécuriser la cohérence pédagogique de votre autodiagnostic.</p>
-        </div>
-        <a href="mailto:contact@intotheshift.io?subject=Besoin%20d%E2%80%99un%20expert%20contenu" class="btn btn-secondary">Contactez-nous</a>
-      </div>
-
-      <div class="support-card tool">
-        <div class="support-card-content">
-          <div class="support-kicker">Aide outil</div>
-          <h2>Besoin d’aide pour utiliser Shift Studio ?</h2>
-          <p>Nous pouvons vous aider à choisir une base, comprendre les étapes, paramétrer votre campagne ou finaliser la transmission de votre autodiagnostic.</p>
-        </div>
-        <a href="mailto:contact@intotheshift.io?subject=Besoin%20d%E2%80%99aide%20sur%20Shift%20Studio" class="btn">Contactez-nous</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="dash-section">
     <div class="dash-section-head">
       <div>
         <div class="dash-section-kicker">Parcours guidé</div>
@@ -693,6 +602,46 @@ body{
         <h3>Transmission</h3>
         <p>Envoyer la configuration à l’équipe Into The Shift.</p>
       </div>
+    </div>
+  </section>
+
+
+
+  <section class="dash-section">
+    <div class="dash-section-head">
+      <div>
+        <div class="dash-section-kicker">Besoin d’aide ?</div>
+        <h2 class="dash-section-title">Deux accompagnements possibles</h2>
+      </div>
+      <p class="dash-section-sub">Un appui sur le fond des contenus ou sur l’utilisation de l’outil.</p>
+    </div>
+
+    <div class="support-grid">
+      <article class="support-card support-content">
+        <div>
+          <div class="support-kicker">Accompagnement éditorial</div>
+          <h2>Besoin d’un expert contenu ?</h2>
+          <p>
+            Nous pouvons vous aider à cadrer votre thématique, reformuler vos situations, relire les réponses ou sécuriser la cohérence pédagogique de votre autodiagnostic.
+          </p>
+        </div>
+        <div class="support-actions">
+          <a href="mailto:contact@intotheshift.io?subject=Besoin%20d%27un%20expert%20contenu" class="btn btn-secondary">Contactez-nous</a>
+        </div>
+      </article>
+
+      <article class="support-card support-tool">
+        <div>
+          <div class="support-kicker">Aide outil</div>
+          <h2>Besoin d’aide pour utiliser le studio ?</h2>
+          <p>
+            Nous pouvons vous guider pour choisir une base, reprendre un brouillon, paramétrer votre campagne, générer un QR code ou transmettre votre configuration.
+          </p>
+        </div>
+        <div class="support-actions">
+          <a href="mailto:contact@intotheshift.io?subject=Besoin%20d%27aide%20sur%20Shift%20Studio" class="btn">Contactez-nous</a>
+        </div>
+      </article>
     </div>
   </section>
 
