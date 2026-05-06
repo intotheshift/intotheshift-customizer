@@ -1,6 +1,19 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Asap',sans-serif;background:#f0f2f5;min-height:100vh;color:#18375d}
-.topbar{background:#18375d;display:flex;align-items:center;padding:0 24px;height:54px;gap:12px;position:sticky;top:0;z-index:50}
+#header{
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
+.topbar{
+  background:#18375d;
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+  height:54px;
+  gap:12px;
+}
 .logo{display:flex;align-items:center;cursor:pointer}
 .logo-img{height:30px;display:block}
 .tb-sp{flex:1}
