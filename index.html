@@ -373,17 +373,17 @@ function buildBlankState(){
 }
 
 function startBlankDiagnostic(){
+  if(!isLoggedIn()){
+    redirectToLogin("questions.html?mode=blank");
+    return;
+  }
+
   const blankState = buildBlankState();
 
   if(typeof itsSave === "function") itsSave(blankState);
   else localStorage.setItem("intotheshift_customizer_state_v1", JSON.stringify(blankState));
 
   localStorage.removeItem("its_current_ad_id");
-
-  if(!isLoggedIn()){
-    redirectToLogin("questions.html?mode=blank");
-    return;
-  }
 
   window.location.assign("questions.html?mode=blank");
 }
