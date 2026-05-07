@@ -92,7 +92,9 @@ body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:1
             </select>
           </div>
         </div>
-        <div class="notice">Pour créer un admin : la personne crée d’abord un compte normal via “Première connexion”, puis tu changes son rôle ici. Si la route backend de changement de rôle n’existe pas encore, le bouton affichera une erreur côté API.</div>
+        <div class="notice">
+          Tu peux modifier le rôle d’un compte à tout moment. Attention : le rôle admin donne accès à l’ensemble des comptes, projets et configurations.
+        </div>
         <div id="clientsLoading" class="loading">Chargement des comptes...</div>
         <div class="table-wrap"><table id="clientsTable" style="display:none"><thead><tr><th>Compte</th><th>Email</th><th>Entreprise</th><th>Rôle actuel</th><th>Changer le rôle</th><th>Date création</th><th>Projets</th><th>Statut</th></tr></thead><tbody id="clientsBody"></tbody></table></div>
         <div id="clientsEmpty" class="empty" style="display:none">Aucun compte trouvé.</div>
