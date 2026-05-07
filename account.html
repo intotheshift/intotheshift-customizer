@@ -37,10 +37,11 @@ body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:1
   <div class="layout">
     <aside class="side">
       <button class="side-btn on" onclick="showPanel('profil', this)">Profil</button>
-      <button class="side-btn" onclick="showPanel('organisation', this)">Organisation</button>
+      <button id="navOrganisation" class="side-btn" onclick="showPanel('organisation', this)">Organisation</button>
+      <button id="navPartner" class="side-btn" onclick="showPanel('partner', this)" style="display:none">Profil partenaire</button>
       <button class="side-btn" onclick="showPanel('securite', this)">Mot de passe</button>
       <button class="side-btn" onclick="showPanel('session', this)">Session</button>
-      <div class="side-note">Les informations affichées viennent du compte connecté.</div>
+      <div class="side-note">Les sections visibles s’adaptent automatiquement selon le rôle connecté.</div>
     </aside>
 
     <section>
@@ -80,6 +81,17 @@ body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:1
           <div class="field"><label>Type de compte</label><input id="accountType" class="input" disabled value="Compte client Shift Studio"></div>
           <div class="btn-row"><button class="btn btn-primary" onclick="saveOrgLocalOnly()">Enregistrer</button></div>
           <div class="notice" style="margin-top:14px">Cette section pourra ensuite accueillir le logo, la charte et les réglages de passation répondants.</div>
+        </div>
+      </div>
+
+      <div id="panel-partner" class="panel">
+        <div class="card">
+          <h2>Profil partenaire</h2>
+          <div class="card-sub">Informations utiles si vous intervenez comme cabinet, expert ou partenaire sur des autodiagnostics.</div>
+          <div class="field"><label>Nom de la structure</label><input id="partnerCompany" class="input" placeholder="Cabinet / structure"></div>
+          <div class="field"><label>Domaine d’expertise</label><input id="partnerExpertise" class="input" placeholder="Ex. management, QVT, risques, inclusion, cybersécurité..."></div>
+          <div class="field"><label>Email de contact</label><input id="partnerEmail" class="input" type="email" disabled></div>
+          <div class="notice">Cette section pourra ensuite servir à afficher vos contenus, vos autodiagnostics conçus ou vos missions en cours.</div>
         </div>
       </div>
 
@@ -200,7 +212,7 @@ function hydrateAccount(){
   const payload=decodeJwt(token)||{};
   const user=getStoredUser();
   const email=user.email||payload.email||"";
-  const role=user.role||payload.role||"client";
+  const role=String(user.role||payload.role||"client").toLowerCase();
   const first=user.firstName||user.firstname||user.first_name||"";
   const last=user.lastName||user.lastname||user.last_name||"";
   const company=user.companyName||user.company||user.company_name||"";
@@ -217,6 +229,24 @@ function hydrateAccount(){
   document.getElementById("avatar").textContent=initials(first,last,email);
   document.getElementById("userId").value=user.id||payload.id||"—";
   document.getElementById("tokenExpiry").value=formatExpiry(payload.exp);
+
+  const navOrganisation=document.getElementById("navOrganisation");
+  const navPartner=document.getElementById("navPartner");
+  const partnerEmail=document.getElementById("partnerEmail");
+  const partnerCompany=document.getElementById("partnerCompany");
+  if(partnerEmail)partnerEmail.value=email;
+  if(partnerCompany)partnerCompany.value=company;
+
+  if(role==="admin"){
+    if(navOrganisation)navOrganisation.style.display="none";
+    if(navPartner)navPartner.style.display="none";
+  }else if(role==="partner"){
+    if(navOrganisation)navOrganisation.style.display="none";
+    if(navPartner)navPartner.style.display="block";
+  }else{
+    if(navOrganisation)navOrganisation.style.display="block";
+    if(navPartner)navPartner.style.display="none";
+  }
 }
 
 document.addEventListener("DOMContentLoaded",()=>{if(requireLogin())hydrateAccount();});
