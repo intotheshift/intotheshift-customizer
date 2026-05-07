@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.itsLogout = logout;
 
   const dashboardLink = isLoggedIn()
-    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Dashboard</a>`
+    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon Dashboard</a>`
     : "";
 
   const accountLink = isLoggedIn()
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const authLinks = isLoggedIn()
     ? `<a class="nav-link logout-link" href="#" onclick="event.preventDefault(); window.itsLogout();">Déconnexion</a>`
     : `
-      <a class="nav-link ${active("login.html")}" href="login.html">Connexion</a>
+      <a class="nav-link ${active("login.html")}" href="login.html">Se connecter</a>
       <a class="btn-register ${active("register.html")}" href="register.html">Première connexion</a>
     `;
 
