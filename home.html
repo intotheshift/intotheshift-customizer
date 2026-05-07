@@ -106,7 +106,7 @@ body{font-family:'Asap',sans-serif;background:linear-gradient(180deg,#eef6fb 0%,
       <p class="hero-text">Avec Shift Studio, composez votre autodiagnostic à partir de situations prêtes à l’emploi, personnalisez vos contenus, puis lancez votre campagne avec notre accompagnement.</p>
       <div class="hero-actions">
         <a href="index.html" class="btn btn-primary">Explorer les bases</a>
-        <a href="questions.html?mode=blank" class="btn btn-secondary">Créer de zéro</a>
+        <a href="#" class="btn btn-secondary" onclick="goBlankFromHome(event)">Créer de zéro</a>
         <a href="#mode-emploi" class="btn btn-secondary">Mode d’emploi</a>
       </div>
       <p class="hero-note">Un parcours guidé pour personnaliser vos questions, vos profils de résultats, vos ressources et vos paramètres de campagne.</p>
@@ -173,6 +173,29 @@ mais comment ils agissent.</h2>
 
 <div id="faq"></div>
 <script src="FAQ.JS"></script>
+
+<script>
+function homeIsLoggedIn(){
+  return localStorage.getItem("its_logged_in") === "true";
+}
+
+function homeRedirectToLogin(target){
+  localStorage.setItem("its_after_login_redirect", target || "dashboard.html");
+  window.location.href = "login.html";
+}
+
+function goBlankFromHome(event){
+  if(event) event.preventDefault();
+
+  if(!homeIsLoggedIn()){
+    homeRedirectToLogin("questions.html?mode=blank");
+    return false;
+  }
+
+  window.location.href = "questions.html?mode=blank";
+  return false;
+}
+</script>
 
 </body>
 </html>
