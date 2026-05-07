@@ -8,12 +8,48 @@ document.addEventListener("DOMContentLoaded", function () {
     return currentPage === page ? "active" : "";
   }
 
+  function getToken() {
+    return (
+      localStorage.getItem("its_token") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("auth_token") ||
+      ""
+    );
+  }
+
+  function getRoleFromToken() {
+    const token = getToken();
+    if (!token || !token.includes(".")) return null;
+
+    try {
+      const payload = JSON.parse(
+        atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+      );
+      return payload.role || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getUserRole() {
+    const storedRole = localStorage.getItem("its_user_role");
+    if (storedRole) return storedRole;
+
+    const tokenRole = getRoleFromToken();
+    if (tokenRole) {
+      localStorage.setItem("its_user_role", tokenRole);
+      return tokenRole;
+    }
+
+    return null;
+  }
+
   function isLoggedIn() {
-    return localStorage.getItem("its_logged_in") === "true" || !!localStorage.getItem("its_token");
+    return localStorage.getItem("its_logged_in") === "true" || !!getToken();
   }
 
   function isAdmin() {
-    return localStorage.getItem("its_user_role") === "admin";
+    return getUserRole() === "admin";
   }
 
   function logout() {
@@ -29,9 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.itsLogout = logout;
 
+  const adminLink = isAdmin()
+    ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>`
+    : "";
+
   const authLinks = isLoggedIn()
     ? `
-      ${isAdmin() ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>` : ""}
+      ${adminLink}
       <a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon espace</a>
       <button class="nav-link nav-btn" type="button" onclick="window.itsLogout()">Déconnexion</button>
     `
