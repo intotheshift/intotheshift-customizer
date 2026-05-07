@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.itsLogout = logout;
 
   const dashboardLink = isLoggedIn()
-    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Dashboard</a>`
+    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon Dashboard</a>`
     : "";
 
   const adminLink = isAdmin()
