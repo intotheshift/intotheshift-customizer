@@ -239,6 +239,20 @@ body{
 
 .secondary-btn:hover{background:#f8fbfd}
 
+.auth-error{
+  display:none;
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#fff1f2;
+  border:1px solid #fecdd3;
+  color:#9f1239;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.auth-error.show{display:block}
+
 .login-note{
   margin-top:14px;
   text-align:center;
@@ -360,21 +374,23 @@ body{
         Connectez-vous pour continuer votre parcours.
       </p>
 
-      <form onsubmit="event.preventDefault(); localStorage.setItem('its_logged_in','true'); const redirect = localStorage.getItem('its_after_login_redirect') || 'dashboard.html'; localStorage.removeItem('its_after_login_redirect'); window.location.href = redirect;">
+      <form id="login-form">
 
         <div class="form-group">
           <label class="form-label">Adresse email</label>
-          <input type="email" class="input" placeholder="prenom@entreprise.com">
+          <input id="login-email" type="email" class="input" placeholder="prenom@entreprise.com" required>
         </div>
 
         <div class="form-group">
           <label class="form-label">Mot de passe</label>
-          <input type="password" class="input" placeholder="••••••••">
+          <input id="login-password" type="password" class="input" placeholder="••••••••" required>
         </div>
 
-        <button class="login-btn" type="submit">
+        <button id="login-submit" class="login-btn" type="submit">
           Se connecter
         </button>
+
+        <div id="login-error" class="auth-error"></div>
 
       </form>
 
@@ -399,6 +415,67 @@ body{
   </div>
 
 </main>
+
+
+<script>
+const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+
+function showLoginError(message){
+  const box = document.getElementById("login-error");
+  if(!box) return;
+  box.textContent = message;
+  box.classList.add("show");
+}
+
+function clearLoginError(){
+  const box = document.getElementById("login-error");
+  if(!box) return;
+  box.textContent = "";
+  box.classList.remove("show");
+}
+
+document.getElementById("login-form").addEventListener("submit", async function(event){
+  event.preventDefault();
+  clearLoginError();
+
+  const submitBtn = document.getElementById("login-submit");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Connexion...";
+
+  const payload = {
+    email: document.getElementById("login-email").value.trim().toLowerCase(),
+    password: document.getElementById("login-password").value
+  };
+
+  try{
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if(!response.ok){
+      throw new Error(data.error || "Identifiants incorrects.");
+    }
+
+    localStorage.setItem("its_token", data.token);
+    localStorage.setItem("its_user", JSON.stringify(data.user));
+    localStorage.setItem("its_logged_in", "true");
+    localStorage.setItem("its_user_firstname", data.user?.firstName || "Mon espace");
+    localStorage.setItem("its_user_role", data.user?.role || "client");
+
+    const redirect = localStorage.getItem("its_after_login_redirect") || "dashboard.html";
+    localStorage.removeItem("its_after_login_redirect");
+    window.location.href = redirect;
+  }catch(error){
+    showLoginError(error.message || "Erreur de connexion à l’API.");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Se connecter";
+  }
+});
+</script>
 
 </body>
 </html>
