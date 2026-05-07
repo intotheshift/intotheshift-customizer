@@ -9,58 +9,51 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function isLoggedIn() {
-    return localStorage.getItem("its_logged_in") === "true";
+    return localStorage.getItem("its_logged_in") === "true" || !!localStorage.getItem("its_token");
+  }
+
+  function isAdmin() {
+    return localStorage.getItem("its_user_role") === "admin";
   }
 
   function logout() {
     localStorage.removeItem("its_logged_in");
     localStorage.removeItem("its_user_firstname");
+    localStorage.removeItem("its_user_role");
+    localStorage.removeItem("its_user");
+    localStorage.removeItem("its_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("auth_token");
     window.location.href = "home.html";
   }
 
-  const loggedIn = isLoggedIn();
-  const firstName = localStorage.getItem("its_user_firstname") || "Mon espace";
+  window.itsLogout = logout;
 
-  const visitorNav = `
-    <a class="${active("home.html")}" href="home.html">Accueil</a>
-    <a class="${active("index.html")}" href="index.html">Bibliothèque</a>
-    <a class="${active("login.html")}" href="login.html">Se connecter</a>
-    <a href="register.html" class="btn-register">Première connexion</a>
-  `;
-
-  const userNav = `
-    <a class="${active("dashboard.html")}" href="dashboard.html">Mon Dashboard</a>
-    <a class="${active("index.html")}" href="index.html">Bibliothèque</a>
-    <a class="${active("questions.html")}" href="questions.html">Création</a>
-    <a class="${active("parametrage.html")}" href="parametrage.html">Paramétrage</a>
-    <a class="${active("campagne.html")}" href="campagne.html">Campagne</a>
-    <a class="${active("validation.html")}" href="validation.html">Transmission</a>
-  `;
+  const authLinks = isLoggedIn()
+    ? `
+      ${isAdmin() ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>` : ""}
+      <a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon espace</a>
+      <button class="nav-link nav-btn" type="button" onclick="window.itsLogout()">Déconnexion</button>
+    `
+    : `
+      <a class="nav-link ${active("login.html")}" href="login.html">Se connecter</a>
+      <a class="btn-register ${active("register.html")}" href="register.html">Première connexion</a>
+    `;
 
   header.innerHTML = `
     <div class="topbar">
-      <div class="logo" onclick="window.location.href='${loggedIn ? "dashboard.html" : "home.html"}'">
+      <a class="logo" href="index.html" aria-label="Into The Shift">
         <img src="into-the-shift-logo.png" alt="Into The Shift" class="logo-img">
-      </div>
+      </a>
 
-      <nav class="main-nav">
-        ${loggedIn ? userNav : visitorNav}
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a class="nav-link ${active("index.html")}" href="index.html">Bibliothèque</a>
+        <a class="nav-link ${active("questions.html")}" href="questions.html">Créer</a>
+        <a class="nav-link ${active("parametrage.html")}" href="parametrage.html">Paramétrer</a>
+        <a class="nav-link ${active("campagne.html")}" href="campagne.html">Préparer</a>
+        <a class="nav-link ${active("validation.html")}" href="validation.html">Transmettre</a>
+        ${authLinks}
       </nav>
-
-      <div class="tb-sp"></div>
-
-      ${
-        loggedIn
-          ? `
-            <button class="logout-btn" id="logout-btn" type="button">
-              Se déconnecter
-            </button>
-          `
-          : ""
-      }
     </div>
   `;
-
-  const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) logoutBtn.addEventListener("click", logout);
 });
