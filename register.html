@@ -279,6 +279,20 @@ body{
   text-decoration:none;
 }
 
+.auth-error{
+  display:none;
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#fff1f2;
+  border:1px solid #fecdd3;
+  color:#9f1239;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.auth-error.show{display:block}
+
 .notice{
   margin-top:14px;
   background:#fff7e8;
@@ -379,7 +393,7 @@ body{
         Quelques informations nous permettent de personnaliser votre espace découverte.
       </p>
 
-      <form onsubmit="event.preventDefault(); localStorage.setItem('its_logged_in','true'); localStorage.setItem('its_user_firstname', document.getElementById('firstname').value || 'Mon espace'); window.location.href='dashboard.html';">
+      <form id="register-form">
 
         <div class="form-grid">
 
@@ -390,22 +404,22 @@ body{
 
           <div class="form-group">
             <label class="form-label">Nom</label>
-            <input class="input" type="text" placeholder="Nom">
+            <input id="lastname" class="input" type="text" placeholder="Nom">
           </div>
 
           <div class="form-group full">
             <label class="form-label">Email professionnel</label>
-            <input class="input" type="email" placeholder="prenom.nom@entreprise.com">
+            <input id="email" class="input" type="email" placeholder="prenom.nom@entreprise.com" required>
           </div>
 
           <div class="form-group full">
             <label class="form-label">Entreprise</label>
-            <input class="input" type="text" placeholder="Nom de votre organisation">
+            <input id="company" class="input" type="text" placeholder="Nom de votre organisation">
           </div>
 
           <div class="form-group">
             <label class="form-label">Fonction</label>
-            <select class="select">
+            <select id="jobTitle" class="select">
               <option value="">Sélectionner</option>
               <option>Direction RH</option>
               <option>Responsable formation</option>
@@ -418,7 +432,7 @@ body{
 
           <div class="form-group">
             <label class="form-label">Secteur</label>
-            <select class="select">
+            <select id="sector" class="select">
               <option value="">Sélectionner</option>
               <option>Banque / Assurance</option>
               <option>Industrie</option>
@@ -435,14 +449,16 @@ body{
 
           <div class="form-group full">
             <label class="form-label">Mot de passe</label>
-            <input class="input" type="password" placeholder="Créer un mot de passe">
+            <input id="password" class="input" type="password" placeholder="Créer un mot de passe" required>
           </div>
 
         </div>
 
-        <button class="register-btn" type="submit">
+        <button id="register-submit" class="register-btn" type="submit">
           Créer mon espace découverte
         </button>
+
+        <div id="register-error" class="auth-error"></div>
 
       </form>
 
@@ -459,6 +475,77 @@ body{
   </aside>
 
 </div>
+
+
+<script>
+const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+
+function showRegisterError(message){
+  const box = document.getElementById("register-error");
+  if(!box) return;
+  box.textContent = message;
+  box.classList.add("show");
+}
+
+function clearRegisterError(){
+  const box = document.getElementById("register-error");
+  if(!box) return;
+  box.textContent = "";
+  box.classList.remove("show");
+}
+
+document.getElementById("register-form").addEventListener("submit", async function(event){
+  event.preventDefault();
+  clearRegisterError();
+
+  const submitBtn = document.getElementById("register-submit");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Création en cours...";
+
+  const payload = {
+    firstName: document.getElementById("firstname").value.trim(),
+    lastName: document.getElementById("lastname").value.trim(),
+    email: document.getElementById("email").value.trim().toLowerCase(),
+    companyName: document.getElementById("company").value.trim(),
+    jobTitle: document.getElementById("jobTitle").value,
+    sector: document.getElementById("sector").value,
+    password: document.getElementById("password").value
+  };
+
+  if(!payload.email || !payload.password){
+    showRegisterError("Merci de renseigner un email et un mot de passe.");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Créer mon espace découverte";
+    return;
+  }
+
+  try{
+    const response = await fetch(`${API_BASE_URL}/api/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if(!response.ok){
+      throw new Error(data.error || "Impossible de créer le compte pour le moment.");
+    }
+
+    localStorage.setItem("its_token", data.token);
+    localStorage.setItem("its_user", JSON.stringify(data.user));
+    localStorage.setItem("its_logged_in", "true");
+    localStorage.setItem("its_user_firstname", data.user?.firstName || payload.firstName || "Mon espace");
+    localStorage.setItem("its_user_role", data.user?.role || "client");
+
+    window.location.href = "dashboard.html";
+  }catch(error){
+    showRegisterError(error.message || "Erreur de connexion à l’API.");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Créer mon espace découverte";
+  }
+});
+</script>
 
 </body>
 </html>
