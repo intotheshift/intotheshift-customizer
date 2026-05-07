@@ -264,3 +264,29 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
   background:#eef6fb !important;
   color:#0d4c72 !important;
 }
+.compact-topbar .main-nav,
+.main-nav.compact-nav{
+  gap:6px !important;
+}
+
+.compact-topbar .nav-link,
+.compact-topbar .btn-register{
+  font-size:13px !important;
+  padding:8px 10px !important;
+  white-space:nowrap;
+}
+
+.compact-topbar .logo-img{
+  max-height:34px !important;
+}
+
+@media(max-width:900px){
+  .compact-topbar{
+    overflow-x:auto;
+  }
+
+  .compact-topbar .main-nav{
+    overflow-x:auto;
+    flex-wrap:nowrap;
+  }
+}
