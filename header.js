@@ -65,19 +65,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.itsLogout = logout;
 
-  const dashboardLink = isLoggedIn()
-    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Dashboard</a>`
+  const logged = isLoggedIn();
+  const admin = isAdmin();
+
+  const accueilLink = !logged
+    ? `<a class="nav-link ${active("home.html")}" href="home.html">Accueil</a>`
     : "";
 
-  const accountLink = isLoggedIn()
-    ? `<a class="nav-link ${active("account.html")}" href="account.html">Compte</a>`
+  const dashboardLink = logged
+    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon Dashboard</a>`
     : "";
 
-  const adminLink = isAdmin()
+  const adminLink = admin
     ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>`
     : "";
 
-  const authLinks = isLoggedIn()
+  const accountLink = logged
+    ? `<a class="nav-link ${active("account.html")}" href="account.html">Mon compte</a>`
+    : "";
+
+  const authLinks = logged
     ? `<a class="nav-link logout-link" href="#" onclick="event.preventDefault(); window.itsLogout();">Déconnexion</a>`
     : `
       <a class="nav-link ${active("login.html")}" href="login.html">Connexion</a>
@@ -86,20 +93,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   header.innerHTML = `
     <div class="topbar compact-topbar">
-      <a class="logo" href="home.html" aria-label="Into The Shift">
+      <a class="logo" href="${logged ? "dashboard.html" : "home.html"}" aria-label="Into The Shift">
         <img src="into-the-shift-logo.png" alt="Into The Shift" class="logo-img">
       </a>
 
       <nav class="main-nav compact-nav" aria-label="Navigation principale">
+        ${accueilLink}
         ${dashboardLink}
-        <a class="nav-link ${active("home.html")}" href="home.html">Accueil</a>
+        ${adminLink}
         <a class="nav-link ${active("index.html")}" href="index.html">Bibliothèque</a>
         <a class="nav-link ${active("questions.html")}" href="questions.html">Créer</a>
         <a class="nav-link ${active("parametrage.html")}" href="parametrage.html">Paramétrer</a>
         <a class="nav-link ${active("campagne.html")}" href="campagne.html">Préparer</a>
         <a class="nav-link ${active("validation.html")}" href="validation.html">Transmettre</a>
         ${accountLink}
-        ${adminLink}
         ${authLinks}
       </nav>
     </div>
