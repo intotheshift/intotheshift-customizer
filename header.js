@@ -66,11 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
   window.itsLogout = logout;
 
   const dashboardLink = isLoggedIn()
-    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon Dashboard</a>`
+    ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Dashboard</a>`
     : "";
 
   const accountLink = isLoggedIn()
-    ? `<a class="nav-link ${active("account.html")}" href="account.html">Mon compte</a>`
+    ? `<a class="nav-link ${active("account.html")}" href="account.html">Compte</a>`
     : "";
 
   const adminLink = isAdmin()
@@ -80,18 +80,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const authLinks = isLoggedIn()
     ? `<a class="nav-link logout-link" href="#" onclick="event.preventDefault(); window.itsLogout();">Déconnexion</a>`
     : `
-      <a class="nav-link ${active("login.html")}" href="login.html">Se connecter</a>
+      <a class="nav-link ${active("login.html")}" href="login.html">Connexion</a>
       <a class="btn-register ${active("register.html")}" href="register.html">Première connexion</a>
     `;
 
   header.innerHTML = `
     <div class="topbar compact-topbar">
-      <a class="logo" href="index.html" aria-label="Into The Shift">
+      <a class="logo" href="home.html" aria-label="Into The Shift">
         <img src="into-the-shift-logo.png" alt="Into The Shift" class="logo-img">
       </a>
 
       <nav class="main-nav compact-nav" aria-label="Navigation principale">
         ${dashboardLink}
+        <a class="nav-link ${active("home.html")}" href="home.html">Accueil</a>
         <a class="nav-link ${active("index.html")}" href="index.html">Bibliothèque</a>
         <a class="nav-link ${active("questions.html")}" href="questions.html">Créer</a>
         <a class="nav-link ${active("parametrage.html")}" href="parametrage.html">Paramétrer</a>
