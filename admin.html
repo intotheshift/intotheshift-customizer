@@ -241,7 +241,38 @@ function getProjectConfig(p){let cfg=val(p,["config","configuration","payload","
 function renderProjects(){const q=document.getElementById("projectSearch").value.toLowerCase().trim();const sf=document.getElementById("statusFilter").value.toLowerCase();const rows=adminState.projects.filter(p=>{const status=String(val(p,["status","statut"],"")).toLowerCase();const text=JSON.stringify(p).toLowerCase();return(!q||text.includes(q))&&(!sf||status.includes(sf));});const body=document.getElementById("projectsBody");body.innerHTML=rows.map(p=>{const cfg=getProjectConfig(p);const title=val(p,["title","project_title","autodiag_title","name","project_name"],val(cfg,["title","titre","autodiagTitle","diagnosticTitle","respondentTitle"],"Autodiag sans titre"));const client=val(p,["client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));const pack=val(p,["pack","pack_choisi","selected_pack","passations_pack"],val(cfg,["pack","packChoisi","selectedPack","passationsPack"],"—"));const status=val(p,["status","statut"],"brouillon");const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));const sent=isConfigSent(p);return`<tr><td><div class="cell-title">${escapeHtml(title)}</div></td><td>${escapeHtml(client)}</td><td>${escapeHtml(pack)}</td><td>${statusBadge(status)}</td><td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td><td>${created}</td><td>${updated}</td></tr>`;}).join("");document.getElementById("projectsTable").style.display=rows.length?"table":"none";document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";}
 function fillRandomPassword(){const pwd="Its!"+Math.random().toString(36).slice(2,10)+"7";document.getElementById("newPassword").value=pwd;document.getElementById("createMsg").textContent="Mot de passe temporaire généré : "+pwd;}
 async function createUser(){const payload={firstname:document.getElementById("newFirstname").value.trim(),lastname:document.getElementById("newLastname").value.trim(),email:document.getElementById("newEmail").value.trim(),company:document.getElementById("newCompany").value.trim(),role:document.getElementById("newRole").value,password:document.getElementById("newPassword").value};if(!payload.email||!payload.password){showError("Email et mot de passe obligatoire.");return;}try{await apiPost("/api/admin/users",payload);document.getElementById("createMsg").textContent="Compte créé. Pense à transmettre le mot de passe temporaire à la personne.";document.getElementById("newFirstname").value="";document.getElementById("newLastname").value="";document.getElementById("newEmail").value="";document.getElementById("newCompany").value="";document.getElementById("newPassword").value="";document.getElementById("newRole").value="client";showSuccess("Compte créé avec succès.");await loadAdminData();}catch(err){console.error(err);showError("Création impossible. Détail : "+err.message);}}
-async function changeRole(userId){const select=document.getElementById("role-"+CSS.escape(userId));const role=select?.value;if(!userId||!role)return;try{await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/role`,{role});showSuccess("Rôle mis à jour.");await loadAdminData();}catch(err){console.error(err);showError("Changement de rôle impossible. Détail : "+err.message);}}
+async function changeRole(userId){
+  const select=document.getElementById("role-"+CSS.escape(userId));
+  const role=select?.value;
+  if(!userId||!role)return;
+  try{
+    await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/role`,{role});
+
+    // Mise à jour immédiate côté affichage, sans attendre le rechargement complet.
+    adminState.clients=adminState.clients.map(c=>{
+      const id=String(val(c,["id","user_id"],""));
+      if(id===String(userId))return {...c,role};
+      return c;
+    });
+    renderKpis();
+    renderClients();
+
+    showSuccess("Rôle mis à jour. Aucun email automatique n’est envoyé par cette page.");
+
+    // Recharge ensuite les données serveur pour rester synchronisé avec la base.
+    try{
+      const clients=await apiGet("/api/admin/clients");
+      adminState.clients=normalizeArray(clients,["clients","users","data"]);
+      renderKpis();
+      renderClients();
+    }catch(syncErr){
+      console.warn("Synchronisation clients impossible après changement de rôle",syncErr);
+    }
+  }catch(err){
+    console.error(err);
+    showError("Changement de rôle impossible. Détail : "+err.message);
+  }
+}
 async function deleteUser(userId,email){
   if(!userId)return;
   const currentUserId=String(decodeJwt(getToken())?.id||"");
