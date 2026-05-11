@@ -258,11 +258,11 @@ function toggleNewPasswordVisibility(){
 function fillRandomPassword(){const pwd="Its!"+Math.random().toString(36).slice(2,10)+"7";document.getElementById("newPassword").value=pwd;document.getElementById("createMsg").textContent="Mot de passe temporaire généré : "+pwd;}
 async function createUser(){const payload={firstname:document.getElementById("newFirstname").value.trim(),lastname:document.getElementById("newLastname").value.trim(),email:document.getElementById("newEmail").value.trim(),company:document.getElementById("newCompany").value.trim(),role:document.getElementById("newRole").value,password:document.getElementById("newPassword").value};if(!payload.email||!payload.password){showError("Email et mot de passe obligatoire.");return;}try{await apiPost("/api/admin/users",payload);document.getElementById("createMsg").textContent="Compte créé. Pense à transmettre le mot de passe temporaire à la personne.";document.getElementById("newFirstname").value="";document.getElementById("newLastname").value="";document.getElementById("newEmail").value="";document.getElementById("newCompany").value="";document.getElementById("newPassword").value="";document.getElementById("newRole").value="client";showSuccess("Compte créé avec succès.");await loadAdminData();}catch(err){console.error(err);showError("Création impossible. Détail : "+err.message);}}
 async function changeRole(userId){
-  const select=document.getElementById("role-"+CSS.escape(userId));
+  const select=document.getElementById("role-"+String(userId));
   const role=select?.value;
   if(!userId||!role)return;
 
-  const badgeCell=document.getElementById("role-badge-"+CSS.escape(userId));
+  const badgeCell=document.getElementById("role-badge-"+String(userId));
   const previousRole=String(adminState.clients.find(c=>String(val(c,["id","user_id"],""))===String(userId))?.role||"client").toLowerCase();
 
   try{
