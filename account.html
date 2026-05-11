@@ -112,20 +112,14 @@ body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:1
       <div id="panel-session" class="panel">
         <div class="card">
           <h2>Session active</h2>
-          <div class="card-sub">Informations issues du token de connexion.</div>
+          <div class="card-sub">Informations de connexion du compte.</div>
           <div class="field"><label>ID utilisateur</label><input id="userId" class="input" disabled></div>
-          <div class="field"><label>Expiration de session</label><input id="tokenExpiry" class="input" disabled></div>
           <div class="btn-row">
             <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">Retour dashboard</button>
             <button class="btn btn-danger" onclick="logout()">Me déconnecter</button>
           </div>
         </div>
 
-        <div class="card critical">
-          <h2 style="color:#9d2b2b">Besoin de supprimer le compte ?</h2>
-          <div class="card-sub">La suppression d’un compte client doit être traitée par Into The Shift pour éviter toute perte accidentelle de données.</div>
-          <a class="btn btn-danger" style="display:inline-flex;text-decoration:none" href="mailto:contact@intotheshift.io?subject=Demande%20de%20suppression%20de%20compte%20Shift%20Studio">Contacter Into The Shift</a>
-        </div>
       </div>
     </section>
   </div>
@@ -228,7 +222,6 @@ function hydrateAccount(){
   document.getElementById("heroRole").textContent="Rôle : "+role;
   document.getElementById("avatar").textContent=initials(first,last,email);
   document.getElementById("userId").value=user.id||payload.id||"—";
-  document.getElementById("tokenExpiry").value=formatExpiry(payload.exp);
 
   const navOrganisation=document.getElementById("navOrganisation");
   const navPartner=document.getElementById("navPartner");
