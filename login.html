@@ -466,11 +466,21 @@ document.getElementById("login-form").addEventListener("submit", async function(
     localStorage.setItem("its_token", data.token);
     localStorage.setItem("its_user", JSON.stringify(data.user));
     localStorage.setItem("its_logged_in", "true");
+    localStorage.setItem("its_user_id", data.user?.id || "");
+    localStorage.setItem("its_user_email", data.user?.email || "");
     localStorage.setItem("its_user_firstname", data.user?.firstName || "Mon espace");
+    localStorage.setItem("its_user_lastname", data.user?.lastName || "");
+    localStorage.setItem("its_user_company", data.user?.companyName || "");
     localStorage.setItem("its_user_role", data.user?.role || "client");
 
-    const redirect = localStorage.getItem("its_after_login_redirect") || "dashboard.html";
+    const forcedRedirect = localStorage.getItem("its_after_login_redirect");
     localStorage.removeItem("its_after_login_redirect");
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryRedirect = urlParams.get("redirect");
+    const mustChangePassword = data.user?.mustChangePassword === true;
+    const redirect = mustChangePassword
+      ? "account.html?tab=securite&firstLogin=1"
+      : (forcedRedirect || queryRedirect || "dashboard.html");
     window.location.href = redirect;
   }catch(error){
     showLoginError(error.message || "Erreur de connexion à l’API.");
