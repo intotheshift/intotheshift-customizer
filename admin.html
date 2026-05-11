@@ -229,7 +229,7 @@ function renderClients(){
       <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
       <td>${escapeHtml(email)}</td>
       <td>${escapeHtml(company)}</td>
-      <td>${roleBadge(role)}</td>
+      <td id="role-badge-${escapeAttr(id)}">${roleBadge(role)}</td>
       <td><select class="role-select" id="role-${escapeAttr(id)}"><option value="client" ${role==="client"?"selected":""}>client</option><option value="admin" ${role==="admin"?"selected":""}>admin</option><option value="partner" ${role==="partner"?"selected":""}>partner</option></select> <button class="mini-btn" onclick="changeRole('${escapeAttr(id)}')">OK</button></td>
       <td>${created}</td>
       <td>${projectCount}</td>
@@ -261,10 +261,17 @@ async function changeRole(userId){
   const select=document.getElementById("role-"+CSS.escape(userId));
   const role=select?.value;
   if(!userId||!role)return;
+
+  const badgeCell=document.getElementById("role-badge-"+CSS.escape(userId));
+  const previousRole=String(adminState.clients.find(c=>String(val(c,["id","user_id"],""))===String(userId))?.role||"client").toLowerCase();
+
   try{
     await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/role`,{role});
 
-    // Mise à jour immédiate du badge côté affichage.
+    // Mise à jour immédiate et visible du badge, sans attendre le rechargement serveur.
+    if(badgeCell)badgeCell.innerHTML=roleBadge(role);
+
+    // Mise à jour locale de l'état pour que le filtre, les KPI et les protections suivent aussi.
     adminState.clients=adminState.clients.map(c=>{
       const id=String(val(c,["id","user_id"],""));
       if(id===String(userId))return {...c,role};
@@ -272,19 +279,11 @@ async function changeRole(userId){
     });
     renderKpis();
     renderClients();
-
     showSuccess("Rôle mis à jour.");
-
-    // Resynchronisation serveur ensuite.
-    try{
-      const clients=await apiGet("/api/admin/clients");
-      adminState.clients=normalizeArray(clients,["clients","users","data"]);
-      renderKpis();
-      renderClients();
-    }catch(syncErr){
-      console.warn("Synchronisation clients impossible après changement de rôle",syncErr);
-    }
   }catch(err){
+    // Si l'API refuse la modification, on remet l'ancien affichage.
+    if(badgeCell)badgeCell.innerHTML=roleBadge(previousRole);
+    if(select)select.value=previousRole;
     console.error(err);
     showError("Changement de rôle impossible. Détail : "+err.message);
   }
