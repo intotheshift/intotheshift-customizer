@@ -31,9 +31,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function getRoleFromUserObject() {
+    try {
+      const rawUser = localStorage.getItem("its_user");
+      if (!rawUser) return null;
+
+      const user = JSON.parse(rawUser);
+      return user.role || user.user_role || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   function getUserRole() {
     const storedRole = localStorage.getItem("its_user_role");
     if (storedRole) return storedRole;
+
+    const userRole = getRoleFromUserObject();
+    if (userRole) {
+      localStorage.setItem("its_user_role", userRole);
+      return userRole;
+    }
 
     const tokenRole = getRoleFromToken();
     if (tokenRole) {
