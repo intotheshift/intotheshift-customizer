@@ -478,20 +478,20 @@
 
     <section class="stats">
       <div class="stat">
+        <strong id="stat-quota-total">0</strong>
+        <span>Passations achetées</span>
+      </div>
+      <div class="stat">
+        <strong id="stat-quota-used">0</strong>
+        <span>Passations utilisées</span>
+      </div>
+      <div class="stat">
+        <strong id="stat-quota-left">0</strong>
+        <span>Passations restantes</span>
+      </div>
+      <div class="stat">
         <strong id="stat-clients">0</strong>
         <span>Clients suivis</span>
-      </div>
-      <div class="stat">
-        <strong id="stat-ads">0</strong>
-        <span>Autodiagnostics créés</span>
-      </div>
-      <div class="stat">
-        <strong id="stat-campaigns">0</strong>
-        <span>Campagnes actives</span>
-      </div>
-      <div class="stat">
-        <strong id="stat-results">0</strong>
-        <span>Restitutions à préparer</span>
       </div>
     </section>
 
@@ -574,6 +574,7 @@
 
     document.addEventListener("DOMContentLoaded", async () => {
       protectPartnerPage();
+      await loadPartnerQuota();
       await loadPartnerClients();
     });
 
@@ -608,6 +609,48 @@
       if(role && role !== "partner" && role !== "admin"){
         alert("Cet espace est réservé aux partenaires.");
         window.location.href = "index.html";
+      }
+    }
+
+    async function loadPartnerQuota(){
+      try{
+        const token = getToken();
+
+        const response = await fetch(`${API_URL}/api/partner/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if(!response.ok){
+          throw new Error("Erreur API quota " + response.status);
+        }
+
+        const data = await response.json();
+        const partner = data.partner || data.user || data || {};
+
+        const quota = Number(partner.passations_quota || 0);
+        const used = Number(partner.passations_used || 0);
+        const left = Math.max(quota - used, 0);
+
+        document.getElementById("stat-quota-total").textContent = quota;
+        document.getElementById("stat-quota-used").textContent = used;
+        document.getElementById("stat-quota-left").textContent = left;
+
+        localStorage.setItem("its_partner_passations_quota", String(quota));
+        localStorage.setItem("its_partner_passations_used", String(used));
+        localStorage.setItem("its_partner_passations_left", String(left));
+
+      } catch(err){
+        console.error("Erreur chargement quota partenaire", err);
+
+        document.getElementById("stat-quota-total").textContent = "—";
+        document.getElementById("stat-quota-used").textContent = "—";
+        document.getElementById("stat-quota-left").textContent = "—";
+
+        localStorage.removeItem("its_partner_passations_quota");
+        localStorage.removeItem("its_partner_passations_used");
+        localStorage.removeItem("its_partner_passations_left");
       }
     }
 
@@ -743,18 +786,7 @@
     }
 
     function updateStats(list){
-      const ads = list.reduce((sum, client) => sum + (client.ads || []).length, 0);
-      const campaigns = list.reduce((sum, client) => {
-        return sum + (client.ads || []).filter(ad => ad.status === "active").length;
-      }, 0);
-      const drafts = list.reduce((sum, client) => {
-        return sum + (client.ads || []).filter(ad => ad.status === "draft" || ad.status === "trial").length;
-      }, 0);
-
       document.getElementById("stat-clients").textContent = list.length;
-      document.getElementById("stat-ads").textContent = ads;
-      document.getElementById("stat-campaigns").textContent = campaigns;
-      document.getElementById("stat-results").textContent = drafts;
     }
 
     function filterClients(){
@@ -851,6 +883,7 @@
         }
 
         closeClientModal();
+        await loadPartnerQuota();
         await loadPartnerClients();
 
       } catch(err){
