@@ -119,6 +119,11 @@
       border:1px solid #cbd9e7;
     }
 
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
     .filters{
       display:grid;
       grid-template-columns:1fr 220px;
@@ -310,6 +315,129 @@
       margin-bottom:18px;
     }
 
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(9,30,52,.52);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding:20px;
+    }
+
+    .modal-backdrop.open{
+      display:flex;
+    }
+
+    .modal{
+      width:min(560px,100%);
+      background:#fff;
+      border-radius:28px;
+      box-shadow:0 28px 80px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+
+    .modal-header{
+      background:#0d4c72;
+      color:#fff;
+      padding:24px 26px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+    }
+
+    .modal-header h3{
+      margin:0 0 6px;
+      font-size:24px;
+    }
+
+    .modal-header p{
+      margin:0;
+      opacity:.9;
+      line-height:1.4;
+      font-size:14px;
+    }
+
+    .modal-close{
+      border:none;
+      background:rgba(255,255,255,.16);
+      color:#fff;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      font-size:20px;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    .modal-body{
+      padding:24px 26px 10px;
+    }
+
+    .form-grid{
+      display:grid;
+      gap:16px;
+    }
+
+    .field label{
+      display:block;
+      font-weight:800;
+      color:#0d4c72;
+      font-size:13px;
+      text-transform:uppercase;
+      margin-bottom:7px;
+      letter-spacing:.02em;
+    }
+
+    .field input{
+      width:100%;
+      border:1px solid #d8e2ec;
+      border-radius:16px;
+      padding:14px 15px;
+      font-family:'Asap',sans-serif;
+      font-size:15px;
+      color:#17375d;
+      background:#fff;
+      outline:none;
+    }
+
+    .field input:focus{
+      border-color:#0d4c72;
+      box-shadow:0 0 0 4px rgba(13,76,114,.08);
+    }
+
+    .form-help{
+      color:#718197;
+      font-size:13px;
+      margin-top:8px;
+      line-height:1.4;
+    }
+
+    .modal-error{
+      display:none;
+      margin:16px 26px 0;
+      padding:12px 14px;
+      border-radius:16px;
+      background:#fff0f0;
+      color:#9b1c1c;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .modal-error.show{
+      display:block;
+    }
+
+    .modal-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      padding:20px 26px 26px;
+      flex-wrap:wrap;
+    }
+
     @media(max-width:850px){
       .stats,
       .clients-grid,
@@ -323,6 +451,14 @@
 
       .mini-stats{
         grid-template-columns:1fr;
+      }
+
+      .modal-footer{
+        justify-content:stretch;
+      }
+
+      .modal-footer .btn{
+        width:100%;
       }
     }
   </style>
@@ -388,6 +524,47 @@
 
   </main>
 
+  <div id="clientModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="clientModalTitle">
+      <div class="modal-header">
+        <div>
+          <h3 id="clientModalTitle">Ajouter un client</h3>
+          <p>Créez un dossier client pour y rattacher ensuite ses autodiagnostics, campagnes et résultats.</p>
+        </div>
+        <button class="modal-close" type="button" onclick="closeClientModal()" aria-label="Fermer">×</button>
+      </div>
+
+      <div id="clientModalError" class="modal-error"></div>
+
+      <form id="clientForm" onsubmit="submitNewClient(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="clientNameInput">Nom du client final *</label>
+              <input id="clientNameInput" name="name" type="text" placeholder="Ex. Orange — Service RH" required>
+              <div class="form-help">Ce nom servira de dossier client dans votre espace partenaire.</div>
+            </div>
+
+            <div class="field">
+              <label for="clientContactInput">Contact principal</label>
+              <input id="clientContactInput" name="contactName" type="text" placeholder="Ex. Sophie Martin">
+            </div>
+
+            <div class="field">
+              <label for="clientEmailInput">Email du contact</label>
+              <input id="clientEmailInput" name="contactEmail" type="email" placeholder="Ex. sophie.martin@entreprise.com">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" onclick="closeClientModal()">Annuler</button>
+          <button id="saveClientBtn" class="btn btn-primary" type="submit">Créer le dossier client</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="header.js"></script>
 
   <script>
@@ -398,6 +575,12 @@
     document.addEventListener("DOMContentLoaded", async () => {
       protectPartnerPage();
       await loadPartnerClients();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if(event.key === "Escape"){
+        closeClientModal();
+      }
     });
 
     function getToken(){
@@ -599,14 +782,53 @@
       renderClients(filtered);
     }
 
-    async function openNewClient(){
-      const name = prompt("Nom du client final :");
-      if(!name) return;
+    function openNewClient(){
+      const modal = document.getElementById("clientModal");
+      const form = document.getElementById("clientForm");
+      const error = document.getElementById("clientModalError");
 
-      const contactName = prompt("Nom du contact principal :") || "";
-      const contactEmail = prompt("Email du contact principal :") || "";
+      form.reset();
+      error.classList.remove("show");
+      error.textContent = "";
+
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+
+      setTimeout(() => {
+        document.getElementById("clientNameInput").focus();
+      }, 50);
+    }
+
+    function closeClientModal(){
+      const modal = document.getElementById("clientModal");
+      if(!modal) return;
+
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    async function submitNewClient(event){
+      event.preventDefault();
+
+      const name = document.getElementById("clientNameInput").value.trim();
+      const contactName = document.getElementById("clientContactInput").value.trim();
+      const contactEmail = document.getElementById("clientEmailInput").value.trim();
+      const error = document.getElementById("clientModalError");
+      const saveBtn = document.getElementById("saveClientBtn");
+
+      error.classList.remove("show");
+      error.textContent = "";
+
+      if(!name){
+        error.textContent = "Le nom du client est obligatoire.";
+        error.classList.add("show");
+        return;
+      }
 
       try{
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Création…";
+
         const token = getToken();
 
         const response = await fetch(`${API_URL}/api/partner/clients`, {
@@ -628,10 +850,16 @@
           throw new Error(data.error || "Erreur création client");
         }
 
+        closeClientModal();
         await loadPartnerClients();
+
       } catch(err){
         console.error("Erreur création client", err);
-        alert("Le client n’a pas pu être créé. Vérifiez votre connexion ou votre rôle partenaire.");
+        error.textContent = "Le client n’a pas pu être créé. Vérifiez votre connexion ou votre rôle partenaire.";
+        error.classList.add("show");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Créer le dossier client";
       }
     }
 
