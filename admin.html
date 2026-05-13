@@ -9,17 +9,56 @@
 <style>
 *{box-sizing:border-box}
 body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:100vh}
-.admin-page{padding:24px;max-width:1380px;margin:0 auto}
+.admin-page{padding:24px;max-width:1440px;margin:0 auto}
 .admin-hero{background:linear-gradient(135deg,#0d4c72,#123d59);color:#fff;border-radius:28px;padding:28px;margin:18px 0 22px;box-shadow:0 18px 45px rgba(13,76,114,.22);display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
-.admin-hero h1{font-size:32px;margin:0 0 8px}.admin-hero p{opacity:.86;line-height:1.45;max-width:760px}.admin-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.admin-btn{border:0;border-radius:14px;padding:11px 15px;font-family:'Asap',sans-serif;font-weight:800;cursor:pointer}.admin-btn.primary{background:#fff;color:#0d4c72}.admin-btn.secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.24)}
-.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.kpi-card{background:#fff;border:1px solid #dfe8ef;border-radius:22px;padding:18px;box-shadow:0 12px 30px rgba(13,76,114,.07)}.kpi-label{font-size:13px;color:#6c7f90;margin-bottom:8px}.kpi-value{font-size:31px;font-weight:900;color:#0d4c72}.kpi-note{font-size:12px;color:#7d8c99;margin-top:5px}
-.admin-layout{display:grid;grid-template-columns:240px 1fr;gap:18px}.admin-side{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:14px;height:max-content;position:sticky;top:78px;box-shadow:0 12px 30px rgba(13,76,114,.06)}.side-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;color:#0d4c72;font-weight:800;text-decoration:none;cursor:pointer}.side-link:hover,.side-link.active{background:#eaf3f8}.side-small{font-size:12px;color:#758898;padding:12px;line-height:1.45}
-.admin-section{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 12px 30px rgba(13,76,114,.06)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{font-size:21px;color:#0d4c72;margin:0}.section-tools{display:flex;gap:10px;flex-wrap:wrap}.admin-input,.admin-select{border:1px solid #d5e1e9;border-radius:13px;padding:10px 12px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;min-width:210px}.table-wrap{overflow-x:auto;border-radius:16px;border:1px solid #e7edf2}table{width:100%;border-collapse:collapse;min-width:900px}th{text-align:left;background:#f6f9fb;color:#6a7d8e;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:12px;border-bottom:1px solid #e5edf3}td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-align:top}.cell-title{font-weight:900;color:#153b5b}.muted{color:#758898;font-size:13px}.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap}.badge-admin{background:#e7f1f7;color:#0d4c72}.badge-client{background:#ecf8ee;color:#2c7a43}.badge-partner{background:#fff2d8;color:#996700}.badge-sent{background:#e6f7ef;color:#20784b}.badge-draft{background:#fff2d8;color:#996700}.badge-status{background:#edf2f7;color:#506477}.empty,.loading{padding:22px;text-align:center;color:#718497}.error{display:none;background:#fff0f0;color:#9d2b2b;border:1px solid #ffd1d1;padding:14px;border-radius:16px;margin:14px 0}.success{display:none;background:#eefbf3;color:#176239;border:1px solid #bee8cd;padding:14px;border-radius:16px;margin:14px 0}.role-select{min-width:125px;padding:8px;border:1px solid #d5e1e9;border-radius:10px;font-family:'Asap',sans-serif}.mini-btn{border:0;border-radius:10px;background:#0d4c72;color:#fff;font-weight:800;padding:8px 10px;font-family:'Asap',sans-serif;cursor:pointer;white-space:nowrap}.mini-btn:disabled{opacity:.45;cursor:not-allowed}.mini-btn.light{background:#eaf3f8;color:#0d4c72}.mini-btn.danger{background:#fff0f0;color:#a32b2b;border:1px solid #ffd1d1}.notice{background:#eef6fb;border:1px solid #d7e8f1;color:#244b63;border-radius:16px;padding:13px 15px;margin-bottom:14px;line-height:1.45}.admin-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;padding:14px;border:1px solid #e2ebf2;border-radius:18px;background:#fbfdfe}.admin-form .admin-input,.admin-form .admin-select{min-width:0;width:100%}.form-actions{display:flex;gap:8px;align-items:center;grid-column:3;justify-content:flex-start}.form-msg{font-size:13px;color:#60758a;margin:-4px 0 14px}.actions-cell{display:flex;gap:8px;flex-wrap:wrap}.password-wrap{position:relative;width:100%}.password-wrap .admin-input{padding-right:46px}.eye-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#0d4c72;font-size:18px;cursor:pointer;padding:6px;border-radius:10px;line-height:1}.eye-btn:hover{background:#eaf3f8}.warning-text{color:#9d2b2b;font-size:12px;margin-top:5px}
+.admin-hero h1{font-size:32px;margin:0 0 8px}.admin-hero p{opacity:.86;line-height:1.45;max-width:760px}
+.admin-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.admin-btn{border:0;border-radius:14px;padding:11px 15px;font-family:'Asap',sans-serif;font-weight:800;cursor:pointer}
+.admin-btn.primary{background:#fff;color:#0d4c72}.admin-btn.secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.24)}
+.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.kpi-card{background:#fff;border:1px solid #dfe8ef;border-radius:22px;padding:18px;box-shadow:0 12px 30px rgba(13,76,114,.07)}
+.kpi-label{font-size:13px;color:#6c7f90;margin-bottom:8px}.kpi-value{font-size:31px;font-weight:900;color:#0d4c72}.kpi-note{font-size:12px;color:#7d8c99;margin-top:5px}
+.admin-layout{display:grid;grid-template-columns:240px 1fr;gap:18px}
+.admin-side{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:14px;height:max-content;position:sticky;top:78px;box-shadow:0 12px 30px rgba(13,76,114,.06)}
+.side-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;color:#0d4c72;font-weight:800;text-decoration:none;cursor:pointer}
+.side-link:hover,.side-link.active{background:#eaf3f8}.side-small{font-size:12px;color:#758898;padding:12px;line-height:1.45}
+.admin-section{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 12px 30px rgba(13,76,114,.06)}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{font-size:21px;color:#0d4c72;margin:0}
+.section-tools{display:flex;gap:10px;flex-wrap:wrap}
+.admin-input,.admin-select{border:1px solid #d5e1e9;border-radius:13px;padding:10px 12px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;min-width:210px}
+.table-wrap{overflow-x:auto;border-radius:16px;border:1px solid #e7edf2}
+table{width:100%;border-collapse:collapse;min-width:1150px}
+th{text-align:left;background:#f6f9fb;color:#6a7d8e;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:12px;border-bottom:1px solid #e5edf3}
+td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-align:top}
+.cell-title{font-weight:900;color:#153b5b}.muted{color:#758898;font-size:13px}
+.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap}
+.badge-admin{background:#e7f1f7;color:#0d4c72}.badge-client{background:#ecf8ee;color:#2c7a43}.badge-partner{background:#fff2d8;color:#996700}
+.badge-sent{background:#e6f7ef;color:#20784b}.badge-draft{background:#fff2d8;color:#996700}.badge-status{background:#edf2f7;color:#506477}
+.empty,.loading{padding:22px;text-align:center;color:#718497}
+.error{display:none;background:#fff0f0;color:#9d2b2b;border:1px solid #ffd1d1;padding:14px;border-radius:16px;margin:14px 0}
+.success{display:none;background:#eefbf3;color:#176239;border:1px solid #bee8cd;padding:14px;border-radius:16px;margin:14px 0}
+.role-select{min-width:125px;padding:8px;border:1px solid #d5e1e9;border-radius:10px;font-family:'Asap',sans-serif}
+.mini-btn{border:0;border-radius:10px;background:#0d4c72;color:#fff;font-weight:800;padding:8px 10px;font-family:'Asap',sans-serif;cursor:pointer;white-space:nowrap}
+.mini-btn:disabled{opacity:.45;cursor:not-allowed}.mini-btn.light{background:#eaf3f8;color:#0d4c72}.mini-btn.danger{background:#fff0f0;color:#a32b2b;border:1px solid #ffd1d1}
+.notice{background:#eef6fb;border:1px solid #d7e8f1;color:#244b63;border-radius:16px;padding:13px 15px;margin-bottom:14px;line-height:1.45}
+.admin-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;padding:14px;border:1px solid #e2ebf2;border-radius:18px;background:#fbfdfe}
+.admin-form .admin-input,.admin-form .admin-select{min-width:0;width:100%}
+.form-actions{display:flex;gap:8px;align-items:center;grid-column:3;justify-content:flex-start}
+.form-msg{font-size:13px;color:#60758a;margin:-4px 0 14px}
+.actions-cell{display:flex;gap:8px;flex-wrap:wrap}
+.password-wrap{position:relative;width:100%}.password-wrap .admin-input{padding-right:46px}
+.eye-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#0d4c72;font-size:18px;cursor:pointer;padding:6px;border-radius:10px;line-height:1}
+.eye-btn:hover{background:#eaf3f8}.warning-text{color:#9d2b2b;font-size:12px;margin-top:5px}
+.quota-box{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:190px}
+.quota-box input{width:100%;border:1px solid #d5e1e9;border-radius:10px;padding:7px 8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff}
+.quota-rest{grid-column:1/-1;font-size:12px;color:#0d4c72;font-weight:900;background:#eef6fb;border-radius:10px;padding:7px 8px}
+.pack-select{width:150px;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif}
 @media(max-width:1050px){.admin-form{grid-template-columns:1fr 1fr}.form-actions{grid-column:1 / -1}.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-layout{grid-template-columns:1fr}.admin-side{position:relative;top:auto;display:flex;overflow-x:auto}.side-link{white-space:nowrap}.admin-hero{flex-direction:column}.admin-actions{justify-content:flex-start}}
 html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hidden}.table-wrap{max-width:100%;overflow-x:auto}
 @media(max-width:620px){.admin-form{grid-template-columns:1fr}.form-actions{grid-column:1}.admin-page{padding:14px}.admin-grid{grid-template-columns:1fr}.admin-hero{padding:22px;border-radius:22px}.admin-hero h1{font-size:26px}.section-head{flex-direction:column;align-items:flex-start}.admin-input,.admin-select{width:100%;min-width:0}}
 </style>
 </head>
+
 <body>
 <div id="header"></div>
 <script src="header.js"></script>
@@ -28,7 +67,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
   <section class="admin-hero">
     <div>
       <h1>Espace admin Into The Shift</h1>
-      <p>Suivi des utilisateurs, clients, projets, autodiags, packs choisis et configurations transmises avant intégration dans le moteur ME&YOUTOO.</p>
+      <p>Suivi des utilisateurs, partenaires, clients finaux, projets, quotas de passations et configurations transmises avant intégration dans le moteur ME&YOUTOO.</p>
     </div>
     <div class="admin-actions">
       <button class="admin-btn secondary" onclick="window.location.href='dashboard.html'">Dashboard</button>
@@ -41,9 +80,9 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
 
   <section class="admin-grid" id="overview">
     <div class="kpi-card"><div class="kpi-label">Utilisateurs</div><div id="kpiUsers" class="kpi-value">—</div><div class="kpi-note">Tous comptes confondus</div></div>
-    <div class="kpi-card"><div class="kpi-label">Clients</div><div id="kpiClients" class="kpi-value">—</div><div class="kpi-note">Rôle client</div></div>
+    <div class="kpi-card"><div class="kpi-label">Partenaires</div><div id="kpiPartners" class="kpi-value">—</div><div class="kpi-note">Rôle partner</div></div>
+    <div class="kpi-card"><div class="kpi-label">Clients finaux</div><div id="kpiOrganizations" class="kpi-value">—</div><div class="kpi-note">Dossiers clients</div></div>
     <div class="kpi-card"><div class="kpi-label">Projets / AD</div><div id="kpiProjects" class="kpi-value">—</div><div class="kpi-note">Configurations créées</div></div>
-    <div class="kpi-card"><div class="kpi-label">Configs transmises</div><div id="kpiSent" class="kpi-value">—</div><div class="kpi-note">À relire / intégrer</div></div>
   </section>
 
   <div class="admin-layout">
@@ -51,16 +90,15 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
       <a class="side-link active" onclick="scrollToSection('overview')">Vue globale</a>
       <a class="side-link" onclick="scrollToSection('create-account')">Créer un compte</a>
       <a class="side-link" onclick="scrollToSection('clients')">Comptes</a>
+      <a class="side-link" onclick="scrollToSection('final-clients')">Clients finaux</a>
       <a class="side-link" onclick="scrollToSection('projects')">Autodiags</a>
-      <div class="side-small">La publication finale reste gérée par Into The Shift après validation.</div>
+      <div class="side-small">Les passations sont renseignées manuellement dans Shift Studio. La passation réelle reste gérée dans ME&YOUTOO.</div>
     </aside>
 
     <div>
       <section id="create-account" class="admin-section">
-        <div class="section-head">
-          <h2>Créer un compte</h2>
-        </div>
-        <div class="notice">Tu peux créer un compte directement depuis l’espace admin et lui attribuer un rôle. Par défaut, utilise <strong>client</strong>. Le rôle <strong>partner</strong> est prêt pour les cabinets / experts, même si toutes les pages partenaires ne sont pas encore créées.</div>
+        <div class="section-head"><h2>Créer un compte</h2></div>
+        <div class="notice">Le rôle <strong>partner</strong> correspond à un organisme / cabinet qui crée des AD pour ses propres clients. Les quotas de passations sont ensuite renseignés dans le tableau des comptes.</div>
         <form class="admin-form" autocomplete="off" onsubmit="event.preventDefault(); createUser();">
           <input id="newFirstname" name="new-firstname" class="admin-input" placeholder="Prénom" autocomplete="off">
           <input id="newLastname" name="new-lastname" class="admin-input" placeholder="Nom" autocomplete="off">
@@ -87,8 +125,8 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
         <div class="section-head">
           <h2>Gestion des comptes</h2>
           <div class="section-tools">
-            <input id="clientSearch" name="its-admin-client-search-empty" class="admin-input" placeholder="Rechercher email, nom, entreprise..." autocomplete="off" autocapitalize="off" spellcheck="false" oninput="renderClients()">
-            <select id="roleFilter" name="its-admin-role-filter" class="admin-select" autocomplete="off" onchange="renderClients()">
+            <input id="clientSearch" class="admin-input" placeholder="Rechercher email, nom, entreprise..." autocomplete="off" oninput="renderClients()">
+            <select id="roleFilter" class="admin-select" autocomplete="off" onchange="renderClients()">
               <option value="">Tous les rôles</option>
               <option value="admin">Admin</option>
               <option value="client">Client</option>
@@ -97,19 +135,66 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
           </div>
         </div>
         <div class="notice">
-          Tu peux modifier le rôle d’un compte à tout moment. Attention : le rôle admin donne accès à l’ensemble des comptes, projets et configurations. La suppression est définitive côté base.
+          Pour un <strong>partner</strong>, renseigne ici les passations achetées et utilisées. Les passations restantes sont calculées automatiquement.
         </div>
         <div id="clientsLoading" class="loading">Chargement des comptes...</div>
-        <div class="table-wrap"><table id="clientsTable" style="display:none"><thead><tr><th>Compte</th><th>Email</th><th>Entreprise</th><th>Rôle actuel</th><th>Changer le rôle</th><th>Date création</th><th>Projets</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="clientsBody"></tbody></table></div>
+        <div class="table-wrap">
+          <table id="clientsTable" style="display:none">
+            <thead>
+              <tr>
+                <th>Compte</th>
+                <th>Email</th>
+                <th>Entreprise</th>
+                <th>Rôle</th>
+                <th>Changer rôle</th>
+                <th>Passations compte</th>
+                <th>Projets</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsBody"></tbody>
+          </table>
+        </div>
         <div id="clientsEmpty" class="empty" style="display:none">Aucun compte trouvé.</div>
+      </section>
+
+      <section id="final-clients" class="admin-section">
+        <div class="section-head">
+          <h2>Clients finaux</h2>
+          <div class="section-tools">
+            <input id="orgSearch" class="admin-input" placeholder="Rechercher client final, partenaire..." autocomplete="off" oninput="renderOrganizations()">
+          </div>
+        </div>
+        <div class="notice">
+          Ici tu peux renseigner le pack choisi et les passations d’un client final rattaché à un partenaire. C’est utile si tu veux suivre le quota au niveau du client final plutôt qu’au niveau du compte partner.
+        </div>
+        <div id="orgsLoading" class="loading">Chargement des clients finaux...</div>
+        <div class="table-wrap">
+          <table id="orgsTable" style="display:none">
+            <thead>
+              <tr>
+                <th>Client final</th>
+                <th>Partenaire / créateur</th>
+                <th>Contact</th>
+                <th>Pack choisi</th>
+                <th>Passations client final</th>
+                <th>AD</th>
+                <th>Date création</th>
+              </tr>
+            </thead>
+            <tbody id="orgsBody"></tbody>
+          </table>
+        </div>
+        <div id="orgsEmpty" class="empty" style="display:none">Aucun client final trouvé.</div>
       </section>
 
       <section id="projects" class="admin-section">
         <div class="section-head">
           <h2>Projets / autodiags</h2>
           <div class="section-tools">
-            <input id="projectSearch" name="its-admin-project-search-empty" class="admin-input" placeholder="Rechercher titre, client, statut..." autocomplete="off" autocapitalize="off" spellcheck="false" oninput="renderProjects()">
-            <select id="statusFilter" name="its-admin-status-filter" class="admin-select" autocomplete="off" onchange="renderProjects()">
+            <input id="projectSearch" class="admin-input" placeholder="Rechercher titre, client, statut..." autocomplete="off" oninput="renderProjects()">
+            <select id="statusFilter" class="admin-select" autocomplete="off" onchange="renderProjects()">
               <option value="">Tous les statuts</option>
               <option value="brouillon">Brouillon</option>
               <option value="transmis">Transmis</option>
@@ -119,7 +204,22 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
           </div>
         </div>
         <div id="projectsLoading" class="loading">Chargement des projets...</div>
-        <div class="table-wrap"><table id="projectsTable" style="display:none"><thead><tr><th>Autodiag</th><th>Client</th><th>Pack choisi</th><th>Statut</th><th>Config transmise</th><th>Date création</th><th>Dernière mise à jour</th></tr></thead><tbody id="projectsBody"></tbody></table></div>
+        <div class="table-wrap">
+          <table id="projectsTable" style="display:none">
+            <thead>
+              <tr>
+                <th>Autodiag</th>
+                <th>Client</th>
+                <th>Pack / quota client</th>
+                <th>Statut</th>
+                <th>Config transmise</th>
+                <th>Date création</th>
+                <th>Dernière mise à jour</th>
+              </tr>
+            </thead>
+            <tbody id="projectsBody"></tbody>
+          </table>
+        </div>
         <div id="projectsEmpty" class="empty" style="display:none">Aucun projet trouvé.</div>
       </section>
     </div>
@@ -128,7 +228,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
 
 <script>
 const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
-let adminState = { summary:{}, clients:[], projects:[] };
+let adminState = { summary:{}, clients:[], projects:[], organizations:[] };
 
 function getToken(){return localStorage.getItem("its_token") || localStorage.getItem("token") || localStorage.getItem("auth_token") || "";}
 function decodeJwt(token){try{const payload=token.split(".")[1];return JSON.parse(atob(payload.replace(/-/g,"+").replace(/_/g,"/")));}catch(e){return null;}}
@@ -158,14 +258,17 @@ async function handleApiError(res,path){
     return null;
   }
   let msg=path+" — "+res.status;
-  try{const e=await res.json();if(e?.error)msg=e.error;if(e?.message)msg=e.message;}catch(_){ }
+  try{const e=await res.json();if(e?.error)msg=e.error;if(e?.message)msg=e.message;}catch(_){}
   throw new Error(msg);
 }
 async function apiGet(path){const res=await fetch(API_BASE_URL+path,{headers:{"Content-Type":"application/json","Authorization":"Bearer "+getToken()}});if(!res.ok)return await handleApiError(res,path);return await res.json();}
 async function apiPatch(path, body){const res=await fetch(API_BASE_URL+path,{method:"PATCH",headers:{"Content-Type":"application/json","Authorization":"Bearer "+getToken()},body:JSON.stringify(body)});if(!res.ok)return await handleApiError(res,path);return await res.json();}
 async function apiPost(path, body){const res=await fetch(API_BASE_URL+path,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+getToken()},body:JSON.stringify(body)});if(!res.ok)return await handleApiError(res,path);return await res.json();}
 async function apiDelete(path){const res=await fetch(API_BASE_URL+path,{method:"DELETE",headers:{"Content-Type":"application/json","Authorization":"Bearer "+getToken()}});if(!res.ok)return await handleApiError(res,path);return await res.json().catch(()=>({ok:true}));}
+
 function val(obj,keys,fallback="—"){for(const key of keys){if(obj&&obj[key]!==undefined&&obj[key]!==null&&obj[key]!=="")return obj[key];}return fallback;}
+function num(v){return Number(v || 0);}
+function formatNumber(v){return num(v).toLocaleString("fr-FR");}
 function formatDate(value){if(!value)return"—";const d=new Date(value);if(isNaN(d.getTime()))return value;return d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});}
 function escapeHtml(str){return String(str??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 function escapeAttr(str){return escapeHtml(str).replace(/`/g,"&#096;");}
@@ -173,13 +276,11 @@ function roleBadge(role){const r=String(role||"client").toLowerCase();if(r==="ad
 function statusBadge(status){const s=String(status||"brouillon").toLowerCase();if(s.includes("transmis")||s.includes("sent")||s.includes("submitted"))return`<span class="badge badge-sent">${escapeHtml(status||"transmis")}</span>`;if(s.includes("brouillon")||s.includes("draft"))return`<span class="badge badge-draft">${escapeHtml(status||"brouillon")}</span>`;return`<span class="badge badge-status">${escapeHtml(status||"—")}</span>`;}
 function isConfigSent(project){const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);const status=String(val(project,["status","statut"],"")).toLowerCase();return sent===true||sent==="true"||status.includes("transmis")||status.includes("submitted");}
 function normalizeArray(data,keys){if(Array.isArray(data))return data;for(const k of keys){if(Array.isArray(data?.[k]))return data[k];}return[];}
+
 function resetAdminFilters(){
-  const clientSearch=document.getElementById("clientSearch");
-  const projectSearch=document.getElementById("projectSearch");
+  ["clientSearch","projectSearch","orgSearch"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   const roleFilter=document.getElementById("roleFilter");
   const statusFilter=document.getElementById("statusFilter");
-  if(clientSearch)clientSearch.value="";
-  if(projectSearch)projectSearch.value="";
   if(roleFilter)roleFilter.value="";
   if(statusFilter)statusFilter.value="";
 }
@@ -189,21 +290,42 @@ async function loadAdminData(){
   resetAdminFilters();
   document.getElementById("clientsLoading").style.display="block";
   document.getElementById("projectsLoading").style.display="block";
+  document.getElementById("orgsLoading").style.display="block";
+
   try{
-    const [summary,clients,projects]=await Promise.all([apiGet("/api/admin/summary"),apiGet("/api/admin/clients"),apiGet("/api/admin/projects")]);
+    const [summary,clients,projects,organizations]=await Promise.all([
+      apiGet("/api/admin/summary"),
+      apiGet("/api/admin/clients"),
+      apiGet("/api/admin/projects"),
+      apiGet("/api/admin/organizations")
+    ]);
+
     adminState.summary=summary||{};
     adminState.clients=normalizeArray(clients,["clients","users","data"]);
     adminState.projects=normalizeArray(projects,["projects","autodiags","data"]);
-    renderKpis();renderClients();renderProjects();
+    adminState.organizations=normalizeArray(organizations,["organizations","clients","data"]);
+
+    renderKpis();
+    renderClients();
+    renderOrganizations();
+    renderProjects();
   }catch(err){
     console.error(err);
     showError("Impossible de charger l’espace admin. Détail : "+err.message);
   }finally{
     document.getElementById("clientsLoading").style.display="none";
     document.getElementById("projectsLoading").style.display="none";
+    document.getElementById("orgsLoading").style.display="none";
   }
 }
-function renderKpis(){document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);document.getElementById("kpiClients").textContent=val(adminState.summary,["clients","clientsCount","totalClients"],adminState.clients.filter(c=>String(val(c,["role"],"client")).toLowerCase()==="client").length);document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);document.getElementById("kpiSent").textContent=val(adminState.summary,["submitted","sentConfigs","configsTransmises"],adminState.projects.filter(isConfigSent).length);}
+
+function renderKpis(){
+  document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
+  document.getElementById("kpiPartners").textContent=val(adminState.summary,["partnersCount"],adminState.clients.filter(c=>String(val(c,["role"],"")).toLowerCase()==="partner").length);
+  document.getElementById("kpiOrganizations").textContent=val(adminState.summary,["organizationsCount"],adminState.organizations.length);
+  document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);
+}
+
 function renderClients(){
   const q=document.getElementById("clientSearch").value.toLowerCase().trim();
   const rf=document.getElementById("roleFilter").value;
@@ -213,35 +335,191 @@ function renderClients(){
     const text=JSON.stringify(c).toLowerCase();
     return(!q||text.includes(q))&&(!rf||role===rf);
   });
+
   const body=document.getElementById("clientsBody");
   body.innerHTML=rows.map(c=>{
     const id=val(c,["id","user_id"],"");
-    const name=val(c,["name","full_name","firstname","first_name"],"—");
+    const name=(val(c,["firstName","first_name"],"") + " " + val(c,["lastName","last_name"],"")).trim() || val(c,["name","full_name"],"—");
     const email=val(c,["email"],"—");
-    const company=val(c,["company","company_name","organization","entreprise"],"—");
+    const company=val(c,["companyName","company_name","company","organization","entreprise"],"—");
     const role=String(val(c,["role"],"client")).toLowerCase();
-    const created=formatDate(val(c,["created_at","createdAt","date_creation"],""));
     const status=val(c,["status","statut"],"actif");
-    const projectCount=adminState.projects.filter(p=>String(val(p,["user_id","client_id","owner_id"],""))===String(id)||String(val(p,["client_email","email","user_email"],"")).toLowerCase()===String(email).toLowerCase()).length;
+    const projectCount=val(c,["projectsCount","projects_count"],adminState.projects.filter(p=>String(val(p,["user_id","client_id","owner_id"],""))===String(id)).length);
     const disableDelete=String(id)===currentUserId || role==="admin";
     const deleteTitle=String(id)===currentUserId ? "Tu ne peux pas supprimer ton propre compte" : role==="admin" ? "Par sécurité, un compte admin ne se supprime pas depuis cette interface" : "Supprimer ce compte";
+    const quota=num(val(c,["passationsQuota","passations_quota"],0));
+    const used=num(val(c,["passationsUsed","passations_used"],0));
+    const remaining=Math.max(0, quota-used);
+
     return`<tr>
       <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
       <td>${escapeHtml(email)}</td>
       <td>${escapeHtml(company)}</td>
       <td id="role-badge-${escapeAttr(id)}">${roleBadge(role)}</td>
-      <td><select class="role-select" id="role-${escapeAttr(id)}"><option value="client" ${role==="client"?"selected":""}>client</option><option value="admin" ${role==="admin"?"selected":""}>admin</option><option value="partner" ${role==="partner"?"selected":""}>partner</option></select> <button class="mini-btn" onclick="changeRole('${escapeAttr(id)}')">OK</button></td>
-      <td>${created}</td>
+      <td>
+        <select class="role-select" id="role-${escapeAttr(id)}">
+          <option value="client" ${role==="client"?"selected":""}>client</option>
+          <option value="admin" ${role==="admin"?"selected":""}>admin</option>
+          <option value="partner" ${role==="partner"?"selected":""}>partner</option>
+        </select>
+        <button class="mini-btn" onclick="changeRole('${escapeAttr(id)}')">OK</button>
+      </td>
+      <td>
+        <div class="quota-box">
+          <input id="quota-${escapeAttr(id)}" type="number" min="0" value="${quota}" placeholder="Achetées">
+          <input id="used-${escapeAttr(id)}" type="number" min="0" value="${used}" placeholder="Utilisées">
+          <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
+          <button class="mini-btn light" onclick="saveUserPassations('${escapeAttr(id)}')">Enregistrer</button>
+        </div>
+      </td>
       <td>${projectCount}</td>
       <td>${statusBadge(status)}</td>
-      <td><div class="actions-cell"><button class="mini-btn danger" title="${escapeAttr(deleteTitle)}" ${disableDelete?"disabled":""} onclick="deleteUser('${escapeAttr(id)}','${escapeAttr(email)}')">Supprimer</button></div>${disableDelete?'<div class="warning-text">Protégé</div>':''}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="mini-btn danger" title="${escapeAttr(deleteTitle)}" ${disableDelete?"disabled":""} onclick="deleteUser('${escapeAttr(id)}','${escapeAttr(email)}')">Supprimer</button>
+        </div>
+        ${disableDelete?'<div class="warning-text">Protégé</div>':''}
+      </td>
     </tr>`;
   }).join("");
+
   document.getElementById("clientsTable").style.display=rows.length?"table":"none";
   document.getElementById("clientsEmpty").style.display=rows.length?"none":"block";
 }
+
+function renderOrganizations(){
+  const q=document.getElementById("orgSearch").value.toLowerCase().trim();
+  const rows=adminState.organizations.filter(o=>{
+    const text=JSON.stringify(o).toLowerCase();
+    return !q || text.includes(q);
+  });
+
+  const body=document.getElementById("orgsBody");
+  body.innerHTML=rows.map(o=>{
+    const id=val(o,["id"],"");
+    const name=val(o,["name"],"—");
+    const owner=val(o,["ownerName","ownerEmail"],"—");
+    const contactName=val(o,["contactName","contact_name"],"—");
+    const contactEmail=val(o,["contactEmail","contact_email"],"");
+    const pack=val(o,["passationsPack","passations_pack"],"");
+    const quota=num(val(o,["passationsQuota","passations_quota"],0));
+    const used=num(val(o,["passationsUsed","passations_used"],0));
+    const remaining=Math.max(0, quota-used);
+    const projectsCount=val(o,["projectsCount","projects_count"],0);
+    const created=formatDate(val(o,["createdAt","created_at"],""));
+
+    return`<tr>
+      <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
+      <td>${escapeHtml(owner)}</td>
+      <td><div>${escapeHtml(contactName)}</div><div class="muted">${escapeHtml(contactEmail)}</div></td>
+      <td>
+        <select id="org-pack-${escapeAttr(id)}" class="pack-select">
+          <option value="" ${!pack?"selected":""}>Non renseigné</option>
+          <option value="200" ${pack==="200"?"selected":""}>200</option>
+          <option value="500" ${pack==="500"?"selected":""}>500</option>
+          <option value="1200" ${pack==="1200"?"selected":""}>1 200</option>
+          <option value="2000" ${pack==="2000"?"selected":""}>2 000</option>
+          <option value="3000" ${pack==="3000"?"selected":""}>3 000</option>
+          <option value="5000" ${pack==="5000"?"selected":""}>5 000</option>
+          <option value="7000" ${pack==="7000"?"selected":""}>7 000</option>
+          <option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option>
+        </select>
+      </td>
+      <td>
+        <div class="quota-box">
+          <input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}" placeholder="Achetées">
+          <input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}" placeholder="Utilisées">
+          <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
+          <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer</button>
+        </div>
+      </td>
+      <td>${projectsCount}</td>
+      <td>${created}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("orgsTable").style.display=rows.length?"table":"none";
+  document.getElementById("orgsEmpty").style.display=rows.length?"none":"block";
+}
+
 function getProjectConfig(p){let cfg=val(p,["config","configuration","payload","data"],null);if(typeof cfg==="string"){try{return JSON.parse(cfg);}catch(e){return {};}}return cfg&&typeof cfg==="object"?cfg:{};}
-function renderProjects(){const q=document.getElementById("projectSearch").value.toLowerCase().trim();const sf=document.getElementById("statusFilter").value.toLowerCase();const rows=adminState.projects.filter(p=>{const status=String(val(p,["status","statut"],"")).toLowerCase();const text=JSON.stringify(p).toLowerCase();return(!q||text.includes(q))&&(!sf||status.includes(sf));});const body=document.getElementById("projectsBody");body.innerHTML=rows.map(p=>{const cfg=getProjectConfig(p);const title=val(p,["title","project_title","autodiag_title","name","project_name"],val(cfg,["title","titre","autodiagTitle","diagnosticTitle","respondentTitle"],"Autodiag sans titre"));const client=val(p,["client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));const pack=val(p,["pack","pack_choisi","selected_pack","passations_pack"],val(cfg,["pack","packChoisi","selectedPack","passationsPack"],"—"));const status=val(p,["status","statut"],"brouillon");const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));const sent=isConfigSent(p);return`<tr><td><div class="cell-title">${escapeHtml(title)}</div></td><td>${escapeHtml(client)}</td><td>${escapeHtml(pack)}</td><td>${statusBadge(status)}</td><td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td><td>${created}</td><td>${updated}</td></tr>`;}).join("");document.getElementById("projectsTable").style.display=rows.length?"table":"none";document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";}
+
+function renderProjects(){
+  const q=document.getElementById("projectSearch").value.toLowerCase().trim();
+  const sf=document.getElementById("statusFilter").value.toLowerCase();
+  const rows=adminState.projects.filter(p=>{
+    const status=String(val(p,["status","statut"],"")).toLowerCase();
+    const text=JSON.stringify(p).toLowerCase();
+    return(!q||text.includes(q))&&(!sf||status.includes(sf));
+  });
+
+  const body=document.getElementById("projectsBody");
+  body.innerHTML=rows.map(p=>{
+    const cfg=getProjectConfig(p);
+    const title=val(p,["title","project_title","autodiag_title","name","project_name"],val(cfg,["title","titre","autodiagTitle","diagnosticTitle","respondentTitle"],"Autodiag sans titre"));
+    const client=val(p,["organizationName","clientName","client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));
+    const pack=val(p,["pack","organizationPassationsPack"],val(cfg,["pack","packChoisi","selectedPack","passationsPack"],"—"));
+    const qta=num(val(p,["organizationPassationsQuota"],0));
+    const used=num(val(p,["organizationPassationsUsed"],0));
+    const remaining=Math.max(0,qta-used);
+    const status=val(p,["status","statut"],"brouillon");
+    const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));
+    const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
+    const sent=isConfigSent(p);
+
+    return`<tr>
+      <td><div class="cell-title">${escapeHtml(title)}</div></td>
+      <td>${escapeHtml(client)}</td>
+      <td>
+        <div>${escapeHtml(pack || "—")}</div>
+        ${qta ? `<div class="muted">${formatNumber(used)} utilisées / ${formatNumber(qta)} achetées<br>${formatNumber(remaining)} restantes</div>` : `<div class="muted">Quota non renseigné</div>`}
+      </td>
+      <td>${statusBadge(status)}</td>
+      <td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td>
+      <td>${created}</td>
+      <td>${updated}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("projectsTable").style.display=rows.length?"table":"none";
+  document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";
+}
+
+async function saveUserPassations(userId){
+  const quota=document.getElementById("quota-"+String(userId))?.value || 0;
+  const used=document.getElementById("used-"+String(userId))?.value || 0;
+
+  try{
+    await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/passations`,{
+      passationsQuota:Number(quota||0),
+      passationsUsed:Number(used||0)
+    });
+    showSuccess("Passations du compte mises à jour.");
+    await loadAdminData();
+  }catch(err){
+    console.error(err);
+    showError("Mise à jour impossible. Détail : "+err.message);
+  }
+}
+
+async function saveOrganizationPassations(orgId){
+  const passationsPack=document.getElementById("org-pack-"+String(orgId))?.value || "";
+  const passationsQuota=document.getElementById("org-quota-"+String(orgId))?.value || 0;
+  const passationsUsed=document.getElementById("org-used-"+String(orgId))?.value || 0;
+
+  try{
+    await apiPatch(`/api/admin/organizations/${encodeURIComponent(orgId)}/passations`,{
+      passationsPack,
+      passationsQuota:Number(passationsQuota||0),
+      passationsUsed:Number(passationsUsed||0)
+    });
+    showSuccess("Pack et passations du client final mis à jour.");
+    await loadAdminData();
+  }catch(err){
+    console.error(err);
+    showError("Mise à jour client final impossible. Détail : "+err.message);
+  }
+}
 
 function toggleNewPasswordVisibility(){
   const input=document.getElementById("newPassword");
@@ -255,8 +533,46 @@ function toggleNewPasswordVisibility(){
     btn.setAttribute("title",hidden?"Masquer le mot de passe":"Afficher le mot de passe");
   }
 }
-function fillRandomPassword(){const pwd="Its!"+Math.random().toString(36).slice(2,10)+"7";document.getElementById("newPassword").value=pwd;document.getElementById("createMsg").textContent="Mot de passe temporaire généré : "+pwd;}
-async function createUser(){const payload={firstName:document.getElementById("newFirstname").value.trim(),lastName:document.getElementById("newLastname").value.trim(),email:document.getElementById("newEmail").value.trim(),companyName:document.getElementById("newCompany").value.trim(),role:document.getElementById("newRole").value,password:document.getElementById("newPassword").value};if(!payload.email||!payload.password){showError("Email et mot de passe obligatoire.");return;}try{const created=await apiPost("/api/admin/users",payload);const emailInfo=created?.emailSent?" L’email d’accès a bien été envoyé.":" Attention : l’email automatique n’a pas été confirmé, vérifie la configuration d’envoi.";document.getElementById("createMsg").textContent="Compte créé. Le client sera invité à choisir son propre mot de passe à la première connexion."+emailInfo;document.getElementById("newFirstname").value="";document.getElementById("newLastname").value="";document.getElementById("newEmail").value="";document.getElementById("newCompany").value="";document.getElementById("newPassword").value="";document.getElementById("newRole").value="client";showSuccess("Compte créé avec succès.");await loadAdminData();}catch(err){console.error(err);showError("Création impossible. Détail : "+err.message);}}
+
+function fillRandomPassword(){
+  const pwd="Its!"+Math.random().toString(36).slice(2,10)+"7";
+  document.getElementById("newPassword").value=pwd;
+  document.getElementById("createMsg").textContent="Mot de passe temporaire généré : "+pwd;
+}
+
+async function createUser(){
+  const payload={
+    firstName:document.getElementById("newFirstname").value.trim(),
+    lastName:document.getElementById("newLastname").value.trim(),
+    email:document.getElementById("newEmail").value.trim(),
+    companyName:document.getElementById("newCompany").value.trim(),
+    role:document.getElementById("newRole").value,
+    password:document.getElementById("newPassword").value
+  };
+
+  if(!payload.email||!payload.password){
+    showError("Email et mot de passe obligatoire.");
+    return;
+  }
+
+  try{
+    const created=await apiPost("/api/admin/users",payload);
+    const emailInfo=created?.emailSent?" L’email d’accès a bien été envoyé.":" Attention : l’email automatique n’a pas été confirmé, vérifie la configuration d’envoi.";
+    document.getElementById("createMsg").textContent="Compte créé. Le client sera invité à choisir son propre mot de passe à la première connexion."+emailInfo;
+    document.getElementById("newFirstname").value="";
+    document.getElementById("newLastname").value="";
+    document.getElementById("newEmail").value="";
+    document.getElementById("newCompany").value="";
+    document.getElementById("newPassword").value="";
+    document.getElementById("newRole").value="client";
+    showSuccess("Compte créé avec succès.");
+    await loadAdminData();
+  }catch(err){
+    console.error(err);
+    showError("Création impossible. Détail : "+err.message);
+  }
+}
+
 async function changeRole(userId){
   const select=document.getElementById("role-"+String(userId));
   const role=select?.value;
@@ -267,11 +583,7 @@ async function changeRole(userId){
 
   try{
     await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/role`,{role});
-
-    // Mise à jour immédiate et visible du badge, sans attendre le rechargement serveur.
     if(badgeCell)badgeCell.innerHTML=roleBadge(role);
-
-    // Mise à jour locale de l'état pour que le filtre, les KPI et les protections suivent aussi.
     adminState.clients=adminState.clients.map(c=>{
       const id=String(val(c,["id","user_id"],""));
       if(id===String(userId))return {...c,role};
@@ -281,19 +593,20 @@ async function changeRole(userId){
     renderClients();
     showSuccess("Rôle mis à jour.");
   }catch(err){
-    // Si l'API refuse la modification, on remet l'ancien affichage.
     if(badgeCell)badgeCell.innerHTML=roleBadge(previousRole);
     if(select)select.value=previousRole;
     console.error(err);
     showError("Changement de rôle impossible. Détail : "+err.message);
   }
 }
+
 async function deleteUser(userId,email){
   if(!userId)return;
   const currentUserId=String(decodeJwt(getToken())?.id||"");
   if(String(userId)===currentUserId){showError("Tu ne peux pas supprimer ton propre compte admin.");return;}
   const ok=confirm(`Supprimer définitivement le compte ${email || "sélectionné"} ?`);
   if(!ok)return;
+
   try{
     await apiDelete(`/api/admin/users/${encodeURIComponent(userId)}`);
     showSuccess("Compte supprimé.");
@@ -303,11 +616,13 @@ async function deleteUser(userId,email){
     showError("Suppression impossible. Détail : "+err.message);
   }
 }
+
 function showError(msg){hideSuccess();const box=document.getElementById("errorBox");box.textContent=msg;box.style.display="block";box.scrollIntoView({behavior:"smooth",block:"center"});}
 function hideError(){const box=document.getElementById("errorBox");box.style.display="none";box.textContent="";}
 function showSuccess(msg){hideError();const box=document.getElementById("successBox");box.textContent=msg;box.style.display="block";setTimeout(()=>hideSuccess(),3500);}
 function hideSuccess(){const box=document.getElementById("successBox");box.style.display="none";box.textContent="";}
 function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:"smooth",block:"start"});}
+
 document.addEventListener("DOMContentLoaded",()=>{
   resetAdminFilters();
   setTimeout(resetAdminFilters,250);
