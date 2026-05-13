@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espace partenaire — Into The Shift</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Asap',sans-serif;
+      background:#f4f7fb;
+      color:#17375d;
+    }
+
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:32px 20px 60px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg,#0d4c72,#1b7898);
+      color:#fff;
+      border-radius:28px;
+      padding:30px;
+      box-shadow:0 18px 40px rgba(13,76,114,.18);
+      margin-bottom:24px;
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:32px;
+      line-height:1.1;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:760px;
+      font-size:16px;
+      line-height:1.5;
+      opacity:.95;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+      margin-bottom:24px;
+    }
+
+    .stat{
+      background:#fff;
+      border:1px solid #e1e8f0;
+      border-radius:20px;
+      padding:18px;
+      box-shadow:0 10px 24px rgba(15,45,80,.06);
+    }
+
+    .stat strong{
+      display:block;
+      font-size:28px;
+      color:#0d4c72;
+      margin-bottom:4px;
+    }
+
+    .stat span{
+      font-size:14px;
+      color:#61738a;
+    }
+
+    .toolbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .toolbar h2{
+      margin:0;
+      font-size:24px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:11px 18px;
+      font-family:'Asap',sans-serif;
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .btn-primary{
+      background:#0d4c72;
+      color:#fff;
+      box-shadow:0 10px 22px rgba(13,76,114,.18);
+    }
+
+    .btn-secondary{
+      background:#fff;
+      color:#0d4c72;
+      border:1px solid #cbd9e7;
+    }
+
+    .filters{
+      display:grid;
+      grid-template-columns:1fr 220px;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .filters input,
+    .filters select{
+      width:100%;
+      border:1px solid #d8e2ec;
+      border-radius:16px;
+      padding:13px 14px;
+      font-family:'Asap',sans-serif;
+      font-size:15px;
+      background:#fff;
+      color:#17375d;
+    }
+
+    .clients-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
+    }
+
+    .client-card{
+      background:#fff;
+      border:1px solid #e1e8f0;
+      border-radius:24px;
+      padding:20px;
+      box-shadow:0 12px 28px rgba(15,45,80,.07);
+    }
+
+    .client-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .client-head h3{
+      margin:0;
+      font-size:21px;
+      color:#17375d;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      height:26px;
+      padding:0 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .badge-active{
+      background:#e9f8ef;
+      color:#207444;
+    }
+
+    .badge-draft{
+      background:#fff5da;
+      color:#8a6200;
+    }
+
+    .client-meta{
+      color:#61738a;
+      font-size:14px;
+      margin-bottom:16px;
+      line-height:1.5;
+    }
+
+    .mini-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .mini{
+      background:#f7fafd;
+      border:1px solid #e4edf5;
+      border-radius:16px;
+      padding:12px;
+    }
+
+    .mini strong{
+      display:block;
+      font-size:20px;
+      color:#0d4c72;
+    }
+
+    .mini span{
+      font-size:12px;
+      color:#61738a;
+    }
+
+    .ad-list{
+      border-top:1px solid #eef2f6;
+      padding-top:14px;
+      margin-top:10px;
+    }
+
+    .ad-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:10px 0;
+      border-bottom:1px solid #f0f3f7;
+    }
+
+    .ad-row:last-child{
+      border-bottom:none;
+    }
+
+    .ad-title{
+      font-weight:700;
+      color:#17375d;
+    }
+
+    .ad-sub{
+      font-size:13px;
+      color:#718197;
+      margin-top:2px;
+    }
+
+    .status{
+      font-size:12px;
+      font-weight:700;
+      border-radius:999px;
+      padding:6px 9px;
+      white-space:nowrap;
+    }
+
+    .status-live{
+      background:#e8f6ff;
+      color:#0d4c72;
+    }
+
+    .status-draft{
+      background:#fff5da;
+      color:#8a6200;
+    }
+
+    .card-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .small-btn{
+      border-radius:999px;
+      padding:9px 13px;
+      border:1px solid #d8e2ec;
+      background:#fff;
+      color:#0d4c72;
+      font-weight:700;
+      font-family:'Asap',sans-serif;
+      cursor:pointer;
+    }
+
+    .small-btn.main{
+      background:#0d4c72;
+      color:#fff;
+      border-color:#0d4c72;
+    }
+
+    .empty{
+      background:#fff;
+      border:1px dashed #cbd9e7;
+      border-radius:24px;
+      padding:28px;
+      text-align:center;
+      color:#61738a;
+      display:none;
+    }
+
+    @media(max-width:850px){
+      .stats,
+      .clients-grid,
+      .filters{
+        grid-template-columns:1fr;
+      }
+
+      .hero h1{
+        font-size:26px;
+      }
+
+      .mini-stats{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <main class="page">
+
+    <section class="hero">
+      <h1>Mon espace partenaire</h1>
+      <p>
+        Gérez vos clients, créez leurs autodiagnostics, suivez leurs campagnes et retrouvez leurs résultats dans un espace séparé par dossier client.
+      </p>
+    </section>
+
+    <section class="stats">
+      <div class="stat">
+        <strong id="stat-clients">3</strong>
+        <span>Clients suivis</span>
+      </div>
+      <div class="stat">
+        <strong id="stat-ads">7</strong>
+        <span>Autodiagnostics créés</span>
+      </div>
+      <div class="stat">
+        <strong id="stat-campaigns">4</strong>
+        <span>Campagnes actives</span>
+      </div>
+      <div class="stat">
+        <strong id="stat-results">2</strong>
+        <span>Restitutions à préparer</span>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <h2>Mes clients</h2>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="goToLibrary()">Créer un AD</button>
+        <button class="btn btn-primary" onclick="openNewClient()">+ Ajouter un client</button>
+      </div>
+    </section>
+
+    <section class="filters">
+      <input id="searchInput" type="search" placeholder="Rechercher un client, un AD, une campagne…" oninput="filterClients()">
+      <select id="statusFilter" onchange="filterClients()">
+        <option value="all">Tous les statuts</option>
+        <option value="active">Campagne active</option>
+        <option value="draft">Brouillon</option>
+      </select>
+    </section>
+
+    <section id="clientsGrid" class="clients-grid"></section>
+
+    <section id="emptyState" class="empty">
+      Aucun client ne correspond à votre recherche.
+    </section>
+
+  </main>
+
+  <script src="header.js"></script>
+
+  <script>
+    const API_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+
+    const demoClients = [
+      {
+        id: 1,
+        name: "Orange — Service RH",
+        contact: "Sophie Martin",
+        email: "sophie.martin@example.com",
+        status: "active",
+        ads: [
+          { title: "Management inclusif", campaign: "Campagne mai 2026", status: "active" },
+          { title: "QVT et risques psychosociaux", campaign: "Brouillon", status: "draft" }
+        ]
+      },
+      {
+        id: 2,
+        name: "BNP — Formation managers",
+        contact: "Karim Benali",
+        email: "karim.benali@example.com",
+        status: "active",
+        ads: [
+          { title: "Management 3.0", campaign: "Campagne en cours", status: "active" },
+          { title: "Collaborateur inclusif", campaign: "Campagne terminée", status: "closed" }
+        ]
+      },
+      {
+        id: 3,
+        name: "L’Oréal — Campus interne",
+        contact: "Claire Durand",
+        email: "claire.durand@example.com",
+        status: "draft",
+        ads: [
+          { title: "Sexisme ordinaire", campaign: "Brouillon", status: "draft" },
+          { title: "Diversité des origines", campaign: "Brouillon", status: "draft" },
+          { title: "Handicap et inclusion", campaign: "Campagne en cours", status: "active" }
+        ]
+      }
+    ];
+
+    let clients = [...demoClients];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      protectPartnerPage();
+      renderClients(clients);
+      updateStats(clients);
+    });
+
+    function protectPartnerPage(){
+      const logged = localStorage.getItem("its_logged_in") === "true";
+      const role = localStorage.getItem("its_user_role");
+
+      if(!logged){
+        window.location.href = "login.html?redirect=partner.html";
+        return;
+      }
+
+      if(role && role !== "partner" && role !== "admin"){
+        alert("Cet espace est réservé aux partenaires.");
+        window.location.href = "index.html";
+      }
+    }
+
+    function renderClients(list){
+      const grid = document.getElementById("clientsGrid");
+      const empty = document.getElementById("emptyState");
+
+      grid.innerHTML = "";
+
+      if(!list.length){
+        empty.style.display = "block";
+        return;
+      }
+
+      empty.style.display = "none";
+
+      list.forEach(client => {
+        const activeAds = client.ads.filter(ad => ad.status === "active").length;
+        const draftAds = client.ads.filter(ad => ad.status === "draft").length;
+
+        const card = document.createElement("article");
+        card.className = "client-card";
+        card.dataset.status = client.status;
+        card.dataset.search = `${client.name} ${client.contact} ${client.email} ${client.ads.map(ad => ad.title).join(" ")}`.toLowerCase();
+
+        card.innerHTML = `
+          <div class="client-head">
+            <div>
+              <h3>${client.name}</h3>
+              <div class="client-meta">
+                Contact : ${client.contact}<br>
+                ${client.email}
+              </div>
+            </div>
+            <span class="badge ${client.status === "active" ? "badge-active" : "badge-draft"}">
+              ${client.status === "active" ? "Actif" : "Brouillon"}
+            </span>
+          </div>
+
+          <div class="mini-stats">
+            <div class="mini">
+              <strong>${client.ads.length}</strong>
+              <span>AD créés</span>
+            </div>
+            <div class="mini">
+              <strong>${activeAds}</strong>
+              <span>Campagnes actives</span>
+            </div>
+            <div class="mini">
+              <strong>${draftAds}</strong>
+              <span>Brouillons</span>
+            </div>
+          </div>
+
+          <div class="ad-list">
+            ${client.ads.map(ad => `
+              <div class="ad-row">
+                <div>
+                  <div class="ad-title">${ad.title}</div>
+                  <div class="ad-sub">${ad.campaign}</div>
+                </div>
+                <span class="status ${ad.status === "active" ? "status-live" : "status-draft"}">
+                  ${ad.status === "active" ? "En cours" : ad.status === "draft" ? "Brouillon" : "Terminé"}
+                </span>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="card-actions">
+            <button class="small-btn main" onclick="openClientFolder(${client.id})">Voir le dossier</button>
+            <button class="small-btn" onclick="createAdForClient(${client.id})">Créer un AD</button>
+            <button class="small-btn" onclick="openResults(${client.id})">Résultats</button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function updateStats(list){
+      const ads = list.reduce((sum, client) => sum + client.ads.length, 0);
+      const campaigns = list.reduce((sum, client) => sum + client.ads.filter(ad => ad.status === "active").length, 0);
+      const drafts = list.reduce((sum, client) => sum + client.ads.filter(ad => ad.status === "draft").length, 0);
+
+      document.getElementById("stat-clients").textContent = list.length;
+      document.getElementById("stat-ads").textContent = ads;
+      document.getElementById("stat-campaigns").textContent = campaigns;
+      document.getElementById("stat-results").textContent = drafts;
+    }
+
+    function filterClients(){
+      const q = document.getElementById("searchInput").value.toLowerCase().trim();
+      const status = document.getElementById("statusFilter").value;
+
+      const filtered = clients.filter(client => {
+        const searchText = `${client.name} ${client.contact} ${client.email} ${client.ads.map(ad => ad.title).join(" ")}`.toLowerCase();
+        const matchSearch = !q || searchText.includes(q);
+
+        let matchStatus = true;
+        if(status === "active"){
+          matchStatus = client.ads.some(ad => ad.status === "active");
+        }
+        if(status === "draft"){
+          matchStatus = client.ads.some(ad => ad.status === "draft");
+        }
+
+        return matchSearch && matchStatus;
+      });
+
+      renderClients(filtered);
+    }
+
+    function openNewClient(){
+      const name = prompt("Nom du client final :");
+      if(!name) return;
+
+      const contact = prompt("Nom du contact principal :") || "";
+      const email = prompt("Email du contact principal :") || "";
+
+      const newClient = {
+        id: Date.now(),
+        name,
+        contact,
+        email,
+        status: "draft",
+        ads: []
+      };
+
+      clients.unshift(newClient);
+      renderClients(clients);
+      updateStats(clients);
+    }
+
+    function openClientFolder(clientId){
+      localStorage.setItem("its_selected_partner_client_id", clientId);
+      alert("Étape suivante : créer une page client-folder.html pour afficher le dossier complet du client.");
+    }
+
+    function createAdForClient(clientId){
+      localStorage.setItem("its_selected_partner_client_id", clientId);
+      window.location.href = "index.html";
+    }
+
+    function openResults(clientId){
+      localStorage.setItem("its_selected_partner_client_id", clientId);
+      alert("Étape suivante : brancher cette action vers la page résultats du client.");
+    }
+
+    function goToLibrary(){
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
