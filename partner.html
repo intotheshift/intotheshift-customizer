@@ -300,6 +300,16 @@
       display:none;
     }
 
+    .loading{
+      background:#fff;
+      border:1px solid #e1e8f0;
+      border-radius:24px;
+      padding:28px;
+      text-align:center;
+      color:#61738a;
+      margin-bottom:18px;
+    }
+
     @media(max-width:850px){
       .stats,
       .clients-grid,
@@ -332,19 +342,19 @@
 
     <section class="stats">
       <div class="stat">
-        <strong id="stat-clients">3</strong>
+        <strong id="stat-clients">0</strong>
         <span>Clients suivis</span>
       </div>
       <div class="stat">
-        <strong id="stat-ads">7</strong>
+        <strong id="stat-ads">0</strong>
         <span>Autodiagnostics créés</span>
       </div>
       <div class="stat">
-        <strong id="stat-campaigns">4</strong>
+        <strong id="stat-campaigns">0</strong>
         <span>Campagnes actives</span>
       </div>
       <div class="stat">
-        <strong id="stat-results">2</strong>
+        <strong id="stat-results">0</strong>
         <span>Restitutions à préparer</span>
       </div>
     </section>
@@ -366,6 +376,10 @@
       </select>
     </section>
 
+    <section id="loadingState" class="loading">
+      Chargement de vos clients…
+    </section>
+
     <section id="clientsGrid" class="clients-grid"></section>
 
     <section id="emptyState" class="empty">
@@ -379,54 +393,29 @@
   <script>
     const API_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
 
-    const demoClients = [
-      {
-        id: 1,
-        name: "Orange — Service RH",
-        contact: "Sophie Martin",
-        email: "sophie.martin@example.com",
-        status: "active",
-        ads: [
-          { title: "Management inclusif", campaign: "Campagne mai 2026", status: "active" },
-          { title: "QVT et risques psychosociaux", campaign: "Brouillon", status: "draft" }
-        ]
-      },
-      {
-        id: 2,
-        name: "BNP — Formation managers",
-        contact: "Karim Benali",
-        email: "karim.benali@example.com",
-        status: "active",
-        ads: [
-          { title: "Management 3.0", campaign: "Campagne en cours", status: "active" },
-          { title: "Collaborateur inclusif", campaign: "Campagne terminée", status: "closed" }
-        ]
-      },
-      {
-        id: 3,
-        name: "L’Oréal — Campus interne",
-        contact: "Claire Durand",
-        email: "claire.durand@example.com",
-        status: "draft",
-        ads: [
-          { title: "Sexisme ordinaire", campaign: "Brouillon", status: "draft" },
-          { title: "Diversité des origines", campaign: "Brouillon", status: "draft" },
-          { title: "Handicap et inclusion", campaign: "Campagne en cours", status: "active" }
-        ]
-      }
-    ];
+    let clients = [];
 
-    let clients = [...demoClients];
-
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       protectPartnerPage();
-      renderClients(clients);
-      updateStats(clients);
+      await loadPartnerClients();
     });
 
+    function getToken(){
+      return (
+        localStorage.getItem("its_token") ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("auth_token") ||
+        ""
+      );
+    }
+
+    function getRole(){
+      return localStorage.getItem("its_user_role") || "";
+    }
+
     function protectPartnerPage(){
-      const logged = localStorage.getItem("its_logged_in") === "true";
-      const role = localStorage.getItem("its_user_role");
+      const logged = localStorage.getItem("its_logged_in") === "true" || !!getToken();
+      const role = getRole();
 
       if(!logged){
         window.location.href = "login.html?redirect=partner.html";
@@ -436,6 +425,56 @@
       if(role && role !== "partner" && role !== "admin"){
         alert("Cet espace est réservé aux partenaires.");
         window.location.href = "index.html";
+      }
+    }
+
+    async function loadPartnerClients(){
+      const loading = document.getElementById("loadingState");
+
+      try{
+        const token = getToken();
+
+        const response = await fetch(`${API_URL}/api/partner/clients`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if(!response.ok){
+          throw new Error("Erreur API " + response.status);
+        }
+
+        const data = await response.json();
+
+        clients = (data.clients || []).map(client => {
+          const projects = client.projects || [];
+
+          return {
+            id: client.id,
+            name: client.name,
+            contact: client.contact_name || "—",
+            email: client.contact_email || "",
+            status: Number(client.active_campaigns_count || 0) > 0 ? "active" : "draft",
+            ads: projects.map(project => ({
+              id: project.id,
+              title: project.title || "Autodiag",
+              campaign: project.status === "active" ? "Campagne en cours" : "Brouillon",
+              status: project.status || "draft"
+            }))
+          };
+        });
+
+        renderClients(clients);
+        updateStats(clients);
+      } catch(err){
+        console.error("Erreur chargement clients partenaires", err);
+        clients = [];
+        renderClients(clients);
+        updateStats(clients);
+        document.getElementById("emptyState").textContent =
+          "Impossible de charger vos clients. Vérifiez votre connexion ou votre rôle partenaire.";
+      } finally {
+        loading.style.display = "none";
       }
     }
 
@@ -453,21 +492,22 @@
       empty.style.display = "none";
 
       list.forEach(client => {
-        const activeAds = client.ads.filter(ad => ad.status === "active").length;
-        const draftAds = client.ads.filter(ad => ad.status === "draft").length;
+        const ads = client.ads || [];
+        const activeAds = ads.filter(ad => ad.status === "active").length;
+        const draftAds = ads.filter(ad => ad.status === "draft" || ad.status === "trial").length;
 
         const card = document.createElement("article");
         card.className = "client-card";
         card.dataset.status = client.status;
-        card.dataset.search = `${client.name} ${client.contact} ${client.email} ${client.ads.map(ad => ad.title).join(" ")}`.toLowerCase();
+        card.dataset.search = `${client.name} ${client.contact} ${client.email} ${ads.map(ad => ad.title).join(" ")}`.toLowerCase();
 
         card.innerHTML = `
           <div class="client-head">
             <div>
-              <h3>${client.name}</h3>
+              <h3>${escapeHtml(client.name)}</h3>
               <div class="client-meta">
-                Contact : ${client.contact}<br>
-                ${client.email}
+                Contact : ${escapeHtml(client.contact || "—")}<br>
+                ${escapeHtml(client.email || "")}
               </div>
             </div>
             <span class="badge ${client.status === "active" ? "badge-active" : "badge-draft"}">
@@ -477,7 +517,7 @@
 
           <div class="mini-stats">
             <div class="mini">
-              <strong>${client.ads.length}</strong>
+              <strong>${ads.length}</strong>
               <span>AD créés</span>
             </div>
             <div class="mini">
@@ -491,17 +531,21 @@
           </div>
 
           <div class="ad-list">
-            ${client.ads.map(ad => `
-              <div class="ad-row">
-                <div>
-                  <div class="ad-title">${ad.title}</div>
-                  <div class="ad-sub">${ad.campaign}</div>
-                </div>
-                <span class="status ${ad.status === "active" ? "status-live" : "status-draft"}">
-                  ${ad.status === "active" ? "En cours" : ad.status === "draft" ? "Brouillon" : "Terminé"}
-                </span>
-              </div>
-            `).join("")}
+            ${
+              ads.length
+                ? ads.map(ad => `
+                  <div class="ad-row">
+                    <div>
+                      <div class="ad-title">${escapeHtml(ad.title)}</div>
+                      <div class="ad-sub">${escapeHtml(ad.campaign)}</div>
+                    </div>
+                    <span class="status ${ad.status === "active" ? "status-live" : "status-draft"}">
+                      ${ad.status === "active" ? "En cours" : ad.status === "closed" ? "Terminé" : "Brouillon"}
+                    </span>
+                  </div>
+                `).join("")
+                : `<div class="ad-sub">Aucun autodiagnostic créé pour ce client.</div>`
+            }
           </div>
 
           <div class="card-actions">
@@ -516,9 +560,13 @@
     }
 
     function updateStats(list){
-      const ads = list.reduce((sum, client) => sum + client.ads.length, 0);
-      const campaigns = list.reduce((sum, client) => sum + client.ads.filter(ad => ad.status === "active").length, 0);
-      const drafts = list.reduce((sum, client) => sum + client.ads.filter(ad => ad.status === "draft").length, 0);
+      const ads = list.reduce((sum, client) => sum + (client.ads || []).length, 0);
+      const campaigns = list.reduce((sum, client) => {
+        return sum + (client.ads || []).filter(ad => ad.status === "active").length;
+      }, 0);
+      const drafts = list.reduce((sum, client) => {
+        return sum + (client.ads || []).filter(ad => ad.status === "draft" || ad.status === "trial").length;
+      }, 0);
 
       document.getElementById("stat-clients").textContent = list.length;
       document.getElementById("stat-ads").textContent = ads;
@@ -531,15 +579,18 @@
       const status = document.getElementById("statusFilter").value;
 
       const filtered = clients.filter(client => {
-        const searchText = `${client.name} ${client.contact} ${client.email} ${client.ads.map(ad => ad.title).join(" ")}`.toLowerCase();
+        const ads = client.ads || [];
+        const searchText = `${client.name} ${client.contact} ${client.email} ${ads.map(ad => ad.title).join(" ")}`.toLowerCase();
         const matchSearch = !q || searchText.includes(q);
 
         let matchStatus = true;
+
         if(status === "active"){
-          matchStatus = client.ads.some(ad => ad.status === "active");
+          matchStatus = ads.some(ad => ad.status === "active");
         }
+
         if(status === "draft"){
-          matchStatus = client.ads.some(ad => ad.status === "draft");
+          matchStatus = ads.some(ad => ad.status === "draft" || ad.status === "trial") || ads.length === 0;
         }
 
         return matchSearch && matchStatus;
@@ -548,30 +599,45 @@
       renderClients(filtered);
     }
 
-    function openNewClient(){
+    async function openNewClient(){
       const name = prompt("Nom du client final :");
       if(!name) return;
 
-      const contact = prompt("Nom du contact principal :") || "";
-      const email = prompt("Email du contact principal :") || "";
+      const contactName = prompt("Nom du contact principal :") || "";
+      const contactEmail = prompt("Email du contact principal :") || "";
 
-      const newClient = {
-        id: Date.now(),
-        name,
-        contact,
-        email,
-        status: "draft",
-        ads: []
-      };
+      try{
+        const token = getToken();
 
-      clients.unshift(newClient);
-      renderClients(clients);
-      updateStats(clients);
+        const response = await fetch(`${API_URL}/api/partner/clients`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name,
+            contactName,
+            contactEmail
+          })
+        });
+
+        const data = await response.json();
+
+        if(!response.ok){
+          throw new Error(data.error || "Erreur création client");
+        }
+
+        await loadPartnerClients();
+      } catch(err){
+        console.error("Erreur création client", err);
+        alert("Le client n’a pas pu être créé. Vérifiez votre connexion ou votre rôle partenaire.");
+      }
     }
 
     function openClientFolder(clientId){
       localStorage.setItem("its_selected_partner_client_id", clientId);
-      alert("Étape suivante : créer une page client-folder.html pour afficher le dossier complet du client.");
+      window.location.href = `client-folder.html?id=${clientId}`;
     }
 
     function createAdForClient(clientId){
@@ -586,6 +652,15 @@
 
     function goToLibrary(){
       window.location.href = "index.html";
+    }
+
+    function escapeHtml(value = ""){
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
   </script>
 </body>
