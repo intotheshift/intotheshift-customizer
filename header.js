@@ -52,6 +52,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return getUserRole() === "admin";
   }
 
+  function isPartner() {
+    const role = getUserRole();
+    return role === "partner" || role === "admin";
+  }
+
   function logout() {
     localStorage.removeItem("its_logged_in");
     localStorage.removeItem("its_user_firstname");
@@ -67,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const logged = isLoggedIn();
   const admin = isAdmin();
+  const partner = isPartner();
 
   const accueilLink = !logged
     ? `<a class="nav-link ${active("home.html")}" href="home.html">Accueil</a>`
@@ -78,6 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const adminLink = admin
     ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>`
+    : "";
+
+  const partnerLink = logged && partner
+    ? `<a class="nav-link ${active("partner.html")}" href="partner.html">Mes clients</a>`
     : "";
 
   const accountLink = logged
@@ -101,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ${accueilLink}
         ${dashboardLink}
         ${adminLink}
+        ${partnerLink}
         <a class="nav-link ${active("index.html")}" href="index.html">Bibliothèque</a>
         <a class="nav-link ${active("questions.html")}" href="questions.html">Créer</a>
         <a class="nav-link ${active("parametrage.html")}" href="parametrage.html">Paramétrer</a>
