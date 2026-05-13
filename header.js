@@ -104,8 +104,8 @@ document.addEventListener("DOMContentLoaded", function () {
     ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>`
     : "";
 
-  const partnerLink = logged && partner
-    ? `<a class="nav-link ${active("partner.html")}" href="partner.html">Mes clients</a>`
+   const partnerLink = logged && partner
+    ? `<a class="nav-link ${active("partner.html")}" href="partner.html">${admin ? "Clients" : "Mes clients"}</a>`
     : "";
 
   const accountLink = logged
