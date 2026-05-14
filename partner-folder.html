@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier partner — Shift Studio</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/asap@5/index.css">
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box}
+body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:100vh;margin:0}
+.page{padding:24px;max-width:1440px;margin:0 auto}
+.hero{background:linear-gradient(135deg,#0d4c72,#123d59);color:#fff;border-radius:28px;padding:28px;margin:18px 0 22px;box-shadow:0 18px 45px rgba(13,76,114,.22);display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.hero h1{font-size:30px;margin:0 0 8px}
+.hero p{opacity:.86;line-height:1.45;margin:0}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:11px 15px;font-family:'Asap',sans-serif;font-weight:800;cursor:pointer}
+.btn.primary{background:#fff;color:#0d4c72}
+.btn.secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.24)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.card{background:#fff;border:1px solid #dfe8ef;border-radius:22px;padding:18px;box-shadow:0 12px 30px rgba(13,76,114,.07)}
+.kpi-label{font-size:13px;color:#6c7f90;margin-bottom:8px}
+.kpi-value{font-size:31px;font-weight:900;color:#0d4c72}
+.kpi-note{font-size:12px;color:#7d8c99;margin-top:5px}
+.section{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 12px 30px rgba(13,76,114,.06)}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.section-head h2{font-size:21px;color:#0d4c72;margin:0}
+.section-sub{font-size:13px;color:#708497;margin-top:4px;line-height:1.45}
+.input{border:1px solid #d5e1e9;border-radius:13px;padding:10px 12px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;min-width:250px}
+.table-wrap{overflow-x:auto;border-radius:16px;border:1px solid #e7edf2}
+table{width:100%;border-collapse:collapse;min-width:950px}
+th{text-align:left;background:#f6f9fb;color:#6a7d8e;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:12px;border-bottom:1px solid #e5edf3}
+td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-align:top}
+.cell-title{font-weight:900;color:#153b5b}
+.muted{color:#758898;font-size:13px}
+.badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap}
+.badge-partner{background:#fff2d8;color:#996700}
+.badge-client{background:#ecf8ee;color:#2c7a43}
+.badge-sent{background:#e6f7ef;color:#20784b}
+.badge-draft{background:#fff2d8;color:#996700}
+.badge-status{background:#edf2f7;color:#506477}
+.empty,.loading{padding:22px;text-align:center;color:#718497}
+.error{display:none;background:#fff0f0;color:#9d2b2b;border:1px solid #ffd1d1;padding:14px;border-radius:16px;margin:14px 0}
+.success{display:none;background:#eefbf3;color:#176239;border:1px solid #bee8cd;padding:14px;border-radius:16px;margin:14px 0}
+.quota-edit{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:250px}
+.quota-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#74899a;font-weight:900;margin-bottom:4px}
+.quota-field input{width:100%;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff}
+.quota-rest{grid-column:1/-1;font-size:12px;color:#0d4c72;font-weight:900;background:#eef6fb;border-radius:10px;padding:8px}
+.mini-btn{border:0;border-radius:10px;background:#0d4c72;color:#fff;font-weight:800;padding:8px 10px;font-family:'Asap',sans-serif;cursor:pointer;white-space:nowrap}
+.mini-btn.light{background:#eaf3f8;color:#0d4c72}
+.info{background:#eef6fb;border:1px solid #d7e8f1;color:#244b63;border-radius:16px;padding:13px 15px;margin-bottom:14px;line-height:1.45}
+@media(max-width:900px){.hero{flex-direction:column}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head{flex-direction:column;align-items:flex-start}.input{width:100%;min-width:0}}
+@media(max-width:620px){.page{padding:14px}.grid{grid-template-columns:1fr}.hero{padding:22px;border-radius:22px}.hero h1{font-size:25px}}
+</style>
+</head>
+
+<body>
+<div id="header"></div>
+<script src="header.js"></script>
+
+<main class="page">
+  <section class="hero">
+    <div>
+      <h1 id="partnerTitle">Dossier partner</h1>
+      <p id="partnerSubtitle">Vue consolidée du partner, de son quota global, de ses clients finaux et des autodiagnostics associés.</p>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" onclick="window.location.href='admin.html'">← Retour admin</button>
+      <button class="btn primary" onclick="loadPartnerFolder()">Actualiser</button>
+    </div>
+  </section>
+
+  <div id="errorBox" class="error"></div>
+  <div id="successBox" class="success"></div>
+
+  <section class="grid">
+    <div class="card">
+      <div class="kpi-label">Passations achetées</div>
+      <div id="kpiQuota" class="kpi-value">—</div>
+      <div class="kpi-note">Quota global partner</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">Passations utilisées</div>
+      <div id="kpiUsed" class="kpi-value">—</div>
+      <div class="kpi-note">Consommation globale</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">Passations restantes</div>
+      <div id="kpiRemaining" class="kpi-value">—</div>
+      <div class="kpi-note">Calcul automatique</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">Clients finaux</div>
+      <div id="kpiClients" class="kpi-value">—</div>
+      <div class="kpi-note">Rattachés à ce partner</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Quota du partner</h2>
+        <div class="section-sub">Le quota est porté par le partner. Ses clients finaux consomment ce quota.</div>
+      </div>
+    </div>
+
+    <div class="quota-edit">
+      <div class="quota-field">
+        <label>Achetées</label>
+        <input id="partnerQuota" type="number" min="0" value="0">
+      </div>
+      <div class="quota-field">
+        <label>Utilisées</label>
+        <input id="partnerUsed" type="number" min="0" value="0">
+      </div>
+      <div id="partnerRemaining" class="quota-rest">Restantes : —</div>
+      <button class="mini-btn light" onclick="savePartnerQuota()">Enregistrer le quota</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Clients finaux du partner</h2>
+        <div class="section-sub">Ces clients ne remontent plus dans la vue “Clients finaux” de l’admin général.</div>
+      </div>
+      <input id="clientSearch" class="input" placeholder="Rechercher un client..." oninput="renderClients()">
+    </div>
+
+    <div id="clientsLoading" class="loading">Chargement des clients...</div>
+    <div class="table-wrap">
+      <table id="clientsTable" style="display:none">
+        <thead>
+          <tr>
+            <th>Client final</th>
+            <th>Contact</th>
+            <th>Quota</th>
+            <th>Autodiags</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="clientsBody"></tbody>
+      </table>
+    </div>
+    <div id="clientsEmpty" class="empty" style="display:none">Aucun client final rattaché à ce partner.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Autodiags liés au partner</h2>
+        <div class="section-sub">Configurations créées pour ce partner ou pour ses clients finaux.</div>
+      </div>
+      <input id="projectSearch" class="input" placeholder="Rechercher un autodiag..." oninput="renderProjects()">
+    </div>
+
+    <div id="projectsLoading" class="loading">Chargement des autodiags...</div>
+    <div class="table-wrap">
+      <table id="projectsTable" style="display:none">
+        <thead>
+          <tr>
+            <th>Autodiag</th>
+            <th>Client final</th>
+            <th>Statut</th>
+            <th>Config transmise</th>
+            <th>Date création</th>
+            <th>Dernière mise à jour</th>
+          </tr>
+        </thead>
+        <tbody id="projectsBody"></tbody>
+      </table>
+    </div>
+    <div id="projectsEmpty" class="empty" style="display:none">Aucun autodiag lié à ce partner.</div>
+  </section>
+</main>
+
+<script>
+const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+
+let state = {
+  partnerId:"",
+  partner:null,
+  clients:[],
+  projects:[],
+  allUsers:[],
+  allOrganizations:[],
+  allProjects:[]
+};
+
+function getToken(){
+  return localStorage.getItem("its_token") || localStorage.getItem("token") || localStorage.getItem("auth_token") || "";
+}
+
+function decodeJwt(token){
+  try{
+    const payload=token.split(".")[1];
+    return JSON.parse(atob(payload.replace(/-/g,"+").replace(/_/g,"/")));
+  }catch(e){return null;}
+}
+
+function tokenIsExpired(token){
+  const payload=decodeJwt(token);
+  if(!payload?.exp)return false;
+  return Date.now() >= payload.exp * 1000;
+}
+
+function getRole(){
+  return localStorage.getItem("its_user_role") || decodeJwt(getToken())?.role || "";
+}
+
+function requireAdmin(){
+  const token=getToken();
+  if(!token || tokenIsExpired(token)){
+    localStorage.removeItem("its_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("auth_token");
+    window.location.href="login.html?redirect=partner-folder.html";
+    return false;
+  }
+  if(getRole()!=="admin"){
+    window.location.href="dashboard.html";
+    return false;
+  }
+  return true;
+}
+
+async function handleApiError(res,path){
+  if(res.status===401||res.status===403){
+    localStorage.removeItem("its_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("auth_token");
+    window.location.href="login.html?redirect=partner-folder.html";
+    return null;
+  }
+  let msg=path+" — "+res.status;
+  try{
+    const e=await res.json();
+    if(e?.error)msg=e.error;
+    if(e?.message)msg=e.message;
+  }catch(_){}
+  throw new Error(msg);
+}
+
+async function apiGet(path){
+  const res=await fetch(API_BASE_URL+path,{
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+getToken()
+    }
+  });
+  if(!res.ok)return await handleApiError(res,path);
+  return await res.json();
+}
+
+async function apiPatch(path, body){
+  const res=await fetch(API_BASE_URL+path,{
+    method:"PATCH",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+getToken()
+    },
+    body:JSON.stringify(body)
+  });
+  if(!res.ok)return await handleApiError(res,path);
+  return await res.json();
+}
+
+function val(obj,keys,fallback="—"){
+  for(const key of keys){
+    if(obj && obj[key]!==undefined && obj[key]!==null && obj[key]!=="")return obj[key];
+  }
+  return fallback;
+}
+
+function normalizeArray(data,keys){
+  if(Array.isArray(data))return data;
+  for(const k of keys){
+    if(Array.isArray(data?.[k]))return data[k];
+  }
+  return [];
+}
+
+function num(v){return Number(v || 0);}
+function formatNumber(v){return num(v).toLocaleString("fr-FR");}
+
+function formatDate(value){
+  if(!value)return"—";
+  const d=new Date(value);
+  if(isNaN(d.getTime()))return value;
+  return d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});
+}
+
+function escapeHtml(str){
+  return String(str??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[m]));
+}
+
+function escapeAttr(str){
+  return escapeHtml(str).replace(/`/g,"&#096;");
+}
+
+function getParam(name){
+  return new URLSearchParams(window.location.search).get(name) || "";
+}
+
+function getUserId(u){
+  return String(val(u,["id","user_id"],""));
+}
+
+function getOrgId(o){
+  return String(val(o,["id","organization_id","organizationId"],""));
+}
+
+function getCompany(u){
+  return val(u,["companyName","company_name","company","organization","organisation","entreprise"],"");
+}
+
+function getUserName(u){
+  return (val(u,["firstName","first_name"],"") + " " + val(u,["lastName","last_name"],"")).trim() || val(u,["name","full_name"],"—");
+}
+
+function getOrgName(o){
+  return val(o,["name","organizationName","organization_name","clientName","client_name","company","company_name"],"—");
+}
+
+function getPartnerIdFromOrg(o){
+  return String(val(o,["partnerId","partner_id","ownerId","owner_id","created_by","createdBy"],""));
+}
+
+function getProjectConfig(p){
+  let cfg=val(p,["config","configuration","payload","data"],null);
+  if(typeof cfg==="string"){
+    try{return JSON.parse(cfg);}catch(e){return {};}
+  }
+  return cfg && typeof cfg==="object" ? cfg : {};
+}
+
+function getProjectTitle(p){
+  const cfg=getProjectConfig(p);
+  return val(cfg,[
+    "autodiagTitle",
+    "diagnosticTitle",
+    "adTitle",
+    "title",
+    "titre",
+    "campaignTitle",
+    "passationTitle"
+  ], val(p,[
+    "autodiag_title",
+    "project_title",
+    "title",
+    "name",
+    "project_name"
+  ],"Autodiag sans titre"));
+}
+
+function getProjectOrgId(p){
+  return String(val(p,["organization_id","organizationId","org_id","orgId"],""));
+}
+
+function getProjectPartnerId(p){
+  return String(val(p,["partner_id","partnerId","owner_id","user_id","client_id"],""));
+}
+
+function statusBadge(status){
+  const s=String(status||"brouillon").toLowerCase();
+  if(s.includes("transmis")||s.includes("sent")||s.includes("submitted"))return`<span class="badge badge-sent">${escapeHtml(status||"transmis")}</span>`;
+  if(s.includes("brouillon")||s.includes("draft"))return`<span class="badge badge-draft">${escapeHtml(status||"brouillon")}</span>`;
+  return`<span class="badge badge-status">${escapeHtml(status||"actif")}</span>`;
+}
+
+function isConfigSent(project){
+  const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);
+  const status=String(val(project,["status","statut"],"")).toLowerCase();
+  return sent===true || sent==="true" || status.includes("transmis") || status.includes("submitted");
+}
+
+function updateQuotaDisplay(){
+  const quota=num(val(state.partner,["passationsQuota","passations_quota"],0));
+  const used=num(val(state.partner,["passationsUsed","passations_used"],0));
+  const remaining=Math.max(0,quota-used);
+
+  document.getElementById("kpiQuota").textContent=formatNumber(quota);
+  document.getElementById("kpiUsed").textContent=formatNumber(used);
+  document.getElementById("kpiRemaining").textContent=formatNumber(remaining);
+  document.getElementById("kpiClients").textContent=state.clients.length;
+
+  document.getElementById("partnerQuota").value=quota;
+  document.getElementById("partnerUsed").value=used;
+  document.getElementById("partnerRemaining").textContent="Restantes : "+formatNumber(remaining);
+}
+
+async function loadPartnerFolder(){
+  hideError();
+  hideSuccess();
+
+  state.partnerId=getParam("id");
+
+  if(!state.partnerId){
+    showError("Aucun partner sélectionné. Retourne dans Admin > Partners puis clique sur “Dossier partner”.");
+    return;
+  }
+
+  document.getElementById("clientsLoading").style.display="block";
+  document.getElementById("projectsLoading").style.display="block";
+
+  try{
+    const [users, organizations, projects] = await Promise.all([
+      apiGet("/api/admin/clients"),
+      apiGet("/api/admin/organizations"),
+      apiGet("/api/admin/projects")
+    ]);
+
+    state.allUsers=normalizeArray(users,["clients","users","data"]);
+    state.allOrganizations=normalizeArray(organizations,["organizations","clients","data"]);
+    state.allProjects=normalizeArray(projects,["projects","autodiags","data"]);
+
+    state.partner=state.allUsers.find(u=>getUserId(u)===String(state.partnerId));
+
+    if(!state.partner){
+      showError("Partner introuvable.");
+      return;
+    }
+
+    const role=String(val(state.partner,["role"],"")).toLowerCase();
+    if(role!=="partner"){
+      showError("Ce compte n’est pas un partner.");
+      return;
+    }
+
+    state.clients=state.allOrganizations.filter(o=>getPartnerIdFromOrg(o)===String(state.partnerId));
+
+    const clientOrgIds=state.clients.map(o=>getOrgId(o));
+    state.projects=state.allProjects.filter(p=>{
+      const projectOrgId=getProjectOrgId(p);
+      const projectPartnerId=getProjectPartnerId(p);
+      return projectPartnerId===String(state.partnerId) || clientOrgIds.includes(projectOrgId);
+    });
+
+    const partnerName=getCompany(state.partner) || getUserName(state.partner);
+    const partnerEmail=val(state.partner,["email"],"");
+
+    document.getElementById("partnerTitle").textContent="Dossier partner — "+partnerName;
+    document.getElementById("partnerSubtitle").textContent=partnerEmail+" · "+state.clients.length+" client(s) final(aux) · "+state.projects.length+" autodiag(s)";
+
+    updateQuotaDisplay();
+    renderClients();
+    renderProjects();
+
+  }catch(err){
+    console.error(err);
+    showError("Impossible de charger le dossier partner. Détail : "+err.message);
+  }finally{
+    document.getElementById("clientsLoading").style.display="none";
+    document.getElementById("projectsLoading").style.display="none";
+  }
+}
+
+function renderClients(){
+  const q=(document.getElementById("clientSearch")?.value||"").toLowerCase().trim();
+
+  const rows=state.clients.filter(o=>!q || JSON.stringify(o).toLowerCase().includes(q));
+  const body=document.getElementById("clientsBody");
+
+  body.innerHTML=rows.map(o=>{
+    const id=getOrgId(o);
+    const name=getOrgName(o);
+    const contactName=val(o,["contactName","contact_name"],"—");
+    const contactEmail=val(o,["contactEmail","contact_email"],"");
+    const projectsCount=state.projects.filter(p=>getProjectOrgId(p)===String(id)).length;
+
+    return`<tr>
+      <td>
+        <div class="cell-title">${escapeHtml(name)}</div>
+        <div class="muted">ID ${escapeHtml(id)}</div>
+      </td>
+      <td>
+        <div>${escapeHtml(contactName)}</div>
+        <div class="muted">${escapeHtml(contactEmail)}</div>
+      </td>
+      <td>
+        <div class="info" style="margin:0">
+          Utilise le quota global du partner.
+        </div>
+      </td>
+      <td>${projectsCount}</td>
+      <td>
+        <button class="mini-btn light" onclick="openClientFolder('${escapeAttr(id)}')">Dossier client</button>
+      </td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("clientsTable").style.display=rows.length?"table":"none";
+  document.getElementById("clientsEmpty").style.display=rows.length?"none":"block";
+}
+
+function renderProjects(){
+  const q=(document.getElementById("projectSearch")?.value||"").toLowerCase().trim();
+
+  const rows=state.projects.filter(p=>!q || JSON.stringify(p).toLowerCase().includes(q) || getProjectTitle(p).toLowerCase().includes(q));
+  const body=document.getElementById("projectsBody");
+
+  body.innerHTML=rows.map(p=>{
+    const orgId=getProjectOrgId(p);
+    const org=state.clients.find(o=>getOrgId(o)===orgId);
+    const clientName=org ? getOrgName(org) : val(p,["organizationName","organization_name","clientName","client_name","company","company_name"],"—");
+    const status=val(p,["status","statut"],"brouillon");
+    const sent=isConfigSent(p);
+    const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));
+    const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
+
+    return`<tr>
+      <td><div class="cell-title">${escapeHtml(getProjectTitle(p))}</div></td>
+      <td>${escapeHtml(clientName)}</td>
+      <td>${statusBadge(status)}</td>
+      <td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td>
+      <td>${created}</td>
+      <td>${updated}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("projectsTable").style.display=rows.length?"table":"none";
+  document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";
+}
+
+async function savePartnerQuota(){
+  const passationsQuota=Number(document.getElementById("partnerQuota").value || 0);
+  const passationsUsed=Number(document.getElementById("partnerUsed").value || 0);
+
+  try{
+    await apiPatch(`/api/admin/users/${encodeURIComponent(state.partnerId)}/passations`,{
+      passationsQuota,
+      passationsUsed
+    });
+
+    state.partner={
+      ...state.partner,
+      passationsQuota,
+      passations_quota:passationsQuota,
+      passationsUsed,
+      passations_used:passationsUsed
+    };
+
+    updateQuotaDisplay();
+    showSuccess("Quota partner mis à jour.");
+  }catch(err){
+    console.error(err);
+    showError("Mise à jour impossible. Détail : "+err.message);
+  }
+}
+
+function openClientFolder(orgId){
+  window.location.href=`client-folder.html?id=${encodeURIComponent(orgId)}`;
+}
+
+function showError(msg){
+  hideSuccess();
+  const box=document.getElementById("errorBox");
+  box.textContent=msg;
+  box.style.display="block";
+  box.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function hideError(){
+  const box=document.getElementById("errorBox");
+  box.style.display="none";
+  box.textContent="";
+}
+
+function showSuccess(msg){
+  hideError();
+  const box=document.getElementById("successBox");
+  box.textContent=msg;
+  box.style.display="block";
+  setTimeout(()=>hideSuccess(),3500);
+}
+
+function hideSuccess(){
+  const box=document.getElementById("successBox");
+  box.style.display="none";
+  box.textContent="";
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  if(requireAdmin())loadPartnerFolder();
+});
+</script>
+</body>
+</html>
