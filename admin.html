@@ -8,54 +8,90 @@
 <link rel="stylesheet" href="style.css">
 <style>
 *{box-sizing:border-box}
-body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:100vh}
+body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:100vh;margin:0}
 .admin-page{padding:24px;max-width:1440px;margin:0 auto}
 .admin-hero{background:linear-gradient(135deg,#0d4c72,#123d59);color:#fff;border-radius:28px;padding:28px;margin:18px 0 22px;box-shadow:0 18px 45px rgba(13,76,114,.22);display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
-.admin-hero h1{font-size:32px;margin:0 0 8px}.admin-hero p{opacity:.86;line-height:1.45;max-width:760px}
+.admin-hero h1{font-size:32px;margin:0 0 8px}
+.admin-hero p{opacity:.86;line-height:1.45;max-width:800px;margin:0}
 .admin-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .admin-btn{border:0;border-radius:14px;padding:11px 15px;font-family:'Asap',sans-serif;font-weight:800;cursor:pointer}
-.admin-btn.primary{background:#fff;color:#0d4c72}.admin-btn.secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.24)}
+.admin-btn.primary{background:#fff;color:#0d4c72}
+.admin-btn.secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.24)}
 .admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
 .kpi-card{background:#fff;border:1px solid #dfe8ef;border-radius:22px;padding:18px;box-shadow:0 12px 30px rgba(13,76,114,.07)}
-.kpi-label{font-size:13px;color:#6c7f90;margin-bottom:8px}.kpi-value{font-size:31px;font-weight:900;color:#0d4c72}.kpi-note{font-size:12px;color:#7d8c99;margin-top:5px}
-.admin-layout{display:grid;grid-template-columns:240px 1fr;gap:18px}
-.admin-side{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:14px;height:max-content;position:sticky;top:78px;box-shadow:0 12px 30px rgba(13,76,114,.06)}
-.side-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;color:#0d4c72;font-weight:800;text-decoration:none;cursor:pointer}
-.side-link:hover,.side-link.active{background:#eaf3f8}.side-small{font-size:12px;color:#758898;padding:12px;line-height:1.45}
-.admin-section{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 12px 30px rgba(13,76,114,.06)}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h2{font-size:21px;color:#0d4c72;margin:0}
+.kpi-label{font-size:13px;color:#6c7f90;margin-bottom:8px}
+.kpi-value{font-size:31px;font-weight:900;color:#0d4c72}
+.kpi-note{font-size:12px;color:#7d8c99;margin-top:5px}
+.admin-layout{display:grid;grid-template-columns:265px 1fr;gap:18px}
+.admin-side{background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:14px;height:max-content;position:sticky;top:78px;box-shadow:0 12px 30px rgba(13,76,114,.06);overflow:hidden}
+.side-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#7b8c9a;font-weight:900;padding:10px 12px}
+.side-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 12px;border-radius:14px;color:#0d4c72;font-weight:800;text-decoration:none;cursor:pointer}
+.side-link:hover,.side-link.active{background:#eaf3f8}
+.side-left{display:flex;align-items:center;gap:10px}
+.side-ico{width:34px;height:34px;border-radius:10px;background:#eef3f7;display:flex;align-items:center;justify-content:center}
+.side-count{background:#edf3f7;border-radius:999px;padding:2px 8px;font-size:12px;color:#60758a}
+.side-small{font-size:12px;color:#758898;padding:12px;line-height:1.45}
+.admin-section{display:none;background:#fff;border:1px solid #dfe8ef;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 12px 30px rgba(13,76,114,.06)}
+.admin-section.active{display:block}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.section-head h2{font-size:21px;color:#0d4c72;margin:0}
+.section-sub{font-size:13px;color:#708497;margin-top:4px;line-height:1.45}
 .section-tools{display:flex;gap:10px;flex-wrap:wrap}
 .admin-input,.admin-select{border:1px solid #d5e1e9;border-radius:13px;padding:10px 12px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;min-width:210px}
 .table-wrap{overflow-x:auto;border-radius:16px;border:1px solid #e7edf2}
-table{width:100%;border-collapse:collapse;min-width:1150px}
+table{width:100%;border-collapse:collapse;min-width:1050px}
 th{text-align:left;background:#f6f9fb;color:#6a7d8e;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:12px;border-bottom:1px solid #e5edf3}
 td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-align:top}
-.cell-title{font-weight:900;color:#153b5b}.muted{color:#758898;font-size:13px}
+.cell-title{font-weight:900;color:#153b5b}
+.muted{color:#758898;font-size:13px}
 .badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap}
-.badge-admin{background:#e7f1f7;color:#0d4c72}.badge-client{background:#ecf8ee;color:#2c7a43}.badge-partner{background:#fff2d8;color:#996700}
-.badge-sent{background:#e6f7ef;color:#20784b}.badge-draft{background:#fff2d8;color:#996700}.badge-status{background:#edf2f7;color:#506477}
+.badge-admin{background:#e7f1f7;color:#0d4c72}
+.badge-client{background:#ecf8ee;color:#2c7a43}
+.badge-partner{background:#fff2d8;color:#996700}
+.badge-direct{background:#eaf3f8;color:#0d4c72}
+.badge-linked{background:#fff2d8;color:#996700}
+.badge-sent{background:#e6f7ef;color:#20784b}
+.badge-draft{background:#fff2d8;color:#996700}
+.badge-status{background:#edf2f7;color:#506477}
 .empty,.loading{padding:22px;text-align:center;color:#718497}
 .error{display:none;background:#fff0f0;color:#9d2b2b;border:1px solid #ffd1d1;padding:14px;border-radius:16px;margin:14px 0}
 .success{display:none;background:#eefbf3;color:#176239;border:1px solid #bee8cd;padding:14px;border-radius:16px;margin:14px 0}
 .role-select{min-width:125px;padding:8px;border:1px solid #d5e1e9;border-radius:10px;font-family:'Asap',sans-serif}
 .mini-btn{border:0;border-radius:10px;background:#0d4c72;color:#fff;font-weight:800;padding:8px 10px;font-family:'Asap',sans-serif;cursor:pointer;white-space:nowrap}
-.mini-btn:disabled{opacity:.45;cursor:not-allowed}.mini-btn.light{background:#eaf3f8;color:#0d4c72}.mini-btn.danger{background:#fff0f0;color:#a32b2b;border:1px solid #ffd1d1}
+.mini-btn:disabled{opacity:.45;cursor:not-allowed}
+.mini-btn.light{background:#eaf3f8;color:#0d4c72}
+.mini-btn.danger{background:#fff0f0;color:#a32b2b;border:1px solid #ffd1d1}
 .notice{background:#eef6fb;border:1px solid #d7e8f1;color:#244b63;border-radius:16px;padding:13px 15px;margin-bottom:14px;line-height:1.45}
 .admin-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;padding:14px;border:1px solid #e2ebf2;border-radius:18px;background:#fbfdfe}
 .admin-form .admin-input,.admin-form .admin-select{min-width:0;width:100%}
 .form-actions{display:flex;gap:8px;align-items:center;grid-column:3;justify-content:flex-start}
 .form-msg{font-size:13px;color:#60758a;margin:-4px 0 14px}
 .actions-cell{display:flex;gap:8px;flex-wrap:wrap}
-.password-wrap{position:relative;width:100%}.password-wrap .admin-input{padding-right:46px}
+.password-wrap{position:relative;width:100%}
+.password-wrap .admin-input{padding-right:46px}
 .eye-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#0d4c72;font-size:18px;cursor:pointer;padding:6px;border-radius:10px;line-height:1}
-.eye-btn:hover{background:#eaf3f8}.warning-text{color:#9d2b2b;font-size:12px;margin-top:5px}
-.quota-box{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:190px}
-.quota-box input{width:100%;border:1px solid #d5e1e9;border-radius:10px;padding:7px 8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff}
-.quota-rest{grid-column:1/-1;font-size:12px;color:#0d4c72;font-weight:900;background:#eef6fb;border-radius:10px;padding:7px 8px}
+.eye-btn:hover{background:#eaf3f8}
+.warning-text{color:#9d2b2b;font-size:12px;margin-top:5px}
+.quota-edit{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:250px}
+.quota-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#74899a;font-weight:900;margin-bottom:4px}
+.quota-field input{width:100%;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff}
+.quota-rest{grid-column:1/-1;font-size:12px;color:#0d4c72;font-weight:900;background:#eef6fb;border-radius:10px;padding:8px}
+.quota-action{grid-column:1/-1}
+.company-edit{display:grid;gap:7px;min-width:230px}
+.company-edit input{width:100%;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff}
+.partner-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.partner-card{border:1px solid #e2ebf2;border-radius:20px;padding:16px;background:#fbfdfe}
+.partner-card h3{margin:0 0 4px;color:#0d4c72}
+.partner-meta{font-size:13px;color:#718497;line-height:1.45;margin-bottom:12px}
+.partner-quota{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.partner-mini{background:#fff;border:1px solid #e4edf4;border-radius:14px;padding:10px;text-align:center}
+.partner-mini strong{display:block;color:#0d4c72;font-size:19px}
+.partner-mini span{font-size:11px;color:#718497}
 .pack-select{width:150px;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif}
-@media(max-width:1050px){.admin-form{grid-template-columns:1fr 1fr}.form-actions{grid-column:1 / -1}.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-layout{grid-template-columns:1fr}.admin-side{position:relative;top:auto;display:flex;overflow-x:auto}.side-link{white-space:nowrap}.admin-hero{flex-direction:column}.admin-actions{justify-content:flex-start}}
+@media(max-width:1150px){.partner-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-layout{grid-template-columns:1fr}.admin-side{position:relative;top:auto;display:flex;overflow-x:auto}.side-title,.side-small{display:none}.side-link{white-space:nowrap}.admin-hero{flex-direction:column}.admin-actions{justify-content:flex-start}}
+@media(max-width:1050px){.admin-form{grid-template-columns:1fr 1fr}.form-actions{grid-column:1 / -1}.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hidden}.table-wrap{max-width:100%;overflow-x:auto}
-@media(max-width:620px){.admin-form{grid-template-columns:1fr}.form-actions{grid-column:1}.admin-page{padding:14px}.admin-grid{grid-template-columns:1fr}.admin-hero{padding:22px;border-radius:22px}.admin-hero h1{font-size:26px}.section-head{flex-direction:column;align-items:flex-start}.admin-input,.admin-select{width:100%;min-width:0}}
+@media(max-width:620px){.partner-card-grid{grid-template-columns:1fr}.admin-form{grid-template-columns:1fr}.form-actions{grid-column:1}.admin-page{padding:14px}.admin-grid{grid-template-columns:1fr}.admin-hero{padding:22px;border-radius:22px}.admin-hero h1{font-size:26px}.section-head{flex-direction:column;align-items:flex-start}.admin-input,.admin-select{width:100%;min-width:0}}
 </style>
 </head>
 
@@ -67,7 +103,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
   <section class="admin-hero">
     <div>
       <h1>Espace admin Into The Shift</h1>
-      <p>Suivi des utilisateurs, partenaires, clients finaux, projets, quotas de passations et configurations transmises avant intégration dans le moteur ME&YOUTOO.</p>
+      <p>Supervisez les comptes, les partners, les clients finaux, les quotas de passations et les autodiagnostics créés dans Shift Studio.</p>
     </div>
     <div class="admin-actions">
       <button class="admin-btn secondary" onclick="window.location.href='dashboard.html'">Dashboard</button>
@@ -80,38 +116,58 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
 
   <section class="admin-grid" id="overview">
     <div class="kpi-card"><div class="kpi-label">Utilisateurs</div><div id="kpiUsers" class="kpi-value">—</div><div class="kpi-note">Tous comptes confondus</div></div>
-    <div class="kpi-card"><div class="kpi-label">Partenaires</div><div id="kpiPartners" class="kpi-value">—</div><div class="kpi-note">Rôle partner</div></div>
+    <div class="kpi-card"><div class="kpi-label">Partners</div><div id="kpiPartners" class="kpi-value">—</div><div class="kpi-note">Organismes / cabinets</div></div>
     <div class="kpi-card"><div class="kpi-label">Clients finaux</div><div id="kpiOrganizations" class="kpi-value">—</div><div class="kpi-note">Dossiers clients</div></div>
-    <div class="kpi-card"><div class="kpi-label">Projets / AD</div><div id="kpiProjects" class="kpi-value">—</div><div class="kpi-note">Configurations créées</div></div>
+    <div class="kpi-card"><div class="kpi-label">Autodiags</div><div id="kpiProjects" class="kpi-value">—</div><div class="kpi-note">Configurations créées</div></div>
   </section>
 
   <div class="admin-layout">
     <aside class="admin-side">
-      <a class="side-link active" onclick="scrollToSection('overview')">Vue globale</a>
-      <a class="side-link" onclick="scrollToSection('create-account')">Créer un compte</a>
-      <a class="side-link" onclick="scrollToSection('clients')">Comptes</a>
-      <a class="side-link" onclick="scrollToSection('final-clients')">Clients finaux</a>
-      <a class="side-link" onclick="scrollToSection('projects')">Autodiags</a>
-      <div class="side-small">Les passations sont renseignées manuellement dans Shift Studio. La passation réelle reste gérée dans ME&YOUTOO.</div>
+      <div class="side-title">Administration</div>
+      <a class="side-link active" data-tab="global" onclick="showTab('global')"><span class="side-left"><span class="side-ico">📊</span>Vue globale</span></a>
+      <a class="side-link" data-tab="create" onclick="showTab('create')"><span class="side-left"><span class="side-ico">➕</span>Créer un compte</span></a>
+      <a class="side-link" data-tab="accounts" onclick="showTab('accounts')"><span class="side-left"><span class="side-ico">👤</span>Comptes</span><span id="sideUsers" class="side-count">—</span></a>
+      <a class="side-link" data-tab="partners" onclick="showTab('partners')"><span class="side-left"><span class="side-ico">🤝</span>Partners</span><span id="sidePartners" class="side-count">—</span></a>
+      <a class="side-link" data-tab="organizations" onclick="showTab('organizations')"><span class="side-left"><span class="side-ico">🏢</span>Clients finaux</span><span id="sideOrganizations" class="side-count">—</span></a>
+      <a class="side-link" data-tab="projects" onclick="showTab('projects')"><span class="side-left"><span class="side-ico">🧩</span>Autodiags</span><span id="sideProjects" class="side-count">—</span></a>
+      <div class="side-small">Le quota est porté par le partner, sauf client direct Into The Shift avec pack propre.</div>
     </aside>
 
     <div>
-      <section id="create-account" class="admin-section">
+      <section id="tab-global" class="admin-section active">
+        <div class="section-head">
+          <div>
+            <h2>Vue globale</h2>
+            <div class="section-sub">Vue synthétique de l’activité Shift Studio.</div>
+          </div>
+        </div>
+        <div class="notice">
+          Règle métier : un <strong>partner</strong> possède un quota global. Ses clients finaux consomment ce quota. Un client direct Into The Shift peut avoir son propre pack.
+        </div>
+        <div class="admin-grid">
+          <div class="kpi-card"><div class="kpi-label">Passations partners achetées</div><div id="kpiPartnerQuota" class="kpi-value">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Passations partners utilisées</div><div id="kpiPartnerUsed" class="kpi-value">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Clients rattachés à partners</div><div id="kpiLinkedOrgs" class="kpi-value">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Clients directs</div><div id="kpiDirectOrgs" class="kpi-value">—</div></div>
+        </div>
+      </section>
+
+      <section id="tab-create" class="admin-section">
         <div class="section-head"><h2>Créer un compte</h2></div>
-        <div class="notice">Le rôle <strong>partner</strong> correspond à un organisme / cabinet qui crée des AD pour ses propres clients. Les quotas de passations sont ensuite renseignés dans le tableau des comptes.</div>
+        <div class="notice">Créez un compte admin, client ou partner. Pour un partner, renseignez ensuite ses passations dans l’onglet <strong>Partners</strong>.</div>
         <form class="admin-form" autocomplete="off" onsubmit="event.preventDefault(); createUser();">
-          <input id="newFirstname" name="new-firstname" class="admin-input" placeholder="Prénom" autocomplete="off">
-          <input id="newLastname" name="new-lastname" class="admin-input" placeholder="Nom" autocomplete="off">
-          <input id="newEmail" name="new-email-admin-create" class="admin-input" type="email" placeholder="email@entreprise.com" autocomplete="new-email" required>
-          <input id="newCompany" name="new-company" class="admin-input" placeholder="Entreprise" autocomplete="off">
-          <select id="newRole" name="new-role" class="admin-select" autocomplete="off">
+          <input id="newFirstname" class="admin-input" placeholder="Prénom" autocomplete="off">
+          <input id="newLastname" class="admin-input" placeholder="Nom" autocomplete="off">
+          <input id="newEmail" class="admin-input" type="email" placeholder="email@entreprise.com" autocomplete="new-email" required>
+          <input id="newCompany" class="admin-input" placeholder="Entreprise / organisme" autocomplete="off">
+          <select id="newRole" class="admin-select" autocomplete="off">
             <option value="client">client</option>
             <option value="partner">partner</option>
             <option value="admin">admin</option>
           </select>
           <div class="password-wrap">
-            <input id="newPassword" name="new-temp-password" class="admin-input" type="password" placeholder="Mot de passe temporaire" autocomplete="new-password" required>
-            <button class="eye-btn" type="button" onclick="toggleNewPasswordVisibility()" aria-label="Afficher le mot de passe" title="Afficher le mot de passe">👁</button>
+            <input id="newPassword" class="admin-input" type="password" placeholder="Mot de passe temporaire" autocomplete="new-password" required>
+            <button class="eye-btn" type="button" onclick="toggleNewPasswordVisibility()">👁</button>
           </div>
           <div class="form-actions">
             <button class="mini-btn light" type="button" onclick="fillRandomPassword()">Générer mot de passe</button>
@@ -121,53 +177,68 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
         <div id="createMsg" class="form-msg"></div>
       </section>
 
-      <section id="clients" class="admin-section">
+      <section id="tab-accounts" class="admin-section">
         <div class="section-head">
-          <h2>Gestion des comptes</h2>
+          <div>
+            <h2>Comptes utilisateurs</h2>
+            <div class="section-sub">Gestion des accès : identité, entreprise / organisme, rôle et statut.</div>
+          </div>
           <div class="section-tools">
-            <input id="clientSearch" class="admin-input" placeholder="Rechercher email, nom, entreprise..." autocomplete="off" oninput="renderClients()">
-            <select id="roleFilter" class="admin-select" autocomplete="off" onchange="renderClients()">
+            <input id="clientSearch" class="admin-input" placeholder="Rechercher email, nom, entreprise..." oninput="renderAccounts()">
+            <select id="roleFilter" class="admin-select" onchange="renderAccounts()">
               <option value="">Tous les rôles</option>
               <option value="admin">Admin</option>
               <option value="client">Client</option>
-              <option value="partner">Partenaire</option>
+              <option value="partner">Partner</option>
             </select>
           </div>
         </div>
-        <div class="notice">
-          Pour un <strong>partner</strong>, renseigne ici les passations achetées et utilisées. Les passations restantes sont calculées automatiquement.
-        </div>
         <div id="clientsLoading" class="loading">Chargement des comptes...</div>
         <div class="table-wrap">
-          <table id="clientsTable" style="display:none">
+          <table id="accountsTable" style="display:none">
             <thead>
               <tr>
                 <th>Compte</th>
                 <th>Email</th>
-                <th>Entreprise</th>
+                <th>Entreprise / organisme</th>
                 <th>Rôle</th>
                 <th>Changer rôle</th>
-                <th>Passations compte</th>
                 <th>Projets</th>
                 <th>Statut</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="clientsBody"></tbody>
+            <tbody id="accountsBody"></tbody>
           </table>
         </div>
-        <div id="clientsEmpty" class="empty" style="display:none">Aucun compte trouvé.</div>
+        <div id="accountsEmpty" class="empty" style="display:none">Aucun compte trouvé.</div>
       </section>
 
-      <section id="final-clients" class="admin-section">
+      <section id="tab-partners" class="admin-section">
         <div class="section-head">
-          <h2>Clients finaux</h2>
+          <div>
+            <h2>Partners & quotas</h2>
+            <div class="section-sub">Vue par organisme partner. Les passations sont gérées ici.</div>
+          </div>
           <div class="section-tools">
-            <input id="orgSearch" class="admin-input" placeholder="Rechercher client final, partenaire..." autocomplete="off" oninput="renderOrganizations()">
+            <input id="partnerSearch" class="admin-input" placeholder="Rechercher partner..." oninput="renderPartners()">
           </div>
         </div>
-        <div class="notice">
-          Ici tu peux renseigner le pack choisi et les passations d’un client final rattaché à un partenaire. C’est utile si tu veux suivre le quota au niveau du client final plutôt qu’au niveau du compte partner.
+        <div class="notice">Chaque partner dispose d’un quota global. Ses clients finaux n’ont pas de pack propre par défaut.</div>
+        <div id="partnersLoading" class="loading">Chargement des partners...</div>
+        <div id="partnersGrid" class="partner-card-grid"></div>
+        <div id="partnersEmpty" class="empty" style="display:none">Aucun partner trouvé.</div>
+      </section>
+
+      <section id="tab-organizations" class="admin-section">
+        <div class="section-head">
+          <div>
+            <h2>Clients finaux</h2>
+            <div class="section-sub">Dossiers clients finaux, rattachés à un partner ou directs Into The Shift.</div>
+          </div>
+          <div class="section-tools">
+            <input id="orgSearch" class="admin-input" placeholder="Rechercher client final, partenaire..." oninput="renderOrganizations()">
+          </div>
         </div>
         <div id="orgsLoading" class="loading">Chargement des clients finaux...</div>
         <div class="table-wrap">
@@ -175,12 +246,12 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
             <thead>
               <tr>
                 <th>Client final</th>
-                <th>Partenaire / créateur</th>
+                <th>Type</th>
+                <th>Partner / créateur</th>
                 <th>Contact</th>
-                <th>Pack choisi</th>
-                <th>Passations client final</th>
+                <th>Quota</th>
                 <th>AD</th>
-                <th>Date création</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="orgsBody"></tbody>
@@ -189,12 +260,15 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
         <div id="orgsEmpty" class="empty" style="display:none">Aucun client final trouvé.</div>
       </section>
 
-      <section id="projects" class="admin-section">
+      <section id="tab-projects" class="admin-section">
         <div class="section-head">
-          <h2>Projets / autodiags</h2>
+          <div>
+            <h2>Projets / autodiags</h2>
+            <div class="section-sub">Toutes les configurations créées dans Shift Studio.</div>
+          </div>
           <div class="section-tools">
-            <input id="projectSearch" class="admin-input" placeholder="Rechercher titre, client, statut..." autocomplete="off" oninput="renderProjects()">
-            <select id="statusFilter" class="admin-select" autocomplete="off" onchange="renderProjects()">
+            <input id="projectSearch" class="admin-input" placeholder="Rechercher titre, client, statut..." oninput="renderProjects()">
+            <select id="statusFilter" class="admin-select" onchange="renderProjects()">
               <option value="">Tous les statuts</option>
               <option value="brouillon">Brouillon</option>
               <option value="transmis">Transmis</option>
@@ -210,7 +284,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
               <tr>
                 <th>Autodiag</th>
                 <th>Client</th>
-                <th>Pack / quota client</th>
+                <th>Organisation</th>
                 <th>Statut</th>
                 <th>Config transmise</th>
                 <th>Date création</th>
@@ -237,23 +311,16 @@ function getRole(){return localStorage.getItem("its_user_role") || decodeJwt(get
 function requireAdmin(){
   const token=getToken();
   if(!token || tokenIsExpired(token)){
-    localStorage.removeItem("its_token");
-    localStorage.removeItem("token");
-    localStorage.removeItem("auth_token");
+    localStorage.removeItem("its_token");localStorage.removeItem("token");localStorage.removeItem("auth_token");
     window.location.href="login.html?redirect=admin.html";
     return false;
   }
-  if(getRole()!=="admin"){
-    window.location.href="dashboard.html";
-    return false;
-  }
+  if(getRole()!=="admin"){window.location.href="dashboard.html";return false;}
   return true;
 }
 async function handleApiError(res,path){
   if(res.status===401||res.status===403){
-    localStorage.removeItem("its_token");
-    localStorage.removeItem("token");
-    localStorage.removeItem("auth_token");
+    localStorage.removeItem("its_token");localStorage.removeItem("token");localStorage.removeItem("auth_token");
     window.location.href="login.html?redirect=admin.html";
     return null;
   }
@@ -272,13 +339,26 @@ function formatNumber(v){return num(v).toLocaleString("fr-FR");}
 function formatDate(value){if(!value)return"—";const d=new Date(value);if(isNaN(d.getTime()))return value;return d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});}
 function escapeHtml(str){return String(str??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 function escapeAttr(str){return escapeHtml(str).replace(/`/g,"&#096;");}
-function roleBadge(role){const r=String(role||"client").toLowerCase();if(r==="admin")return`<span class="badge badge-admin">admin</span>`;if(r==="partner"||r==="expert")return`<span class="badge badge-partner">partenaire</span>`;return`<span class="badge badge-client">client</span>`;}
-function statusBadge(status){const s=String(status||"brouillon").toLowerCase();if(s.includes("transmis")||s.includes("sent")||s.includes("submitted"))return`<span class="badge badge-sent">${escapeHtml(status||"transmis")}</span>`;if(s.includes("brouillon")||s.includes("draft"))return`<span class="badge badge-draft">${escapeHtml(status||"brouillon")}</span>`;return`<span class="badge badge-status">${escapeHtml(status||"—")}</span>`;}
-function isConfigSent(project){const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);const status=String(val(project,["status","statut"],"")).toLowerCase();return sent===true||sent==="true"||status.includes("transmis")||status.includes("submitted");}
 function normalizeArray(data,keys){if(Array.isArray(data))return data;for(const k of keys){if(Array.isArray(data?.[k]))return data[k];}return[];}
+function roleBadge(role){const r=String(role||"client").toLowerCase();if(r==="admin")return`<span class="badge badge-admin">admin</span>`;if(r==="partner"||r==="expert")return`<span class="badge badge-partner">partner</span>`;return`<span class="badge badge-client">client</span>`;}
+function statusBadge(status){const s=String(status||"brouillon").toLowerCase();if(s.includes("transmis")||s.includes("sent")||s.includes("submitted"))return`<span class="badge badge-sent">${escapeHtml(status||"transmis")}</span>`;if(s.includes("brouillon")||s.includes("draft"))return`<span class="badge badge-draft">${escapeHtml(status||"brouillon")}</span>`;return`<span class="badge badge-status">${escapeHtml(status||"actif")}</span>`;}
+function isConfigSent(project){const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);const status=String(val(project,["status","statut"],"")).toLowerCase();return sent===true||sent==="true"||status.includes("transmis")||status.includes("submitted");}
+function getCompany(c){return val(c,["companyName","company_name","company","organization","organisation","entreprise"],"");}
+function getUserName(c){return (val(c,["firstName","first_name"],"") + " " + val(c,["lastName","last_name"],"")).trim() || val(c,["name","full_name"],"—");}
+function getPartnerIdFromOrg(o){return val(o,["partnerId","partner_id","ownerId","owner_id","created_by","createdBy"],"");}
+function getOrgName(o){return val(o,["name","organizationName","clientName","company","company_name"],"—");}
+function getPartnerForOrg(o){const pid=String(getPartnerIdFromOrg(o));return adminState.clients.find(c=>String(val(c,["id","user_id"],""))===pid && String(val(c,["role"],"")).toLowerCase()==="partner");}
+function getPartnerOrgs(partnerId){return adminState.organizations.filter(o=>String(getPartnerIdFromOrg(o))===String(partnerId));}
+
+function showTab(tab){
+  document.querySelectorAll(".admin-section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".side-link").forEach(a=>a.classList.remove("active"));
+  document.getElementById("tab-"+tab)?.classList.add("active");
+  document.querySelector(`.side-link[data-tab="${tab}"]`)?.classList.add("active");
+}
 
 function resetAdminFilters(){
-  ["clientSearch","projectSearch","orgSearch"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["clientSearch","projectSearch","orgSearch","partnerSearch"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   const roleFilter=document.getElementById("roleFilter");
   const statusFilter=document.getElementById("statusFilter");
   if(roleFilter)roleFilter.value="";
@@ -286,12 +366,8 @@ function resetAdminFilters(){
 }
 
 async function loadAdminData(){
-  hideError();hideSuccess();
-  resetAdminFilters();
-  document.getElementById("clientsLoading").style.display="block";
-  document.getElementById("projectsLoading").style.display="block";
-  document.getElementById("orgsLoading").style.display="block";
-
+  hideError();hideSuccess();resetAdminFilters();
+  ["clientsLoading","projectsLoading","orgsLoading","partnersLoading"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="block";});
   try{
     const [summary,clients,projects,organizations]=await Promise.all([
       apiGet("/api/admin/summary"),
@@ -299,36 +375,52 @@ async function loadAdminData(){
       apiGet("/api/admin/projects"),
       apiGet("/api/admin/organizations")
     ]);
-
     adminState.summary=summary||{};
     adminState.clients=normalizeArray(clients,["clients","users","data"]);
     adminState.projects=normalizeArray(projects,["projects","autodiags","data"]);
     adminState.organizations=normalizeArray(organizations,["organizations","clients","data"]);
-
-    renderKpis();
-    renderClients();
-    renderOrganizations();
-    renderProjects();
+    renderAll();
   }catch(err){
     console.error(err);
     showError("Impossible de charger l’espace admin. Détail : "+err.message);
   }finally{
-    document.getElementById("clientsLoading").style.display="none";
-    document.getElementById("projectsLoading").style.display="none";
-    document.getElementById("orgsLoading").style.display="none";
+    ["clientsLoading","projectsLoading","orgsLoading","partnersLoading"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});
   }
 }
 
-function renderKpis(){
-  document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
-  document.getElementById("kpiPartners").textContent=val(adminState.summary,["partnersCount"],adminState.clients.filter(c=>String(val(c,["role"],"")).toLowerCase()==="partner").length);
-  document.getElementById("kpiOrganizations").textContent=val(adminState.summary,["organizationsCount"],adminState.organizations.length);
-  document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);
+function renderAll(){
+  renderKpis();
+  renderAccounts();
+  renderPartners();
+  renderOrganizations();
+  renderProjects();
 }
 
-function renderClients(){
-  const q=document.getElementById("clientSearch").value.toLowerCase().trim();
-  const rf=document.getElementById("roleFilter").value;
+function renderKpis(){
+  const partners=adminState.clients.filter(c=>String(val(c,["role"],"")).toLowerCase()==="partner");
+  const partnerQuota=partners.reduce((s,p)=>s+num(val(p,["passationsQuota","passations_quota"],0)),0);
+  const partnerUsed=partners.reduce((s,p)=>s+num(val(p,["passationsUsed","passations_used"],0)),0);
+  const linkedOrgs=adminState.organizations.filter(o=>!!getPartnerForOrg(o)).length;
+  const directOrgs=adminState.organizations.length-linkedOrgs;
+
+  document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
+  document.getElementById("kpiPartners").textContent=partners.length;
+  document.getElementById("kpiOrganizations").textContent=adminState.organizations.length;
+  document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);
+  document.getElementById("kpiPartnerQuota").textContent=formatNumber(partnerQuota);
+  document.getElementById("kpiPartnerUsed").textContent=formatNumber(partnerUsed);
+  document.getElementById("kpiLinkedOrgs").textContent=linkedOrgs;
+  document.getElementById("kpiDirectOrgs").textContent=directOrgs;
+
+  document.getElementById("sideUsers").textContent=adminState.clients.length;
+  document.getElementById("sidePartners").textContent=partners.length;
+  document.getElementById("sideOrganizations").textContent=adminState.organizations.length;
+  document.getElementById("sideProjects").textContent=adminState.projects.length;
+}
+
+function renderAccounts(){
+  const q=(document.getElementById("clientSearch")?.value||"").toLowerCase().trim();
+  const rf=document.getElementById("roleFilter")?.value||"";
   const currentUserId=String(decodeJwt(getToken())?.id||"");
   const rows=adminState.clients.filter(c=>{
     const role=String(val(c,["role"],"client")).toLowerCase();
@@ -336,46 +428,41 @@ function renderClients(){
     return(!q||text.includes(q))&&(!rf||role===rf);
   });
 
-  const body=document.getElementById("clientsBody");
+  const body=document.getElementById("accountsBody");
   body.innerHTML=rows.map(c=>{
     const id=val(c,["id","user_id"],"");
-    const name=(val(c,["firstName","first_name"],"") + " " + val(c,["lastName","last_name"],"")).trim() || val(c,["name","full_name"],"—");
+    const name=getUserName(c);
     const email=val(c,["email"],"—");
-    const company=val(c,["companyName","company_name","company","organization","entreprise"],"—");
+    const company=getCompany(c);
     const role=String(val(c,["role"],"client")).toLowerCase();
     const status=val(c,["status","statut"],"actif");
     const projectCount=val(c,["projectsCount","projects_count"],adminState.projects.filter(p=>String(val(p,["user_id","client_id","owner_id"],""))===String(id)).length);
     const disableDelete=String(id)===currentUserId || role==="admin";
     const deleteTitle=String(id)===currentUserId ? "Tu ne peux pas supprimer ton propre compte" : role==="admin" ? "Par sécurité, un compte admin ne se supprime pas depuis cette interface" : "Supprimer ce compte";
-    const quota=num(val(c,["passationsQuota","passations_quota"],0));
-    const used=num(val(c,["passationsUsed","passations_used"],0));
-    const remaining=Math.max(0, quota-used);
 
     return`<tr>
       <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
       <td>${escapeHtml(email)}</td>
-      <td>${escapeHtml(company)}</td>
+      <td>
+        <div class="company-edit">
+          <input id="company-${escapeAttr(id)}" value="${escapeAttr(company)}" placeholder="Entreprise / organisme">
+          <button class="mini-btn light" onclick="saveUserCompany('${escapeAttr(id)}')">Enregistrer</button>
+        </div>
+      </td>
       <td id="role-badge-${escapeAttr(id)}">${roleBadge(role)}</td>
       <td>
         <select class="role-select" id="role-${escapeAttr(id)}">
           <option value="client" ${role==="client"?"selected":""}>client</option>
-          <option value="admin" ${role==="admin"?"selected":""}>admin</option>
           <option value="partner" ${role==="partner"?"selected":""}>partner</option>
+          <option value="admin" ${role==="admin"?"selected":""}>admin</option>
         </select>
         <button class="mini-btn" onclick="changeRole('${escapeAttr(id)}')">OK</button>
-      </td>
-      <td>
-        <div class="quota-box">
-          <input id="quota-${escapeAttr(id)}" type="number" min="0" value="${quota}" placeholder="Achetées">
-          <input id="used-${escapeAttr(id)}" type="number" min="0" value="${used}" placeholder="Utilisées">
-          <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
-          <button class="mini-btn light" onclick="saveUserPassations('${escapeAttr(id)}')">Enregistrer</button>
-        </div>
       </td>
       <td>${projectCount}</td>
       <td>${statusBadge(status)}</td>
       <td>
         <div class="actions-cell">
+          ${role==="partner"?`<button class="mini-btn light" onclick="openPartnerFolder('${escapeAttr(id)}')">Dossier partner</button>`:""}
           <button class="mini-btn danger" title="${escapeAttr(deleteTitle)}" ${disableDelete?"disabled":""} onclick="deleteUser('${escapeAttr(id)}','${escapeAttr(email)}')">Supprimer</button>
         </div>
         ${disableDelete?'<div class="warning-text">Protégé</div>':''}
@@ -383,58 +470,112 @@ function renderClients(){
     </tr>`;
   }).join("");
 
-  document.getElementById("clientsTable").style.display=rows.length?"table":"none";
-  document.getElementById("clientsEmpty").style.display=rows.length?"none":"block";
+  document.getElementById("accountsTable").style.display=rows.length?"table":"none";
+  document.getElementById("accountsEmpty").style.display=rows.length?"none":"block";
+}
+
+function renderPartners(){
+  const q=(document.getElementById("partnerSearch")?.value||"").toLowerCase().trim();
+  const partners=adminState.clients.filter(c=>String(val(c,["role"],"")).toLowerCase()==="partner").filter(p=>!q||JSON.stringify(p).toLowerCase().includes(q));
+  const grid=document.getElementById("partnersGrid");
+
+  grid.innerHTML=partners.map(p=>{
+    const id=val(p,["id","user_id"],"");
+    const name=getCompany(p) || getUserName(p);
+    const email=val(p,["email"],"—");
+    const quota=num(val(p,["passationsQuota","passations_quota"],0));
+    const used=num(val(p,["passationsUsed","passations_used"],0));
+    const remaining=Math.max(0,quota-used);
+    const orgs=getPartnerOrgs(id);
+    const projectCount=adminState.projects.filter(pr=>String(val(pr,["partner_id","partnerId","owner_id","user_id"],""))===String(id)).length;
+
+    return`<article class="partner-card">
+      <h3>${escapeHtml(name || "Partner sans nom")}</h3>
+      <div class="partner-meta">
+        ${escapeHtml(email)}<br>
+        ${orgs.length} client${orgs.length>1?"s":""} final${orgs.length>1?"s":""} · ${projectCount} AD
+      </div>
+
+      <div class="partner-quota">
+        <div class="partner-mini"><strong>${formatNumber(quota)}</strong><span>Achetées</span></div>
+        <div class="partner-mini"><strong>${formatNumber(used)}</strong><span>Utilisées</span></div>
+        <div class="partner-mini"><strong>${formatNumber(remaining)}</strong><span>Restantes</span></div>
+      </div>
+
+      <div class="quota-edit">
+        <div class="quota-field">
+          <label>Achetées</label>
+          <input id="quota-${escapeAttr(id)}" type="number" min="0" value="${quota}">
+        </div>
+        <div class="quota-field">
+          <label>Utilisées</label>
+          <input id="used-${escapeAttr(id)}" type="number" min="0" value="${used}">
+        </div>
+        <div class="quota-rest">Restantes calculées : ${formatNumber(remaining)}</div>
+        <button class="mini-btn light quota-action" onclick="saveUserPassations('${escapeAttr(id)}')">Enregistrer le quota</button>
+      </div>
+
+      <div class="actions-cell" style="margin-top:12px">
+        <button class="mini-btn" onclick="openPartnerFolder('${escapeAttr(id)}')">Voir dossier partner</button>
+      </div>
+    </article>`;
+  }).join("");
+
+  document.getElementById("partnersEmpty").style.display=partners.length?"none":"block";
 }
 
 function renderOrganizations(){
-  const q=document.getElementById("orgSearch").value.toLowerCase().trim();
-  const rows=adminState.organizations.filter(o=>{
-    const text=JSON.stringify(o).toLowerCase();
-    return !q || text.includes(q);
-  });
-
+  const q=(document.getElementById("orgSearch")?.value||"").toLowerCase().trim();
+  const rows=adminState.organizations.filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
   const body=document.getElementById("orgsBody");
+
   body.innerHTML=rows.map(o=>{
     const id=val(o,["id"],"");
-    const name=val(o,["name"],"—");
-    const owner=val(o,["ownerName","ownerEmail"],"—");
+    const name=getOrgName(o);
+    const partner=getPartnerForOrg(o);
+    const partnerName=partner ? (getCompany(partner)||getUserName(partner)) : val(o,["ownerName","ownerEmail"],"—");
     const contactName=val(o,["contactName","contact_name"],"—");
     const contactEmail=val(o,["contactEmail","contact_email"],"");
     const pack=val(o,["passationsPack","passations_pack"],"");
     const quota=num(val(o,["passationsQuota","passations_quota"],0));
     const used=num(val(o,["passationsUsed","passations_used"],0));
     const remaining=Math.max(0, quota-used);
-    const projectsCount=val(o,["projectsCount","projects_count"],0);
-    const created=formatDate(val(o,["createdAt","created_at"],""));
+    const projectsCount=val(o,["projectsCount","projects_count"],adminState.projects.filter(p=>String(val(p,["organization_id","organizationId"],""))===String(id)).length);
+    const isPartnerLinked=!!partner;
 
     return`<tr>
       <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
-      <td>${escapeHtml(owner)}</td>
+      <td>${isPartnerLinked?'<span class="badge badge-linked">client partner</span>':'<span class="badge badge-direct">client direct</span>'}</td>
+      <td>${escapeHtml(partnerName)}</td>
       <td><div>${escapeHtml(contactName)}</div><div class="muted">${escapeHtml(contactEmail)}</div></td>
       <td>
-        <select id="org-pack-${escapeAttr(id)}" class="pack-select">
-          <option value="" ${!pack?"selected":""}>Non renseigné</option>
-          <option value="200" ${pack==="200"?"selected":""}>200</option>
-          <option value="500" ${pack==="500"?"selected":""}>500</option>
-          <option value="1200" ${pack==="1200"?"selected":""}>1 200</option>
-          <option value="2000" ${pack==="2000"?"selected":""}>2 000</option>
-          <option value="3000" ${pack==="3000"?"selected":""}>3 000</option>
-          <option value="5000" ${pack==="5000"?"selected":""}>5 000</option>
-          <option value="7000" ${pack==="7000"?"selected":""}>7 000</option>
-          <option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option>
-        </select>
-      </td>
-      <td>
-        <div class="quota-box">
-          <input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}" placeholder="Achetées">
-          <input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}" placeholder="Utilisées">
-          <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
-          <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer</button>
-        </div>
+        ${isPartnerLinked
+          ? `<div class="muted"><strong>Utilise le quota du partner</strong><br>Pas de pack propre par défaut.</div>`
+          : `<div class="quota-edit">
+              <div class="quota-field"><label>Achetées</label><input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}"></div>
+              <div class="quota-field"><label>Utilisées</label><input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}"></div>
+              <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
+              <select id="org-pack-${escapeAttr(id)}" class="pack-select">
+                <option value="" ${!pack?"selected":""}>Pack non renseigné</option>
+                <option value="200" ${pack==="200"?"selected":""}>200</option>
+                <option value="500" ${pack==="500"?"selected":""}>500</option>
+                <option value="1200" ${pack==="1200"?"selected":""}>1 200</option>
+                <option value="2000" ${pack==="2000"?"selected":""}>2 000</option>
+                <option value="3000" ${pack==="3000"?"selected":""}>3 000</option>
+                <option value="5000" ${pack==="5000"?"selected":""}>5 000</option>
+                <option value="7000" ${pack==="7000"?"selected":""}>7 000</option>
+                <option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option>
+              </select>
+              <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer</button>
+            </div>`
+        }
       </td>
       <td>${projectsCount}</td>
-      <td>${created}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="mini-btn light" onclick="openClientFolder('${escapeAttr(id)}')">Dossier client</button>
+        </div>
+      </td>
     </tr>`;
   }).join("");
 
@@ -445,8 +586,8 @@ function renderOrganizations(){
 function getProjectConfig(p){let cfg=val(p,["config","configuration","payload","data"],null);if(typeof cfg==="string"){try{return JSON.parse(cfg);}catch(e){return {};}}return cfg&&typeof cfg==="object"?cfg:{};}
 
 function renderProjects(){
-  const q=document.getElementById("projectSearch").value.toLowerCase().trim();
-  const sf=document.getElementById("statusFilter").value.toLowerCase();
+  const q=(document.getElementById("projectSearch")?.value||"").toLowerCase().trim();
+  const sf=(document.getElementById("statusFilter")?.value||"").toLowerCase();
   const rows=adminState.projects.filter(p=>{
     const status=String(val(p,["status","statut"],"")).toLowerCase();
     const text=JSON.stringify(p).toLowerCase();
@@ -458,10 +599,7 @@ function renderProjects(){
     const cfg=getProjectConfig(p);
     const title=val(p,["title","project_title","autodiag_title","name","project_name"],val(cfg,["title","titre","autodiagTitle","diagnosticTitle","respondentTitle"],"Autodiag sans titre"));
     const client=val(p,["organizationName","clientName","client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));
-    const pack=val(p,["pack","organizationPassationsPack"],val(cfg,["pack","packChoisi","selectedPack","passationsPack"],"—"));
-    const qta=num(val(p,["organizationPassationsQuota"],0));
-    const used=num(val(p,["organizationPassationsUsed"],0));
-    const remaining=Math.max(0,qta-used);
+    const organization=val(p,["organizationName","organization_name"],"—");
     const status=val(p,["status","statut"],"brouillon");
     const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));
     const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
@@ -470,10 +608,7 @@ function renderProjects(){
     return`<tr>
       <td><div class="cell-title">${escapeHtml(title)}</div></td>
       <td>${escapeHtml(client)}</td>
-      <td>
-        <div>${escapeHtml(pack || "—")}</div>
-        ${qta ? `<div class="muted">${formatNumber(used)} utilisées / ${formatNumber(qta)} achetées<br>${formatNumber(remaining)} restantes</div>` : `<div class="muted">Quota non renseigné</div>`}
-      </td>
+      <td>${escapeHtml(organization)}</td>
       <td>${statusBadge(status)}</td>
       <td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td>
       <td>${created}</td>
@@ -485,16 +620,27 @@ function renderProjects(){
   document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";
 }
 
+async function saveUserCompany(userId){
+  const companyName=document.getElementById("company-"+String(userId))?.value || "";
+  try{
+    await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/company`,{companyName});
+    showSuccess("Entreprise / organisme mis à jour.");
+    await loadAdminData();
+  }catch(err){
+    console.error(err);
+    showError("Mise à jour entreprise impossible. Il faut ajouter la route backend /api/admin/users/:id/company. Détail : "+err.message);
+  }
+}
+
 async function saveUserPassations(userId){
   const quota=document.getElementById("quota-"+String(userId))?.value || 0;
   const used=document.getElementById("used-"+String(userId))?.value || 0;
-
   try{
     await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/passations`,{
       passationsQuota:Number(quota||0),
       passationsUsed:Number(used||0)
     });
-    showSuccess("Passations du compte mises à jour.");
+    showSuccess("Quota partner mis à jour.");
     await loadAdminData();
   }catch(err){
     console.error(err);
@@ -506,14 +652,13 @@ async function saveOrganizationPassations(orgId){
   const passationsPack=document.getElementById("org-pack-"+String(orgId))?.value || "";
   const passationsQuota=document.getElementById("org-quota-"+String(orgId))?.value || 0;
   const passationsUsed=document.getElementById("org-used-"+String(orgId))?.value || 0;
-
   try{
     await apiPatch(`/api/admin/organizations/${encodeURIComponent(orgId)}/passations`,{
       passationsPack,
       passationsQuota:Number(passationsQuota||0),
       passationsUsed:Number(passationsUsed||0)
     });
-    showSuccess("Pack et passations du client final mis à jour.");
+    showSuccess("Pack et passations du client direct mis à jour.");
     await loadAdminData();
   }catch(err){
     console.error(err);
@@ -527,11 +672,7 @@ function toggleNewPasswordVisibility(){
   if(!input)return;
   const hidden=input.type==="password";
   input.type=hidden?"text":"password";
-  if(btn){
-    btn.textContent=hidden?"🙈":"👁";
-    btn.setAttribute("aria-label",hidden?"Masquer le mot de passe":"Afficher le mot de passe");
-    btn.setAttribute("title",hidden?"Masquer le mot de passe":"Afficher le mot de passe");
-  }
+  if(btn)btn.textContent=hidden?"🙈":"👁";
 }
 
 function fillRandomPassword(){
@@ -549,21 +690,12 @@ async function createUser(){
     role:document.getElementById("newRole").value,
     password:document.getElementById("newPassword").value
   };
-
-  if(!payload.email||!payload.password){
-    showError("Email et mot de passe obligatoire.");
-    return;
-  }
-
+  if(!payload.email||!payload.password){showError("Email et mot de passe obligatoires.");return;}
   try{
     const created=await apiPost("/api/admin/users",payload);
-    const emailInfo=created?.emailSent?" L’email d’accès a bien été envoyé.":" Attention : l’email automatique n’a pas été confirmé, vérifie la configuration d’envoi.";
+    const emailInfo=created?.emailSent?" L’email d’accès a bien été envoyé.":" Attention : l’email automatique n’a pas été confirmé.";
     document.getElementById("createMsg").textContent="Compte créé. Le client sera invité à choisir son propre mot de passe à la première connexion."+emailInfo;
-    document.getElementById("newFirstname").value="";
-    document.getElementById("newLastname").value="";
-    document.getElementById("newEmail").value="";
-    document.getElementById("newCompany").value="";
-    document.getElementById("newPassword").value="";
+    ["newFirstname","newLastname","newEmail","newCompany","newPassword"].forEach(id=>document.getElementById(id).value="");
     document.getElementById("newRole").value="client";
     showSuccess("Compte créé avec succès.");
     await loadAdminData();
@@ -577,10 +709,8 @@ async function changeRole(userId){
   const select=document.getElementById("role-"+String(userId));
   const role=select?.value;
   if(!userId||!role)return;
-
   const badgeCell=document.getElementById("role-badge-"+String(userId));
   const previousRole=String(adminState.clients.find(c=>String(val(c,["id","user_id"],""))===String(userId))?.role||"client").toLowerCase();
-
   try{
     await apiPatch(`/api/admin/users/${encodeURIComponent(userId)}/role`,{role});
     if(badgeCell)badgeCell.innerHTML=roleBadge(role);
@@ -589,8 +719,7 @@ async function changeRole(userId){
       if(id===String(userId))return {...c,role};
       return c;
     });
-    renderKpis();
-    renderClients();
+    renderAll();
     showSuccess("Rôle mis à jour.");
   }catch(err){
     if(badgeCell)badgeCell.innerHTML=roleBadge(previousRole);
@@ -606,7 +735,6 @@ async function deleteUser(userId,email){
   if(String(userId)===currentUserId){showError("Tu ne peux pas supprimer ton propre compte admin.");return;}
   const ok=confirm(`Supprimer définitivement le compte ${email || "sélectionné"} ?`);
   if(!ok)return;
-
   try{
     await apiDelete(`/api/admin/users/${encodeURIComponent(userId)}`);
     showSuccess("Compte supprimé.");
@@ -617,11 +745,16 @@ async function deleteUser(userId,email){
   }
 }
 
+function openPartnerFolder(partnerId){
+  window.location.href=`partner-folder.html?id=${encodeURIComponent(partnerId)}`;
+}
+function openClientFolder(orgId){
+  window.location.href=`client-folder.html?id=${encodeURIComponent(orgId)}`;
+}
 function showError(msg){hideSuccess();const box=document.getElementById("errorBox");box.textContent=msg;box.style.display="block";box.scrollIntoView({behavior:"smooth",block:"center"});}
 function hideError(){const box=document.getElementById("errorBox");box.style.display="none";box.textContent="";}
 function showSuccess(msg){hideError();const box=document.getElementById("successBox");box.textContent=msg;box.style.display="block";setTimeout(()=>hideSuccess(),3500);}
 function hideSuccess(){const box=document.getElementById("successBox");box.style.display="none";box.textContent="";}
-function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:"smooth",block:"start"});}
 
 document.addEventListener("DOMContentLoaded",()=>{
   resetAdminFilters();
