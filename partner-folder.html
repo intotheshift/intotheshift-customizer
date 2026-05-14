@@ -375,9 +375,31 @@ function statusBadge(status){
 }
 
 function isConfigSent(project){
-  const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);
-  const status=String(val(project,["status","statut"],"")).toLowerCase();
-  return sent===true || sent==="true" || status.includes("transmis") || status.includes("submitted");
+  const data = project.data || {};
+  const payload = data.payload || {};
+
+  const sent =
+    project.configTransmise ||
+    project.config_transmise ||
+    project.configSent ||
+    project.submitted ||
+    project.is_submitted ||
+    data.configTransmise ||
+    data.config_transmise ||
+    data.submitted ||
+    payload.configTransmise ||
+    payload.config_transmise ||
+    payload.submitted;
+
+  const status = String(val(project,["status","statut"],"")).toLowerCase();
+
+  return (
+    sent === true ||
+    sent === "true" ||
+    status.includes("transmis") ||
+    status.includes("submitted") ||
+    status.includes("sent")
+  );
 }
 
 function updateQuotaDisplay(){
