@@ -526,14 +526,18 @@ function renderPartners(){
 
 function renderOrganizations(){
   const q=(document.getElementById("orgSearch")?.value||"").toLowerCase().trim();
-  const rows=adminState.organizations.filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
+
+  // Dans l'admin, on affiche uniquement les clients directs Into The Shift.
+  // Les clients finaux rattachés à un partner sont visibles dans le dossier partner.
+  const rows=adminState.organizations
+    .filter(o=>!getPartnerForOrg(o))
+    .filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
+
   const body=document.getElementById("orgsBody");
 
   body.innerHTML=rows.map(o=>{
     const id=val(o,["id"],"");
     const name=getOrgName(o);
-    const partner=getPartnerForOrg(o);
-    const partnerName=partner ? (getCompany(partner)||getUserName(partner)) : val(o,["ownerName","ownerEmail"],"—");
     const contactName=val(o,["contactName","contact_name"],"—");
     const contactEmail=val(o,["contactEmail","contact_email"],"");
     const pack=val(o,["passationsPack","passations_pack"],"");
@@ -541,34 +545,30 @@ function renderOrganizations(){
     const used=num(val(o,["passationsUsed","passations_used"],0));
     const remaining=Math.max(0, quota-used);
     const projectsCount=val(o,["projectsCount","projects_count"],adminState.projects.filter(p=>String(val(p,["organization_id","organizationId"],""))===String(id)).length);
-    const isPartnerLinked=!!partner;
 
     return`<tr>
       <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
-      <td>${isPartnerLinked?'<span class="badge badge-linked">client partner</span>':'<span class="badge badge-direct">client direct</span>'}</td>
-      <td>${escapeHtml(partnerName)}</td>
+      <td><span class="badge badge-direct">client direct Into The Shift</span></td>
+      <td>Into The Shift</td>
       <td><div>${escapeHtml(contactName)}</div><div class="muted">${escapeHtml(contactEmail)}</div></td>
       <td>
-        ${isPartnerLinked
-          ? `<div class="muted"><strong>Utilise le quota du partner</strong><br>Pas de pack propre par défaut.</div>`
-          : `<div class="quota-edit">
-              <div class="quota-field"><label>Achetées</label><input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}"></div>
-              <div class="quota-field"><label>Utilisées</label><input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}"></div>
-              <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
-              <select id="org-pack-${escapeAttr(id)}" class="pack-select">
-                <option value="" ${!pack?"selected":""}>Pack non renseigné</option>
-                <option value="200" ${pack==="200"?"selected":""}>200</option>
-                <option value="500" ${pack==="500"?"selected":""}>500</option>
-                <option value="1200" ${pack==="1200"?"selected":""}>1 200</option>
-                <option value="2000" ${pack==="2000"?"selected":""}>2 000</option>
-                <option value="3000" ${pack==="3000"?"selected":""}>3 000</option>
-                <option value="5000" ${pack==="5000"?"selected":""}>5 000</option>
-                <option value="7000" ${pack==="7000"?"selected":""}>7 000</option>
-                <option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option>
-              </select>
-              <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer</button>
-            </div>`
-        }
+        <div class="quota-edit">
+          <div class="quota-field"><label>Achetées</label><input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}"></div>
+          <div class="quota-field"><label>Utilisées</label><input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}"></div>
+          <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
+          <select id="org-pack-${escapeAttr(id)}" class="pack-select">
+            <option value="" ${!pack?"selected":""}>Pack non renseigné</option>
+            <option value="200" ${pack==="200"?"selected":""}>200</option>
+            <option value="500" ${pack==="500"?"selected":""}>500</option>
+            <option value="1200" ${pack==="1200"?"selected":""}>1 200</option>
+            <option value="2000" ${pack==="2000"?"selected":""}>2 000</option>
+            <option value="3000" ${pack==="3000"?"selected":""}>3 000</option>
+            <option value="5000" ${pack==="5000"?"selected":""}>5 000</option>
+            <option value="7000" ${pack==="7000"?"selected":""}>7 000</option>
+            <option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option>
+          </select>
+          <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer</button>
+        </div>
       </td>
       <td>${projectsCount}</td>
       <td>
@@ -597,7 +597,21 @@ function renderProjects(){
   const body=document.getElementById("projectsBody");
   body.innerHTML=rows.map(p=>{
     const cfg=getProjectConfig(p);
-    const title=val(p,["title","project_title","autodiag_title","name","project_name"],val(cfg,["title","titre","autodiagTitle","diagnosticTitle","respondentTitle"],"Autodiag sans titre"));
+    const title=val(cfg,[
+      "autodiagTitle",
+      "diagnosticTitle",
+      "adTitle",
+      "title",
+      "titre",
+      "campaignTitle",
+      "passationTitle"
+    ],val(p,[
+      "autodiag_title",
+      "project_title",
+      "title",
+      "name",
+      "project_name"
+    ],"Autodiag sans titre"));
     const client=val(p,["organizationName","clientName","client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));
     const organization=val(p,["organizationName","organization_name"],"—");
     const status=val(p,["status","statut"],"brouillon");
