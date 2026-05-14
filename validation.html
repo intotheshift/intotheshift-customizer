@@ -899,7 +899,11 @@ async function transmit(){
     if (typeof itsSave === 'function') itsSave(state);
     else localStorage.setItem('its_state', JSON.stringify(state));
   } catch(e) {}
-  const token = localStorage.getItem("its_token");
+ const token =
+  localStorage.getItem("its_token") ||
+  localStorage.getItem("token") ||
+  localStorage.getItem("auth_token") ||
+  "";
 
 try {
   await fetch("https://into-the-shift-studio-api.osc-fr1.scalingo.io/api/projects", {
