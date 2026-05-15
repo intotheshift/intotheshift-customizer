@@ -653,11 +653,11 @@ function renderProjects(){
       <td>${updated}</td>
       <td>
         <div class="actions-cell">
-          ${status==="sent"
+          ${sent && status!=="published"
             ? `<button class="mini-btn" onclick="markProjectPublished('${escapeAttr(val(p,["id"],""))}')">Marquer comme publié</button>`
             : status==="published"
               ? `<span class="badge badge-published">Déjà publié</span>`
-              : `<span class="muted">En attente transmission</span>`
+              : `<span class="muted">En attente de transmission</span>`
           }
         </div>
       </td>
