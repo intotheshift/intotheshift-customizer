@@ -507,8 +507,9 @@
       <input id="searchInput" type="search" placeholder="Rechercher un client, un AD, une campagne…" oninput="filterClients()">
       <select id="statusFilter" onchange="filterClients()">
         <option value="all">Tous les statuts</option>
-        <option value="active">Campagne active</option>
+        <option value="sent">Transmis</option>
         <option value="draft">Brouillon</option>
+        <option value="published">Publié</option>
       </select>
     </section>
 
@@ -737,7 +738,9 @@
                   project.title ||
                   "Autodiag",
                 campaign: configSent ? "Configuration transmise" : "Brouillon",
-                status: configSent ? "sent" : (project.status || "draft"),
+                status:
+                  project.status ||
+                  (configSent ? "sent" : "draft"),
                 raw: project
               };
             })
@@ -773,9 +776,9 @@
 
       list.forEach(client => {
         const ads = client.ads || [];
-        const activeAds = ads.filter(ad => ad.status === "active").length;
+        const sentAds = ads.filter(ad => ad.status === "sent").length;
+        const publishedAds = ads.filter(ad => ad.status === "published").length;
         const draftAds = ads.filter(ad => ad.status === "draft" || ad.status === "trial").length;
-
         const card = document.createElement("article");
         card.className = "client-card";
         card.dataset.status = client.status;
@@ -801,14 +804,18 @@
               <span>AD créés</span>
             </div>
             <div class="mini">
-              <strong>${activeAds}</strong>
-              <span>Campagnes actives</span>
+              <strong>${sentAds}</strong>
+              <span>Transmis</span>
             </div>
+
+            <div class="mini">
+             <strong>${publishedAds}</strong>
+             <span>Publiés</span>
+           </div>
             <div class="mini">
               <strong>${draftAds}</strong>
               <span>Brouillons</span>
             </div>
-          </div>
 
           <div class="ad-list">
             ${
@@ -822,17 +829,17 @@
 
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
                       <span class="status ${
-                        ad.status === "active" || ad.status === "sent"
-                          ? "status-live"
-                          : "status-draft"
+                          ad.status === "published"
+                            ? "status-live"
+                            : ad.status === "sent"
+                            ? "status-live"
+                            : "status-draft"
                       }">
                         ${
-                          ad.status === "active"
-                            ? "En cours"
+                          ad.status === "published"
+                            ? "Publié"
                             : ad.status === "sent"
                             ? "Transmis ITS"
-                            : ad.status === "closed"
-                            ? "Terminé"
                             : "Brouillon"
                         }
                       </span>
@@ -873,13 +880,17 @@
 
         let matchStatus = true;
 
-        if(status === "active"){
-          matchStatus = ads.some(ad => ad.status === "active" || ad.status === "sent");
-        }
+       if(status === "sent"){
+         matchStatus = ads.some(ad => ad.status === "sent");
+       }
+      
+       if(status === "published"){
+         matchStatus = ads.some(ad => ad.status === "published");
+       }
 
-        if(status === "draft"){
-          matchStatus = ads.some(ad => ad.status === "draft" || ad.status === "trial") || ads.length === 0;
-        }
+       if(status === "draft"){
+         matchStatus = ads.some(ad => ad.status === "draft" || ad.status === "trial") || ads.length === 0;
+       }
 
         return matchSearch && matchStatus;
       });
