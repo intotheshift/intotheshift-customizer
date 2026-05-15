@@ -50,8 +50,7 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .badge-partner{background:#fff2d8;color:#996700}
 .badge-direct{background:#eaf3f8;color:#0d4c72}
 .badge-linked{background:#fff2d8;color:#996700}
-.badge-sent{background:#e8f1ff;color:#1f4e91}
-.badge-published{background:#e6f7ef;color:#20784b}
+.badge-sent{background:#e6f7ef;color:#20784b}
 .badge-draft{background:#fff2d8;color:#996700}
 .badge-status{background:#edf2f7;color:#506477}
 .empty,.loading{padding:22px;text-align:center;color:#718497}
@@ -90,73 +89,117 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .partner-mini span{font-size:11px;color:#718497}
 .pack-select{width:150px;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif}
 
+/* Modale publication */
 .publish-modal-overlay{
   position:fixed;
   inset:0;
-  background:rgba(24,55,93,.48);
-  z-index:9999;
+  background:rgba(15,35,60,.48);
   display:none;
   align-items:center;
   justify-content:center;
   padding:24px;
+  z-index:9999;
 }
 .publish-modal-overlay.on{display:flex}
 .publish-modal{
-  width:min(460px,92vw);
+  width:min(520px,92vw);
   background:#fff;
+  border:1px solid #dfe8ef;
   border-radius:24px;
-  box-shadow:0 28px 80px rgba(15,30,55,.25);
-  border:1px solid #d8e0ea;
+  box-shadow:0 28px 80px rgba(15,35,60,.24);
   overflow:hidden;
 }
 .publish-modal-head{
-  background:linear-gradient(135deg,#0d4c72,#123d59);
-  color:#fff;
-  padding:22px 24px;
+  padding:22px 24px 10px;
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
 }
 .publish-modal-title{
+  font-size:22px;
+  font-weight:900;
+  color:#0d4c72;
+  margin:0;
+}
+.publish-modal-close{
+  border:0;
+  background:#eef6fb;
+  color:#0d4c72;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  cursor:pointer;
   font-size:20px;
   font-weight:900;
-  margin:0 0 6px;
-}
-.publish-modal-sub{
-  font-size:13px;
-  line-height:1.45;
-  opacity:.9;
 }
 .publish-modal-body{
-  padding:22px 24px;
+  padding:8px 24px 20px;
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
 }
-.publish-modal-body p{
-  margin:0;
-  color:#60758a;
-  font-size:14px;
+.publish-modal-icon{
+  width:48px;
+  height:48px;
+  border-radius:999px;
+  background:#e6f7ef;
+  color:#20784b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  font-weight:900;
+  flex:0 0 auto;
+}
+.publish-modal-text{
+  color:#506477;
   line-height:1.5;
+  font-size:15px;
+}
+.publish-modal-project{
+  margin-top:8px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:#f6f9fb;
+  color:#18375d;
+  font-weight:900;
 }
 .publish-modal-actions{
+  padding:0 24px 24px;
   display:flex;
   gap:10px;
   justify-content:flex-end;
-  padding:0 24px 24px;
   flex-wrap:wrap;
 }
 .publish-modal-btn{
   border:0;
-  border-radius:999px;
+  border-radius:14px;
   padding:11px 16px;
   font-family:'Asap',sans-serif;
   font-weight:900;
   cursor:pointer;
 }
-.publish-modal-btn.secondary{
+.publish-modal-btn.cancel{
   background:#fff;
   color:#0d4c72;
   border:1px solid #cbd9e7;
 }
-.publish-modal-btn.primary{
-  background:#0d4c72;
+.publish-modal-btn.confirm{
+  background:#20784b;
   color:#fff;
 }
+.status-help{
+  background:#f4f9ff;
+  border:1px solid #d5e8fb;
+  color:#244b63;
+  border-radius:16px;
+  padding:14px 16px;
+  margin-bottom:14px;
+  font-size:13px;
+  line-height:1.55;
+}
+.status-help strong{color:#0d4c72}
 
 @media(max-width:1150px){.partner-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-layout{grid-template-columns:1fr}.admin-side{position:relative;top:auto;display:flex;overflow-x:auto}.side-title,.side-small{display:none}.side-link{white-space:nowrap}.admin-hero{flex-direction:column}.admin-actions{justify-content:flex-start}}
 @media(max-width:1050px){.admin-form{grid-template-columns:1fr 1fr}.form-actions{grid-column:1 / -1}.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -340,11 +383,18 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
             <input id="projectSearch" class="admin-input" placeholder="Rechercher titre, client, statut..." oninput="renderProjects()">
             <select id="statusFilter" class="admin-select" onchange="renderProjects()">
               <option value="">Tous les statuts</option>
-              <option value="draft">Brouillon</option>
-              <option value="sent">Transmis</option>
-              <option value="published">Publié</option>
+              <option value="brouillon">Brouillon</option>
+              <option value="transmis">Transmis</option>
+              <option value="traitement">En traitement</option>
+              <option value="ligne">En ligne</option>
             </select>
           </div>
+        </div>
+        <div class="status-help">
+          <strong>Statuts :</strong>
+          <span class="badge badge-draft">Brouillon</span> = non transmis ·
+          <span class="badge badge-sent">Transmis</span> = envoyé par le client / partner, en attente de publication ·
+          <span class="badge badge-published">Publié</span> = mis en ligne.
         </div>
         <div id="projectsLoading" class="loading">Chargement des projets...</div>
         <div class="table-wrap">
@@ -358,7 +408,6 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
                 <th>Config transmise</th>
                 <th>Date création</th>
                 <th>Dernière mise à jour</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="projectsBody"></tbody>
@@ -373,18 +422,24 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
 <div class="publish-modal-overlay" id="publishModal" aria-hidden="true">
   <div class="publish-modal" role="dialog" aria-modal="true" aria-labelledby="publishModalTitle">
     <div class="publish-modal-head">
-      <div class="publish-modal-title" id="publishModalTitle">Confirmer la publication</div>
-      <div class="publish-modal-sub">Cette action mettra à jour le statut de l’autodiagnostic.</div>
+      <h3 class="publish-modal-title" id="publishModalTitle">Confirmer la publication</h3>
+      <button class="publish-modal-close" type="button" onclick="closePublishModal()" aria-label="Fermer">×</button>
     </div>
     <div class="publish-modal-body">
-      <p id="publishModalText">Cet autodiagnostic sera marqué comme publié et visible comme tel côté client ou partner.</p>
+      <div class="publish-modal-icon">✓</div>
+      <div class="publish-modal-text">
+        Cet autodiagnostic sera marqué comme publié.
+        Il apparaîtra comme <strong>Publié</strong> côté admin, partner et client.
+        <div class="publish-modal-project" id="publishModalProject">Autodiagnostic sélectionné</div>
+      </div>
     </div>
     <div class="publish-modal-actions">
-      <button class="publish-modal-btn secondary" type="button" onclick="closePublishModal()">Annuler</button>
-      <button class="publish-modal-btn primary" type="button" onclick="confirmPublishProject()">Marquer comme publié</button>
+      <button class="publish-modal-btn cancel" type="button" onclick="closePublishModal()">Annuler</button>
+      <button class="publish-modal-btn confirm" type="button" onclick="confirmPublishProject()">Marquer comme publié</button>
     </div>
   </div>
 </div>
+
 
 <script>
 const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
@@ -428,30 +483,8 @@ function escapeHtml(str){return String(str??"").replace(/[&<>"']/g,m=>({"&":"&am
 function escapeAttr(str){return escapeHtml(str).replace(/`/g,"&#096;");}
 function normalizeArray(data,keys){if(Array.isArray(data))return data;for(const k of keys){if(Array.isArray(data?.[k]))return data[k];}return[];}
 function roleBadge(role){const r=String(role||"client").toLowerCase();if(r==="admin")return`<span class="badge badge-admin">admin</span>`;if(r==="partner"||r==="expert")return`<span class="badge badge-partner">partner</span>`;return`<span class="badge badge-client">client</span>`;}
-function normalizeProjectStatus(status){
-  const s=String(status||"draft").toLowerCase();
-  if(s==="published"||s.includes("publi")||s.includes("ligne"))return "published";
-  if(s==="sent"||s.includes("transmis")||s.includes("submitted"))return "sent";
-  if(s==="draft"||s==="trial"||s.includes("brouillon"))return "draft";
-  return s || "draft";
-}
-function statusLabel(status){
-  const s=normalizeProjectStatus(status);
-  if(s==="published")return "Publié";
-  if(s==="sent")return "Transmis";
-  return "Brouillon";
-}
-function statusBadge(status){
-  const s=normalizeProjectStatus(status);
-  if(s==="published")return`<span class="badge badge-published">Publié</span>`;
-  if(s==="sent")return`<span class="badge badge-sent">Transmis</span>`;
-  return`<span class="badge badge-draft">Brouillon</span>`;
-}
-function isConfigSent(project){
-  const sent=val(project,["config_transmise","configTransmise","configSent","submitted","is_submitted"],false);
-  const status=normalizeProjectStatus(val(project,["status","statut"],""));
-  return sent===true||sent==="true"||status==="sent"||status==="published";
-}
+function statusBadge(status){const s=String(status||"brouillon").toLowerCase();if(s.includes("transmis")||s.includes("sent")||s.includes("submitted"))return`<span class="badge badge-sent">${escapeHtml(status||"transmis")}</span>`;if(s.includes("brouillon")||s.includes("draft"))return`<span class="badge badge-draft">${escapeHtml(status||"brouillon")}</span>`;return`<span class="badge badge-status">${escapeHtml(status||"actif")}</span>`;}
+function isConfigSent(project){const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);const status=String(val(project,["status","statut"],"")).toLowerCase();return sent===true||sent==="true"||status.includes("transmis")||status.includes("submitted");}
 function getCompany(c){return val(c,["companyName","company_name","company","organization","organisation","entreprise"],"");}
 function getUserName(c){return (val(c,["firstName","first_name"],"") + " " + val(c,["lastName","last_name"],"")).trim() || val(c,["name","full_name"],"—");}
 function getPartnerIdFromOrg(o){return val(o,["partnerId","partner_id","ownerId","owner_id","created_by","createdBy"],"");}
@@ -698,9 +731,9 @@ function renderProjects(){
   const q=(document.getElementById("projectSearch")?.value||"").toLowerCase().trim();
   const sf=(document.getElementById("statusFilter")?.value||"").toLowerCase();
   const rows=adminState.projects.filter(p=>{
-    const status=normalizeProjectStatus(val(p,["status","statut"],"draft"));
+    const status=String(val(p,["status","statut"],"")).toLowerCase();
     const text=JSON.stringify(p).toLowerCase();
-    return(!q||text.includes(q))&&(!sf||status===sf);
+    return(!q||text.includes(q))&&(!sf||status.includes(sf));
   });
 
   const body=document.getElementById("projectsBody");
@@ -723,8 +756,7 @@ function renderProjects(){
     ],"Autodiag sans titre"));
     const client=val(p,["organizationName","clientName","client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));
     const organization=val(p,["organizationName","organization_name"],"—");
-    const rawStatus=val(p,["status","statut"],"draft");
-    const status=normalizeProjectStatus(rawStatus);
+    const status=val(p,["status","statut"],"brouillon");
     const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));
     const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
     const sent=isConfigSent(p);
@@ -737,68 +769,11 @@ function renderProjects(){
       <td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td>
       <td>${created}</td>
       <td>${updated}</td>
-      <td>
-        <div class="actions-cell">
-          ${sent && status!=="published"
-            ? `<button class="mini-btn" onclick="markProjectPublished('${escapeAttr(val(p,["id"],""))}')">Marquer comme publié</button>`
-            : status==="published"
-              ? `<span class="badge badge-published">Déjà publié</span>`
-              : `<span class="muted">En attente de transmission</span>`
-          }
-        </div>
-      </td>
     </tr>`;
   }).join("");
 
   document.getElementById("projectsTable").style.display=rows.length?"table":"none";
   document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";
-}
-
-
-function markProjectPublished(projectId){
-  if(!projectId)return;
-  pendingPublishProjectId = projectId;
-
-  const modal = document.getElementById("publishModal");
-  if(modal){
-    modal.classList.add("on");
-    modal.setAttribute("aria-hidden","false");
-  }
-}
-
-function closePublishModal(){
-  pendingPublishProjectId = null;
-  const modal = document.getElementById("publishModal");
-  if(modal){
-    modal.classList.remove("on");
-    modal.setAttribute("aria-hidden","true");
-  }
-}
-
-async function confirmPublishProject(){
-  const projectId = pendingPublishProjectId;
-  if(!projectId)return;
-
-  try{
-    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/status`,{
-      status:"published"
-    });
-
-    adminState.projects=adminState.projects.map(p=>{
-      if(String(val(p,["id"],""))===String(projectId)){
-        return {...p,status:"published",statut:"published"};
-      }
-      return p;
-    });
-
-    closePublishModal();
-    renderProjects();
-    showSuccess("Autodiag marqué comme publié.");
-  }catch(err){
-    console.error(err);
-    closePublishModal();
-    showError("Publication impossible. Détail : "+err.message);
-  }
 }
 
 async function saveUserCompany(userId){
@@ -937,6 +912,10 @@ function hideError(){const box=document.getElementById("errorBox");box.style.dis
 function showSuccess(msg){hideError();const box=document.getElementById("successBox");box.textContent=msg;box.style.display="block";setTimeout(()=>hideSuccess(),3500);}
 function hideSuccess(){const box=document.getElementById("successBox");box.style.display="none";box.textContent="";}
 
+document.addEventListener("keydown",(event)=>{
+  if(event.key==="Escape")closePublishModal();
+});
+
 document.addEventListener("DOMContentLoaded",()=>{
   resetAdminFilters();
   setTimeout(resetAdminFilters,250);
@@ -945,3 +924,45 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 </body>
 </html>
+function openPublishModal(projectId, projectTitle){
+  pendingPublishProjectId = projectId;
+  const modal=document.getElementById("publishModal");
+  const title=document.getElementById("publishModalProject");
+  if(title)title.textContent=projectTitle || "Autodiagnostic sélectionné";
+  modal.classList.add("on");
+  modal.setAttribute("aria-hidden","false");
+}
+
+function closePublishModal(){
+  pendingPublishProjectId = null;
+  const modal=document.getElementById("publishModal");
+  modal.classList.remove("on");
+  modal.setAttribute("aria-hidden","true");
+}
+
+async function confirmPublishProject(){
+  const projectId = pendingPublishProjectId;
+  if(!projectId)return;
+
+  try{
+    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/status`,{
+      status:"published"
+    });
+
+    adminState.projects=adminState.projects.map(p=>{
+      if(String(val(p,["id"],""))===String(projectId)){
+        return {...p,status:"published",statut:"published",configTransmise:true};
+      }
+      return p;
+    });
+
+    closePublishModal();
+    renderProjects();
+    showSuccess("Autodiag marqué comme publié.");
+  }catch(err){
+    console.error(err);
+    closePublishModal();
+    showError("Publication impossible. Détail : "+err.message);
+  }
+}
+
