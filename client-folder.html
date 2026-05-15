@@ -67,6 +67,15 @@
       color:#fff;
       height:max-content;
     }
+    .btn.light{
+      background:#fff;
+      color:#0d4c72;
+      border:1px solid #cbd9e7;
+    }
+    .btn.publish{
+      background:#16774a;
+      color:#fff;
+    }
     .tabs{
       display:flex;
       gap:8px;
@@ -117,10 +126,42 @@
       display:inline-flex;
       border-radius:999px;
       padding:6px 10px;
-      background:#fff5da;
-      color:#8a6200;
       font-weight:700;
       font-size:12px;
+      margin-bottom:14px;
+    }
+    .status-draft{
+      background:#fff5da;
+      color:#8a6200;
+    }
+    .status-sent{
+      background:#e8f1ff;
+      color:#1f4e91;
+    }
+    .status-published{
+      background:#eafbf1;
+      color:#16774a;
+    }
+    .card-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .small-btn{
+      border-radius:999px;
+      padding:9px 13px;
+      border:1px solid #d8e2ec;
+      background:#fff;
+      color:#0d4c72;
+      font-weight:700;
+      font-family:'Asap',sans-serif;
+      cursor:pointer;
+    }
+    .small-btn.publish{
+      background:#16774a;
+      color:#fff;
+      border-color:#16774a;
     }
     .empty{
       border:1px dashed #cbd9e7;
@@ -210,6 +251,14 @@
       );
     }
 
+    function getRole(){
+      return localStorage.getItem("its_user_role") || "";
+    }
+
+    function isAdmin(){
+      return getRole() === "admin";
+    }
+
     function getClientId(){
       const params = new URLSearchParams(window.location.search);
       return params.get("id") || localStorage.getItem("its_selected_partner_client_id");
@@ -252,6 +301,36 @@
       }
     }
 
+    function normalizeStatus(status){
+      const s = String(status || "").toLowerCase();
+
+      if(s === "sent" || s === "transmis" || s === "submitted"){
+        return "sent";
+      }
+
+      if(s === "published" || s === "publie" || s === "publié" || s === "ligne" || s === "en ligne"){
+        return "published";
+      }
+
+      return "draft";
+    }
+
+    function getStatusLabel(status){
+      const s = normalizeStatus(status);
+
+      if(s === "sent") return "Transmis";
+      if(s === "published") return "Publié";
+      return "Brouillon";
+    }
+
+    function getStatusClass(status){
+      const s = normalizeStatus(status);
+
+      if(s === "sent") return "status-sent";
+      if(s === "published") return "status-published";
+      return "status-draft";
+    }
+
     function renderClient(){
       document.getElementById("loadingState").style.display = "none";
       document.getElementById("tab-ads").style.display = "block";
@@ -275,12 +354,59 @@
         return;
       }
 
-      adsList.innerHTML = projects.map(project => `
-        <article class="card">
-          <h3>${escapeHtml(project.title || "Autodiag sans titre")}</h3>
-          <span class="status">${escapeHtml(project.status || "brouillon")}</span>
-        </article>
-      `).join("");
+      adsList.innerHTML = projects.map(project => {
+        const normalizedStatus = normalizeStatus(project.status);
+
+        return `
+          <article class="card">
+            <h3>${escapeHtml(project.title || "Autodiag sans titre")}</h3>
+
+            <span class="status ${getStatusClass(project.status)}">
+              ${getStatusLabel(project.status)}
+            </span>
+
+            <div class="card-actions">
+              ${
+                normalizedStatus === "sent" && isAdmin()
+                  ? `<button class="small-btn publish" onclick="publishProject(${Number(project.id)})">Marquer comme publié</button>`
+                  : ""
+              }
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function publishProject(projectId){
+      if(!projectId) return;
+
+      const ok = confirm("Confirmer que cet autodiagnostic est publié ?");
+      if(!ok) return;
+
+      try{
+        const response = await fetch(`${API_URL}/api/admin/projects/${projectId}/status`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            status: "published"
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if(!response.ok){
+          throw new Error(data.error || "Erreur publication");
+        }
+
+        await loadClientFolder();
+
+      } catch(err){
+        console.error(err);
+        alert("Impossible de passer cet AD en publié.");
+      }
     }
 
     function showTab(tabName, button){
