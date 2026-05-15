@@ -612,6 +612,50 @@
       }
     }
 
+    function isProjectConfigSent(project){
+      const data = project?.data || {};
+      const payload = data?.payload || {};
+
+      return (
+        project?.configTransmise === true ||
+        project?.config_transmise === true ||
+        project?.submitted === true ||
+        data?.configTransmise === true ||
+        data?.config_transmise === true ||
+        data?.submitted === true ||
+        payload?.configTransmise === true ||
+        payload?.config_transmise === true ||
+        payload?.submitted === true
+      );
+    }
+
+    function normalizeProjectForEdit(project){
+      const data = project?.data || {};
+      const payload = data?.payload || data || {};
+
+      return {
+        title: payload.titre_autodiag || data.autodiagTitle || data.title || project?.title || "Autodiag",
+        themeTitle: payload.titre_autodiag || data.autodiagTitle || data.title || project?.title || "Autodiag",
+        chapters: payload.chapters || data.chapters || [],
+        parametrage: {
+          nom: payload.titre_autodiag || data.autodiagTitle || project?.title || "Autodiag",
+          titre: payload.titre_repondants || payload.titre_autodiag || project?.title || "Autodiag",
+          titre_repondants: payload.titre_repondants || payload.titre_autodiag || project?.title || "Autodiag",
+          entreprise: payload.entreprise || payload.client_info?.entreprise || "",
+          date_lancement: payload.date_lancement || "",
+          date_cloture: payload.date_cloture || "",
+          pack: payload.pack || "",
+          slug: payload.slug || "",
+          url_prevue: payload.url_prevue || ""
+        },
+        clientInfo: payload.client_info || {},
+        transmission: {
+          status: isProjectConfigSent(project) ? "sent" : "draft",
+          payload
+        }
+      };
+    }
+
     async function loadPartnerQuota(){
       try{
         const token = getToken();
@@ -629,8 +673,8 @@
         const data = await response.json();
         const partner = data.partner || data.user || data || {};
 
-        const quota = Number(partner.passations_quota || 0);
-        const used = Number(partner.passations_used || 0);
+        const quota = Number(partner.passations_quota || partner.passationsQuota || 0);
+        const used = Number(partner.passations_used || partner.passationsUsed || 0);
         const left = Math.max(quota - used, 0);
 
         document.getElementById("stat-quota-total").textContent = quota;
@@ -681,12 +725,22 @@
             contact: client.contact_name || "—",
             email: client.contact_email || "",
             status: Number(client.active_campaigns_count || 0) > 0 ? "active" : "draft",
-            ads: projects.map(project => ({
-              id: project.id,
-              title: project.title || "Autodiag",
-              campaign: project.status === "active" ? "Campagne en cours" : "Brouillon",
-              status: project.status || "draft"
-            }))
+            ads: projects.map(project => {
+
+              const configSent = isProjectConfigSent(project);
+
+              return {
+                id: project.id,
+                title:
+                  project?.data?.payload?.titre_autodiag ||
+                  project?.data?.autodiagTitle ||
+                  project.title ||
+                  "Autodiag",
+                campaign: configSent ? "Configuration transmise" : "Brouillon",
+                status: configSent ? "sent" : (project.status || "draft"),
+                raw: project
+              };
+            })
           };
         });
 
@@ -765,9 +819,28 @@
                       <div class="ad-title">${escapeHtml(ad.title)}</div>
                       <div class="ad-sub">${escapeHtml(ad.campaign)}</div>
                     </div>
-                    <span class="status ${ad.status === "active" ? "status-live" : "status-draft"}">
-                      ${ad.status === "active" ? "En cours" : ad.status === "closed" ? "Terminé" : "Brouillon"}
-                    </span>
+
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+                      <span class="status ${
+                        ad.status === "active" || ad.status === "sent"
+                          ? "status-live"
+                          : "status-draft"
+                      }">
+                        ${
+                          ad.status === "active"
+                            ? "En cours"
+                            : ad.status === "sent"
+                            ? "Transmis ITS"
+                            : ad.status === "closed"
+                            ? "Terminé"
+                            : "Brouillon"
+                        }
+                      </span>
+
+                      <button class="small-btn" onclick="editProject(${ad.id})">
+                        Modifier l’AD
+                      </button>
+                    </div>
                   </div>
                 `).join("")
                 : `<div class="ad-sub">Aucun autodiagnostic créé pour ce client.</div>`
@@ -801,7 +874,7 @@
         let matchStatus = true;
 
         if(status === "active"){
-          matchStatus = ads.some(ad => ad.status === "active");
+          matchStatus = ads.some(ad => ad.status === "active" || ad.status === "sent");
         }
 
         if(status === "draft"){
@@ -893,6 +966,64 @@
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = "Créer le dossier client";
+      }
+    }
+
+    async function editProject(projectId){
+      try{
+        const token = getToken();
+
+        const response = await fetch(`${API_URL}/api/projects`, {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
+
+        if(!response.ok){
+          throw new Error("Impossible de charger les projets");
+        }
+
+        const data = await response.json();
+        const projects = data.projects || [];
+
+        const project = projects.find(
+          p => Number(p.id) === Number(projectId)
+        );
+
+        if(!project){
+          alert("Projet introuvable.");
+          return;
+        }
+
+        const restoredState = normalizeProjectForEdit(project);
+
+        localStorage.setItem(
+          "intotheshift_customizer_state_v1",
+          JSON.stringify(restoredState)
+        );
+
+        localStorage.setItem(
+          "its_state",
+          JSON.stringify(restoredState)
+        );
+
+        localStorage.setItem(
+          "its_current_project_id",
+          project.id
+        );
+
+        if(project.organization_id || project.organizationId){
+          localStorage.setItem(
+            "its_selected_partner_client_id",
+            project.organization_id || project.organizationId
+          );
+        }
+
+        window.location.href = "questions.html";
+
+      } catch(err){
+        console.error(err);
+        alert("Impossible d’ouvrir cet autodiag.");
       }
     }
 
