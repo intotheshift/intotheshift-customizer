@@ -50,7 +50,8 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .badge-partner{background:#fff2d8;color:#996700}
 .badge-direct{background:#eaf3f8;color:#0d4c72}
 .badge-linked{background:#fff2d8;color:#996700}
-.badge-sent{background:#e6f7ef;color:#20784b}
+.badge-sent{background:#e8f1ff;color:#1f4e91}
+.badge-published{background:#e6f7ef;color:#20784b}
 .badge-draft{background:#fff2d8;color:#996700}
 .badge-status{background:#edf2f7;color:#506477}
 .empty,.loading{padding:22px;text-align:center;color:#718497}
@@ -270,10 +271,9 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
             <input id="projectSearch" class="admin-input" placeholder="Rechercher titre, client, statut..." oninput="renderProjects()">
             <select id="statusFilter" class="admin-select" onchange="renderProjects()">
               <option value="">Tous les statuts</option>
-              <option value="brouillon">Brouillon</option>
-              <option value="transmis">Transmis</option>
-              <option value="traitement">En traitement</option>
-              <option value="ligne">En ligne</option>
+              <option value="draft">Brouillon</option>
+              <option value="sent">Transmis</option>
+              <option value="published">Publié</option>
             </select>
           </div>
         </div>
@@ -289,6 +289,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
                 <th>Config transmise</th>
                 <th>Date création</th>
                 <th>Dernière mise à jour</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="projectsBody"></tbody>
@@ -341,8 +342,30 @@ function escapeHtml(str){return String(str??"").replace(/[&<>"']/g,m=>({"&":"&am
 function escapeAttr(str){return escapeHtml(str).replace(/`/g,"&#096;");}
 function normalizeArray(data,keys){if(Array.isArray(data))return data;for(const k of keys){if(Array.isArray(data?.[k]))return data[k];}return[];}
 function roleBadge(role){const r=String(role||"client").toLowerCase();if(r==="admin")return`<span class="badge badge-admin">admin</span>`;if(r==="partner"||r==="expert")return`<span class="badge badge-partner">partner</span>`;return`<span class="badge badge-client">client</span>`;}
-function statusBadge(status){const s=String(status||"brouillon").toLowerCase();if(s.includes("transmis")||s.includes("sent")||s.includes("submitted"))return`<span class="badge badge-sent">${escapeHtml(status||"transmis")}</span>`;if(s.includes("brouillon")||s.includes("draft"))return`<span class="badge badge-draft">${escapeHtml(status||"brouillon")}</span>`;return`<span class="badge badge-status">${escapeHtml(status||"actif")}</span>`;}
-function isConfigSent(project){const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);const status=String(val(project,["status","statut"],"")).toLowerCase();return sent===true||sent==="true"||status.includes("transmis")||status.includes("submitted");}
+function normalizeProjectStatus(status){
+  const s=String(status||"draft").toLowerCase();
+  if(s==="published"||s.includes("publi")||s.includes("ligne"))return "published";
+  if(s==="sent"||s.includes("transmis")||s.includes("submitted"))return "sent";
+  if(s==="draft"||s==="trial"||s.includes("brouillon"))return "draft";
+  return s || "draft";
+}
+function statusLabel(status){
+  const s=normalizeProjectStatus(status);
+  if(s==="published")return "Publié";
+  if(s==="sent")return "Transmis";
+  return "Brouillon";
+}
+function statusBadge(status){
+  const s=normalizeProjectStatus(status);
+  if(s==="published")return`<span class="badge badge-published">Publié</span>`;
+  if(s==="sent")return`<span class="badge badge-sent">Transmis</span>`;
+  return`<span class="badge badge-draft">Brouillon</span>`;
+}
+function isConfigSent(project){
+  const sent=val(project,["config_transmise","configTransmise","configSent","submitted","is_submitted"],false);
+  const status=normalizeProjectStatus(val(project,["status","statut"],""));
+  return sent===true||sent==="true"||status==="sent"||status==="published";
+}
 function getCompany(c){return val(c,["companyName","company_name","company","organization","organisation","entreprise"],"");}
 function getUserName(c){return (val(c,["firstName","first_name"],"") + " " + val(c,["lastName","last_name"],"")).trim() || val(c,["name","full_name"],"—");}
 function getPartnerIdFromOrg(o){return val(o,["partnerId","partner_id","ownerId","owner_id","created_by","createdBy"],"");}
@@ -589,9 +612,9 @@ function renderProjects(){
   const q=(document.getElementById("projectSearch")?.value||"").toLowerCase().trim();
   const sf=(document.getElementById("statusFilter")?.value||"").toLowerCase();
   const rows=adminState.projects.filter(p=>{
-    const status=String(val(p,["status","statut"],"")).toLowerCase();
+    const status=normalizeProjectStatus(val(p,["status","statut"],"draft"));
     const text=JSON.stringify(p).toLowerCase();
-    return(!q||text.includes(q))&&(!sf||status.includes(sf));
+    return(!q||text.includes(q))&&(!sf||status===sf);
   });
 
   const body=document.getElementById("projectsBody");
@@ -614,7 +637,8 @@ function renderProjects(){
     ],"Autodiag sans titre"));
     const client=val(p,["organizationName","clientName","client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));
     const organization=val(p,["organizationName","organization_name"],"—");
-    const status=val(p,["status","statut"],"brouillon");
+    const rawStatus=val(p,["status","statut"],"draft");
+    const status=normalizeProjectStatus(rawStatus);
     const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));
     const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
     const sent=isConfigSent(p);
@@ -627,11 +651,47 @@ function renderProjects(){
       <td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td>
       <td>${created}</td>
       <td>${updated}</td>
+      <td>
+        <div class="actions-cell">
+          ${status==="sent"
+            ? `<button class="mini-btn" onclick="markProjectPublished('${escapeAttr(val(p,["id"],""))}')">Marquer comme publié</button>`
+            : status==="published"
+              ? `<span class="badge badge-published">Déjà publié</span>`
+              : `<span class="muted">En attente transmission</span>`
+          }
+        </div>
+      </td>
     </tr>`;
   }).join("");
 
   document.getElementById("projectsTable").style.display=rows.length?"table":"none";
   document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";
+}
+
+
+async function markProjectPublished(projectId){
+  if(!projectId)return;
+  const ok=confirm("Marquer cet autodiag comme publié ?");
+  if(!ok)return;
+
+  try{
+    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/status`,{
+      status:"published"
+    });
+
+    adminState.projects=adminState.projects.map(p=>{
+      if(String(val(p,["id"],""))===String(projectId)){
+        return {...p,status:"published",statut:"published"};
+      }
+      return p;
+    });
+
+    renderProjects();
+    showSuccess("Autodiag marqué comme publié.");
+  }catch(err){
+    console.error(err);
+    showError("Publication impossible. Il faut que la route backend PATCH /api/admin/projects/:id/status soit ajoutée. Détail : "+err.message);
+  }
 }
 
 async function saveUserCompany(userId){
