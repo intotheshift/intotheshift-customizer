@@ -1,15 +1,41 @@
-const ITS_KEY = "intotheshift_customizer_state_v1";
+function itsGetCurrentUserKey() {
+  const userId =
+    localStorage.getItem("its_user_id") ||
+    localStorage.getItem("user_id") ||
+    localStorage.getItem("id");
+
+  const email =
+    localStorage.getItem("its_user_email") ||
+    localStorage.getItem("user_email") ||
+    localStorage.getItem("email");
+
+  const role =
+    localStorage.getItem("its_user_role") ||
+    localStorage.getItem("user_role") ||
+    localStorage.getItem("role");
+
+  if (userId) return "user_" + userId;
+  if (email) return "email_" + String(email).toLowerCase().trim();
+
+  return role ? "role_" + role : "anonymous";
+}
+
+function itsGetStorageKey() {
+  return "intotheshift_customizer_state_v1_" + itsGetCurrentUserKey();
+}
+
+const ITS_LEGACY_KEY = "intotheshift_customizer_state_v1";
 
 function itsLoad() {
   try {
-    return JSON.parse(localStorage.getItem(ITS_KEY)) || {};
+    return JSON.parse(localStorage.getItem(itsGetStorageKey())) || {};
   } catch(e) {
     return {};
   }
 }
 
 function itsSave(state) {
-  localStorage.setItem(ITS_KEY, JSON.stringify(state || {}));
+  localStorage.setItem(itsGetStorageKey(), JSON.stringify(state || {}));
 }
 
 function itsPatch(patch) {
@@ -17,6 +43,14 @@ function itsPatch(patch) {
   const next = Object.assign({}, current, patch || {});
   itsSave(next);
   return next;
+}
+
+function itsClear() {
+  localStorage.removeItem(itsGetStorageKey());
+}
+
+function itsClearLegacyDraft() {
+  localStorage.removeItem(ITS_LEGACY_KEY);
 }
 
 function itsSlugify(text) {
