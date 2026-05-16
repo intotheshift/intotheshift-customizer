@@ -136,6 +136,10 @@ document.addEventListener("DOMContentLoaded", function () {
     ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon dashboard</a>`
     : "";
 
+  const mesAdLink = logged && client
+    ? `<a class="nav-link ${active("mes-autodiagnostics.html")}" href="mes-autodiagnostics.html">Mes AD</a>`
+    : "";
+
   const adminLink = admin
     ? `<a class="nav-link ${active("admin.html")}" href="admin.html">Admin</a>`
     : "";
@@ -210,6 +214,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ${accueilLink}
 
         ${dashboardLink}
+
+        ${mesAdLink}
 
         ${adminLink}
 
