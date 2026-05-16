@@ -755,7 +755,9 @@ function closePreviewModal(){
 }
 
 function confirmDeleteDraft(){
-  localStorage.removeItem("intotheshift_customizer_state_v1");
+  if(typeof itsClear === "function"){
+  itsClear();
+}
   localStorage.removeItem("its_current_ad_id");
   localStorage.removeItem("its_selected_pack");
   localStorage.removeItem("its_campaign_config");
@@ -764,64 +766,190 @@ function confirmDeleteDraft(){
   window.location.reload();
 }
 
-document.addEventListener("DOMContentLoaded", function(){
-  const state = typeof itsLoad === "function" ? itsLoad() : {};
+document.addEventListener("DOMContentLoaded", async function(){
 
   const firstname = localStorage.getItem("its_user_firstname") || "";
   const firstnameInline = document.getElementById("user-firstname-inline");
+
   if(firstnameInline && firstname.trim()){
     firstnameInline.textContent = " " + firstname.trim() + ",";
   }
 
-  const title = state?.title || state?.subject || state?.meta?.nom || "";
-  const theme = state?.theme || state?.selectedTheme || "Thématique à choisir";
-  const chapters = Array.isArray(state?.chapters) ? state.chapters : [];
-  const qCount = chapters.reduce((sum, ch) => sum + ((ch.questions || []).length), 0);
+  let state = {};
+  try{
+    state = typeof itsLoad === "function" ? itsLoad() : {};
+  }catch(e){
+    state = {};
+  }
 
-  const miniAction = document.getElementById("mini-action");
-  const previewCard = document.getElementById("preview-link-card");
-  const deleteBtn = document.getElementById("delete-draft-btn");
-  const resumeBtn = document.getElementById("resume-draft-btn");
-  const settingsBtn = document.getElementById("settings-draft-btn");
-  const libraryBtn = document.getElementById("draft-library-btn");
-  const blankBtn = document.getElementById("draft-blank-btn");
+  let apiProject = null;
 
-  if(title){
+  try{
+    const token =
+      localStorage.getItem("its_token") ||
+      localStorage.getItem("token") ||
+      "";
+
+    if(token){
+      const response = await fetch(
+        "https://into-the-shift-studio-api.osc-fr1.scalingo.io/api/projects",
+        {
+          headers:{
+            "Authorization":"Bearer " + token
+          }
+        }
+      );
+
+      if(response.ok){
+        const data = await response.json();
+
+        if(Array.isArray(data.projects) && data.projects.length){
+          apiProject = data.projects[0];
+        }
+      }
+    }
+  }catch(e){
+    console.error("Erreur chargement projets API", e);
+  }
+
+  if(apiProject){
+
+    const projectData = apiProject.data || {};
+
+    const title =
+      apiProject.title ||
+      projectData.autodiagTitle ||
+      projectData.title ||
+      "Autodiagnostic";
+
+    const status = apiProject.status || "draft";
+
+    const questionsCount =
+      projectData.payload?.chapters?.reduce((sum, ch) => {
+        return sum + ((ch.questions || []).length);
+      }, 0) || 0;
+
     document.getElementById("mini-project").textContent = title;
-    document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
-    document.getElementById("mini-next").textContent = "Continuer la création";
 
-    if(miniAction){
-      miniAction.textContent = "Continuer la création";
-      miniAction.href = "questions.html";
+    if(status === "published"){
+      document.getElementById("mini-progress").textContent = "Publié";
+      document.getElementById("mini-next").textContent = "Consulter";
+      document.getElementById("draft-status").textContent = "Publié";
+    }
+    else if(status === "sent"){
+      document.getElementById("mini-progress").textContent = "En attente de publication";
+      document.getElementById("mini-next").textContent = "Validation Into The Shift";
+      document.getElementById("draft-status").textContent = "Transmis";
+    }
+    else{
+      document.getElementById("mini-progress").textContent = "Brouillon";
+      document.getElementById("mini-next").textContent = "Continuer";
+      document.getElementById("draft-status").textContent = "Brouillon en cours";
     }
 
-    document.getElementById("draft-status").textContent = "Brouillon en cours";
     document.getElementById("draft-title").textContent = title;
-    document.getElementById("draft-theme").textContent = theme;
-    document.getElementById("draft-questions").textContent = qCount + " question" + (qCount > 1 ? "s" : "");
-    document.getElementById("draft-step").textContent = "Étape 2/5";
+
+    document.getElementById("draft-theme").textContent =
+      projectData.theme ||
+      projectData.selectedTheme ||
+      "Autodiagnostic";
+
+    document.getElementById("draft-questions").textContent =
+      questionsCount + " question" + (questionsCount > 1 ? "s" : "");
+
+    document.getElementById("draft-step").textContent =
+      status === "published"
+        ? "Publié"
+        : status === "sent"
+        ? "Transmission effectuée"
+        : "Étape 2/5";
+
+    const resumeBtn = document.getElementById("resume-draft-btn");
+    const settingsBtn = document.getElementById("settings-draft-btn");
+    const deleteBtn = document.getElementById("delete-draft-btn");
+    const libraryBtn = document.getElementById("draft-library-btn");
+    const blankBtn = document.getElementById("draft-blank-btn");
+    const miniAction = document.getElementById("mini-action");
 
     if(resumeBtn) resumeBtn.style.display = "inline-flex";
     if(settingsBtn) settingsBtn.style.display = "inline-flex";
-    if(deleteBtn) deleteBtn.style.display = "inline-flex";
-    if(libraryBtn) libraryBtn.style.display = "none";
-    if(blankBtn) blankBtn.style.display = "none";
-  } else {
-    document.getElementById("mini-project").textContent = "Aucun projet démarré";
-    document.getElementById("mini-progress").textContent = "À démarrer";
-    document.getElementById("mini-next").textContent = "Choisir une base";
 
-    if(miniAction){
-      miniAction.textContent = "Commencer un autodiag";
-      miniAction.href = "index.html";
+    if(status === "published" || status === "sent"){
+      if(deleteBtn) deleteBtn.style.display = "none";
+    } else {
+      if(deleteBtn) deleteBtn.style.display = "inline-flex";
     }
 
-    if(resumeBtn) resumeBtn.style.display = "none";
-    if(settingsBtn) settingsBtn.style.display = "none";
-    if(deleteBtn) deleteBtn.style.display = "none";
-    if(libraryBtn) libraryBtn.style.display = "inline-flex";
-    if(blankBtn) blankBtn.style.display = "inline-flex";
+    if(libraryBtn) libraryBtn.style.display = "none";
+    if(blankBtn) blankBtn.style.display = "none";
+
+    if(miniAction){
+      miniAction.textContent =
+        status === "published"
+          ? "Voir le projet"
+          : "Continuer la création";
+
+      miniAction.href =
+        status === "published"
+          ? "validation.html"
+          : "questions.html";
+    }
+  }
+
+  else{
+
+    const title = state?.title || state?.subject || state?.meta?.nom || "";
+    const theme = state?.theme || state?.selectedTheme || "Thématique à choisir";
+
+    const chapters = Array.isArray(state?.chapters)
+      ? state.chapters
+      : [];
+
+    const qCount = chapters.reduce((sum, ch) =>
+      sum + ((ch.questions || []).length), 0);
+
+    const miniAction = document.getElementById("mini-action");
+    const deleteBtn = document.getElementById("delete-draft-btn");
+    const resumeBtn = document.getElementById("resume-draft-btn");
+    const settingsBtn = document.getElementById("settings-draft-btn");
+    const libraryBtn = document.getElementById("draft-library-btn");
+    const blankBtn = document.getElementById("draft-blank-btn");
+
+    if(title){
+
+      document.getElementById("mini-project").textContent = title;
+
+      document.getElementById("mini-progress").textContent =
+        qCount > 0
+          ? qCount + " question" + (qCount > 1 ? "s" : "")
+          : "Contenus à compléter";
+
+      document.getElementById("mini-next").textContent =
+        "Continuer la création";
+
+      if(miniAction){
+        miniAction.textContent = "Continuer la création";
+        miniAction.href = "questions.html";
+      }
+
+      document.getElementById("draft-status").textContent =
+        "Brouillon local";
+
+      document.getElementById("draft-title").textContent = title;
+      document.getElementById("draft-theme").textContent = theme;
+
+      document.getElementById("draft-questions").textContent =
+        qCount + " question" + (qCount > 1 ? "s" : "");
+
+      document.getElementById("draft-step").textContent = "Étape 2/5";
+
+      if(resumeBtn) resumeBtn.style.display = "inline-flex";
+      if(settingsBtn) settingsBtn.style.display = "inline-flex";
+      if(deleteBtn) deleteBtn.style.display = "inline-flex";
+
+      if(libraryBtn) libraryBtn.style.display = "none";
+      if(blankBtn) blankBtn.style.display = "none";
+    }
   }
 
   document.addEventListener("keydown", function(e){
@@ -830,6 +958,23 @@ document.addEventListener("DOMContentLoaded", function(){
       closePreviewModal();
     }
   });
+
+  const modal = document.getElementById("deleteDraftModal");
+
+  if(modal){
+    modal.addEventListener("click", function(e){
+      if(e.target === this) closeDeleteDraftModal();
+    });
+  }
+
+  const previewModal = document.getElementById("previewModal");
+
+  if(previewModal){
+    previewModal.addEventListener("click", function(e){
+      if(e.target === this) closePreviewModal();
+    });
+  }
+});
 
   const modal = document.getElementById("deleteDraftModal");
   if(modal){
