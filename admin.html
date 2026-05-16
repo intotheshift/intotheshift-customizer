@@ -580,11 +580,29 @@ function getProjectConfig(p){let cfg=val(p,["config","configuration","payload","
 
 function getProjectShareUrl(p){
   const cfg=getProjectConfig(p);
-  return val(p,["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl"],val(cfg,["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl"],""));
+  const payload = cfg?.payload || {};
+  return val(
+    p,
+    ["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl","url_diffusion","urlDiffusion","diffusion","adLink","ad_link","campaign_url","campaignUrl"],
+    val(
+      cfg,
+      ["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl","url_diffusion","urlDiffusion","diffusion","adLink","ad_link","campaign_url","campaignUrl"],
+      val(payload,["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl","url_diffusion","urlDiffusion","diffusion","adLink","ad_link","campaign_url","campaignUrl"],"")
+    )
+  );
 }
 function getProjectResultsUrl(p){
   const cfg=getProjectConfig(p);
-  return val(p,["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl"],val(cfg,["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl"],""));
+  const payload = cfg?.payload || {};
+  return val(
+    p,
+    ["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl","url_results","urlResults","url_resultats","urlResultats","results","stats_url","statsUrl","url_stats","urlStats","statistics_url","statisticsUrl"],
+    val(
+      cfg,
+      ["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl","url_results","urlResults","url_resultats","urlResultats","results","stats_url","statsUrl","url_stats","urlStats","statistics_url","statisticsUrl"],
+      val(payload,["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl","url_results","urlResults","url_resultats","urlResultats","results","stats_url","statsUrl","url_stats","urlStats","statistics_url","statisticsUrl"],"")
+    )
+  );
 }
 function getProjectEffectiveStatus(p){
   const raw = String(val(p,["status","statut"],"draft")).toLowerCase();
@@ -664,8 +682,50 @@ async function saveProjectPublication(projectId){
   const shareUrl=document.getElementById("project-share-"+String(projectId))?.value.trim() || "";
   const resultsUrl=document.getElementById("project-results-"+String(projectId))?.value.trim() || "";
   try{
-    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/publication`,{status,share_url:shareUrl,results_url:resultsUrl,shareUrl,resultsUrl});
-    adminState.projects=adminState.projects.map(p=>String(val(p,["id"],""))===String(projectId)?{...p,status,statut:status,share_url:shareUrl,shareUrl,results_url:resultsUrl,resultsUrl}:p);
+    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/publication`,{
+      status,
+      share_url:shareUrl,
+      shareUrl,
+      diffusion_url:shareUrl,
+      diffusionUrl:shareUrl,
+      url_diffusion:shareUrl,
+      urlDiffusion:shareUrl,
+      results_url:resultsUrl,
+      resultsUrl,
+      result_url:resultsUrl,
+      resultUrl:resultsUrl,
+      dashboard_url:resultsUrl,
+      dashboardUrl:resultsUrl,
+      stats_url:resultsUrl,
+      statsUrl:resultsUrl,
+      url_stats:resultsUrl,
+      urlStats:resultsUrl,
+      url_resultats:resultsUrl,
+      urlResultats:resultsUrl
+    });
+    adminState.projects=adminState.projects.map(p=>String(val(p,["id"],""))===String(projectId)?{
+      ...p,
+      status,
+      statut:status,
+      share_url:shareUrl,
+      shareUrl,
+      diffusion_url:shareUrl,
+      diffusionUrl:shareUrl,
+      url_diffusion:shareUrl,
+      urlDiffusion:shareUrl,
+      results_url:resultsUrl,
+      resultsUrl,
+      result_url:resultsUrl,
+      resultUrl:resultsUrl,
+      dashboard_url:resultsUrl,
+      dashboardUrl:resultsUrl,
+      stats_url:resultsUrl,
+      statsUrl:resultsUrl,
+      url_stats:resultsUrl,
+      urlStats:resultsUrl,
+      url_resultats:resultsUrl,
+      urlResultats:resultsUrl
+    }:p);
     renderAll();
     showSuccess("Publication mise à jour : " + getProjectStatusLabel(status) + ".");
   }catch(err){console.error(err);showError("Mise à jour publication impossible. Détail : "+err.message);}
