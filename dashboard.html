@@ -1047,7 +1047,57 @@ document.addEventListener("DOMContentLoaded", async function(){
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-  const role = localStorage.getItem("its_user_role") || localStorage.getItem("role") || "";
+  function getToken(){
+    return (
+      localStorage.getItem("its_token") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("auth_token") ||
+      ""
+    );
+  }
+
+  function decodeToken(){
+    const token = getToken();
+    if(!token || !token.includes(".")) return null;
+
+    try{
+      return JSON.parse(
+        atob(
+          token
+            .split(".")[1]
+            .replace(/-/g, "+")
+            .replace(/_/g, "/")
+        )
+      );
+    }catch(e){
+      return null;
+    }
+  }
+
+  function getRole(){
+    const storedRole =
+      localStorage.getItem("its_user_role") ||
+      localStorage.getItem("role");
+
+    if(storedRole) return storedRole;
+
+    try{
+      const rawUser = localStorage.getItem("its_user");
+      if(rawUser){
+        const user = JSON.parse(rawUser);
+        if(user.role || user.user_role){
+          return user.role || user.user_role;
+        }
+      }
+    }catch(e){}
+
+    const tokenData = decodeToken();
+    if(tokenData && tokenData.role) return tokenData.role;
+
+    return "client";
+  }
+
+  const role = getRole();
 
   document.querySelectorAll(".client-only").forEach(function(el){
     el.style.display = role === "client" ? "inline-flex" : "none";
