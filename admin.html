@@ -53,6 +53,8 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .badge-sent{background:#e6f7ef;color:#20784b}
 .badge-draft{background:#fff2d8;color:#996700}
 .badge-status{background:#edf2f7;color:#506477}
+.badge-published{background:#eaf3f8;color:#0d4c72}
+.badge-results{background:#efe9ff;color:#5b3bbd}
 .empty,.loading{padding:22px;text-align:center;color:#718497}
 .error{display:none;background:#fff0f0;color:#9d2b2b;border:1px solid #ffd1d1;padding:14px;border-radius:16px;margin:14px 0}
 .success{display:none;background:#eefbf3;color:#176239;border:1px solid #bee8cd;padding:14px;border-radius:16px;margin:14px 0}
@@ -110,8 +112,13 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .info-box{background:#f6f9fb;border:1px solid #e2ebf2;border-radius:14px;padding:11px}
 .info-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#74899a;font-weight:900;margin-bottom:4px}
 .info-value{font-size:13px;color:#18375d;font-weight:800;word-break:break-word}
-.project-publication{display:grid;grid-template-columns:150px 1fr 1fr auto;gap:10px;align-items:end;background:#fbfdfe;border:1px solid #e2ebf2;border-radius:16px;padding:12px;margin-top:12px}
-.project-publication .publication-help{grid-column:1/-1}
+.project-publication{display:grid;grid-template-columns:170px minmax(260px,1fr) minmax(260px,1fr) auto;gap:14px;align-items:end;background:#fbfdfe;border:1px solid #e2ebf2;border-radius:18px;padding:16px;margin-top:12px}
+.publication-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.publication-field label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#74899a;font-weight:900}
+.publication-field select,.publication-field input{width:100%;height:44px;border:1px solid #d5e1e9;border-radius:12px;padding:10px 12px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;outline:none}
+.publication-field select:focus,.publication-field input:focus{border-color:#0d4c72;box-shadow:0 0 0 3px rgba(13,76,114,.10)}
+.project-publication .mini-btn{height:44px;border-radius:12px;padding:0 16px}
+.project-publication .publication-help{grid-column:1/-1;font-size:13px;color:#60758a;line-height:1.4;background:#eef6fb;border:1px solid #d7e8f1;border-radius:12px;padding:10px 12px}
 .org-quota-panel{display:grid;grid-template-columns:1fr 1fr 170px auto;gap:10px;align-items:end;background:#fbfdfe;border:1px solid #e2ebf2;border-radius:16px;padding:12px;margin-top:12px}
 .org-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 @media(max-width:1100px){.global-cards{grid-template-columns:1fr 1fr}.project-publication,.org-quota-panel{grid-template-columns:1fr 1fr}.project-publication button,.org-quota-panel button{grid-column:1/-1}.info-grid{grid-template-columns:1fr 1fr}}
