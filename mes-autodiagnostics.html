@@ -59,7 +59,7 @@
     .btn-green{background:#e5f4f5;color:#007883;border-color:#b8dfe0}
     .btn-red{background:#fceaea;color:#c24141;border-color:#f4c6c6}
     .btn[disabled]{opacity:.45;cursor:not-allowed}
-    .contact-note{font-size:12px;color:#64748b;line-height:1.35;text-align:right;max-width:260px}
+    .contact-note{font-size:12px;color:#64748b;line-height:1.35;text-align:right;max-width:280px}
     .contact-note a{color:#18375d;font-weight:800;text-decoration:none}
     .contact-note a:hover{text-decoration:underline}
 
@@ -168,60 +168,68 @@
       return p.title || p.name || p.project_name || p.ad_title || "Autodiagnostic sans titre";
     }
 
+    function deepFindTheme(obj, depth = 0) {
+      if (!obj || depth > 5) return "";
+
+      if (typeof obj === "string") {
+        const s = obj.trim();
+        if (!s) return "";
+        if ((s.startsWith("{") && s.endsWith("}")) || (s.startsWith("[") && s.endsWith("]"))) {
+          try { return deepFindTheme(JSON.parse(s), depth + 1); } catch(e) {}
+        }
+        return "";
+      }
+
+      if (Array.isArray(obj)) {
+        for (const item of obj) {
+          const found = deepFindTheme(item, depth + 1);
+          if (found) return found;
+        }
+        return "";
+      }
+
+      const keys = [
+        "theme", "thematique", "thématique", "selectedTheme", "themeLabel", "themeName",
+        "baseTheme", "catalogTheme", "base_theme", "catalog_theme", "category", "topic",
+        "categorie", "catégorie", "subject", "domaine", "universe", "libraryTheme"
+      ];
+
+      for (const key of keys) {
+        const value = obj[key];
+        if (!value) continue;
+        if (typeof value === "string" && value.trim()) return value.trim();
+        if (typeof value === "object") {
+          const label = value.title || value.name || value.label || value.titre || value.nom;
+          if (label) return String(label).trim();
+          const found = deepFindTheme(value, depth + 1);
+          if (found) return found;
+        }
+      }
+
+      const likelyContainers = ["data", "payload", "meta", "config", "parametrage", "settings", "source", "base", "catalogue", "template"];
+      for (const key of likelyContainers) {
+        const found = deepFindTheme(obj[key], depth + 1);
+        if (found) return found;
+      }
+
+      return "";
+    }
+
+    function inferThemeFromTitle(title) {
+      const t = String(title || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      if (t.includes("rps") || t.includes("risques psychosociaux") || t.includes("qvt") || t.includes("signaux faibles")) return "QVT & RPS";
+      if (t.includes("fraude") || t.includes("cyber") || t.includes("phishing") || t.includes("numerique")) return "Cybersécurité";
+      if (t.includes("securite") || t.includes("surete") || t.includes("accident") || t.includes("risque")) return "Sécurité & sûreté au travail";
+      if (t.includes("changer") || t.includes("transformation") || t.includes("management") || t.includes("manager")) return "Transformation & management";
+      if (t.includes("energie") || t.includes("sobriete") || t.includes("rse") || t.includes("environnement")) return "RSE";
+      if (t.includes("ethique") || t.includes("compliance") || t.includes("conformite")) return "Éthique & compliance";
+
+      return "";
+    }
+
     function getTheme(p) {
-      const data = p.data || {};
-      const payload = data.payload || {};
-      const meta = data.meta || payload.meta || {};
-      const config = data.config || payload.config || {};
-
-      return (
-        p.theme ||
-        p.category ||
-        p.topic ||
-        p.thematique ||
-        p.selectedTheme ||
-        p.themeLabel ||
-        p.base_theme ||
-        p.catalog_theme ||
-
-        data.theme ||
-        data.category ||
-        data.topic ||
-        data.thematique ||
-        data.selectedTheme ||
-        data.themeLabel ||
-        data.baseTheme ||
-        data.catalogTheme ||
-        data.base_theme ||
-        data.catalog_theme ||
-
-        payload.theme ||
-        payload.category ||
-        payload.topic ||
-        payload.thematique ||
-        payload.selectedTheme ||
-        payload.themeLabel ||
-        payload.baseTheme ||
-        payload.catalogTheme ||
-        payload.base_theme ||
-        payload.catalog_theme ||
-
-        meta.theme ||
-        meta.category ||
-        meta.topic ||
-        meta.thematique ||
-        meta.selectedTheme ||
-        meta.themeLabel ||
-
-        config.theme ||
-        config.category ||
-        config.topic ||
-        config.thematique ||
-        config.selectedTheme ||
-        config.themeLabel ||
-
-        "Thématique non renseignée"
-      );
+      return deepFindTheme(p) || inferThemeFromTitle(getTitle(p)) || "Thématique non renseignée";
     }
 
     function getCampaignDates(p) {
@@ -239,8 +247,10 @@
     function campaignUrl(p) {
       const id = p.id || p.project_id;
       const status = normalizeStatus(p);
-      const readonly = (status === "published" || status === "results") ? "&readonly=1" : "";
-      return id ? `campagne.html?projectId=${encodeURIComponent(id)}${readonly}` : `campagne.html${readonly ? "?readonly=1" : ""}`;
+      const readonly = (status === "published" || status === "results" || status === "archived") ? "readonly=1" : "";
+      if (id && readonly) return `campagne.html?projectId=${encodeURIComponent(id)}&${readonly}`;
+      if (id) return `campagne.html?projectId=${encodeURIComponent(id)}`;
+      return readonly ? "campagne.html?readonly=1" : "campagne.html";
     }
 
     function openExternal(url) {
