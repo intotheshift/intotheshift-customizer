@@ -10,7 +10,7 @@
 
   <style>
     *{box-sizing:border-box}
-    body{</div>
+    body{
       margin:0;
       font-family:'Asap',sans-serif;
       background:#f4f7fb;
@@ -574,7 +574,7 @@
     let clients = [];
 
     document.addEventListener("DOMContentLoaded", async () => {
-      protectPartnerPage();
+      if(!protectPartnerPage()) return;
       await loadPartnerQuota();
       await loadPartnerClients();
     });
@@ -594,8 +594,17 @@
       );
     }
 
+    function decodeJwt(token){
+      try{
+        const payload = token.split(".")[1];
+        return JSON.parse(atob(payload.replace(/-/g,"+").replace(/_/g,"/")));
+      }catch(e){
+        return null;
+      }
+    }
+
     function getRole(){
-      return localStorage.getItem("its_user_role") || "";
+      return localStorage.getItem("its_user_role") || decodeJwt(getToken())?.role || "";
     }
 
     function protectPartnerPage(){
@@ -604,13 +613,22 @@
 
       if(!logged){
         window.location.href = "login.html?redirect=partner.html";
-        return;
+        return false;
       }
 
-      if(role && role !== "partner" && role !== "admin"){
+      if(role === "admin"){
+        alert("La page partenaire est réservée à un compte partner. En admin, ouvre le dossier partner depuis l’onglet Admin > Partners.");
+        window.location.href = "admin.html";
+        return false;
+      }
+
+      if(role !== "partner"){
         alert("Cet espace est réservé aux partenaires.");
         window.location.href = "index.html";
+        return false;
       }
+
+      return true;
     }
 
     function isProjectConfigSent(project){
@@ -1068,4 +1086,3 @@
   </script>
 </body>
 </html>
-
