@@ -39,7 +39,7 @@ body{font-family:'Asap',sans-serif;background:#f3f6f8;color:#18375d;min-height:1
 .section-tools{display:flex;gap:10px;flex-wrap:wrap}
 .admin-input,.admin-select{border:1px solid #d5e1e9;border-radius:13px;padding:10px 12px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;min-width:210px}
 .table-wrap{overflow-x:auto;border-radius:16px;border:1px solid #e7edf2}
-table{width:100%;border-collapse:collapse;min-width:1250px}
+table{width:100%;border-collapse:collapse;min-width:1050px}
 th{text-align:left;background:#f6f9fb;color:#6a7d8e;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:12px;border-bottom:1px solid #e5edf3}
 td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-align:top}
 .cell-title{font-weight:900;color:#153b5b}
@@ -92,14 +92,30 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .status-edit{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .status-edit select{border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff;min-width:120px}
 .status-help{font-size:12px;color:#758898;line-height:1.35;margin-top:6px}
-.badge-published{background:#e5f4f5;color:#007883}
-.badge-results{background:#e8f8ef;color:#22824d}
-.publication-edit{display:grid;grid-template-columns:150px minmax(230px,1fr) minmax(230px,1fr) auto;gap:8px;align-items:end;min-width:760px}
-.publication-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#74899a;font-weight:900;margin-bottom:4px}
-.publication-field input,.publication-field select{width:100%;border:1px solid #d5e1e9;border-radius:10px;padding:8px;font-family:'Asap',sans-serif;color:#18375d;background:#fff}
-.publication-help{grid-column:1/-1;font-size:12px;color:#758898;line-height:1.35}
-.publication-help a{color:#0d4c72;font-weight:900;text-decoration:none}
-.publication-help a:hover{text-decoration:underline}
+
+
+/* Cartes admin sans scroll horizontal */
+.global-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+.global-card{background:#fbfdfe;border:1px solid #e2ebf2;border-radius:20px;padding:16px;display:flex;gap:13px;align-items:flex-start}
+.global-ico{width:42px;height:42px;border-radius:14px;background:#eaf3f8;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.global-card h3{margin:0 0 8px;color:#0d4c72;font-size:16px}
+.global-line{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #edf2f6;padding:6px 0;font-size:13px;color:#60758a}
+.global-line:last-child{border-bottom:0}.global-line strong{color:#18375d}
+.card-list{display:grid;grid-template-columns:1fr;gap:14px}
+.org-card,.project-card{border:1px solid #dfe8ef;border-radius:22px;background:#fff;padding:18px;box-shadow:0 8px 22px rgba(13,76,114,.05)}
+.org-card-head,.project-card-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}
+.org-card h3,.project-card h3{margin:0;color:#0d4c72;font-size:18px;line-height:1.25}
+.card-meta{font-size:13px;color:#718497;line-height:1.45;margin-top:4px}
+.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.info-box{background:#f6f9fb;border:1px solid #e2ebf2;border-radius:14px;padding:11px}
+.info-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#74899a;font-weight:900;margin-bottom:4px}
+.info-value{font-size:13px;color:#18375d;font-weight:800;word-break:break-word}
+.project-publication{display:grid;grid-template-columns:150px 1fr 1fr auto;gap:10px;align-items:end;background:#fbfdfe;border:1px solid #e2ebf2;border-radius:16px;padding:12px;margin-top:12px}
+.project-publication .publication-help{grid-column:1/-1}
+.org-quota-panel{display:grid;grid-template-columns:1fr 1fr 170px auto;gap:10px;align-items:end;background:#fbfdfe;border:1px solid #e2ebf2;border-radius:16px;padding:12px;margin-top:12px}
+.org-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media(max-width:1100px){.global-cards{grid-template-columns:1fr 1fr}.project-publication,.org-quota-panel{grid-template-columns:1fr 1fr}.project-publication button,.org-quota-panel button{grid-column:1/-1}.info-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.global-cards,.info-grid,.project-publication,.org-quota-panel{grid-template-columns:1fr}.org-card-head,.project-card-head{flex-direction:column}.project-publication button,.org-quota-panel button{grid-column:auto}}
 
 @media(max-width:1150px){.partner-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-layout{grid-template-columns:1fr}.admin-side{position:relative;top:auto;display:flex;overflow-x:auto}.side-title,.side-small{display:none}.side-link{white-space:nowrap}.admin-hero{flex-direction:column}.admin-actions{justify-content:flex-start}}
 @media(max-width:1050px){.admin-form{grid-template-columns:1fr 1fr}.form-actions{grid-column:1 / -1}.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -157,11 +173,12 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
         <div class="notice">
           Règle métier : un <strong>partner</strong> possède un quota global. Ses clients finaux consomment ce quota. Un client direct Into The Shift peut avoir son propre pack.
         </div>
-        <div class="admin-grid">
-          <div class="kpi-card"><div class="kpi-label">Passations partners achetées</div><div id="kpiPartnerQuota" class="kpi-value">—</div></div>
-          <div class="kpi-card"><div class="kpi-label">Passations partners utilisées</div><div id="kpiPartnerUsed" class="kpi-value">—</div></div>
-          <div class="kpi-card"><div class="kpi-label">Clients rattachés à partners</div><div id="kpiLinkedOrgs" class="kpi-value">—</div></div>
-          <div class="kpi-card"><div class="kpi-label">Clients directs</div><div id="kpiDirectOrgs" class="kpi-value">—</div></div>
+        <div class="global-cards">
+          <article class="global-card"><div class="global-ico">🧩</div><div style="width:100%"><h3>Autodiags</h3><div class="global-line"><span>Brouillons</span><strong id="globalDrafts">—</strong></div><div class="global-line"><span>Transmis</span><strong id="globalSent">—</strong></div><div class="global-line"><span>Publiés</span><strong id="globalPublished">—</strong></div><div class="global-line"><span>Résultats disponibles</span><strong id="globalResults">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">🚀</div><div style="width:100%"><h3>Publication</h3><div class="global-line"><span>À publier</span><strong id="globalToPublish">—</strong></div><div class="global-line"><span>Publiés sans résultats</span><strong id="globalPublishedNoResults">—</strong></div><div class="global-line"><span>Sans lien diffusion</span><strong id="globalNoShare">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">🏢</div><div style="width:100%"><h3>Clients</h3><div class="global-line"><span>Clients directs</span><strong id="kpiDirectOrgs">—</strong></div><div class="global-line"><span>Clients partners</span><strong id="kpiLinkedOrgs">—</strong></div><div class="global-line"><span>Partners</span><strong id="globalPartners">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">📊</div><div style="width:100%"><h3>Passations partners</h3><div class="global-line"><span>Achetées</span><strong id="kpiPartnerQuota">—</strong></div><div class="global-line"><span>Utilisées</span><strong id="kpiPartnerUsed">—</strong></div><div class="global-line"><span>Restantes</span><strong id="globalPartnerRemaining">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">⚠️</div><div style="width:100%"><h3>Alertes</h3><div class="global-line"><span>Comptes sans entreprise</span><strong id="globalNoCompany">—</strong></div><div class="global-line"><span>Clients sans quota</span><strong id="globalNoQuota">—</strong></div><div class="global-line"><span>Transmis sans lien</span><strong id="globalSentNoShare">—</strong></div></div></article>
         </div>
       </section>
 
@@ -254,22 +271,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
           </div>
         </div>
         <div id="orgsLoading" class="loading">Chargement des clients finaux...</div>
-        <div class="table-wrap">
-          <table id="orgsTable" style="display:none">
-            <thead>
-              <tr>
-                <th>Client final</th>
-                <th>Type</th>
-                <th>Partner / créateur</th>
-                <th>Contact</th>
-                <th>Quota</th>
-                <th>AD</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="orgsBody"></tbody>
-          </table>
-        </div>
+        <div id="orgCards" class="card-list"></div>
         <div id="orgsEmpty" class="empty" style="display:none">Aucun client final trouvé.</div>
       </section>
 
@@ -286,28 +288,11 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
               <option value="draft">Brouillon</option>
               <option value="sent">Transmis</option>
               <option value="published">Publié</option>
-              <option value="results">Résultats disponibles</option>
             </select>
           </div>
         </div>
         <div id="projectsLoading" class="loading">Chargement des projets...</div>
-        <div class="table-wrap">
-          <table id="projectsTable" style="display:none">
-            <thead>
-              <tr>
-                <th>Autodiag</th>
-                <th>Client</th>
-                <th>Organisation</th>
-                <th>Statut</th>
-                <th>Config transmise</th>
-                <th>Date création</th>
-                <th>Dernière mise à jour</th>
-                <th>Publication</th>
-              </tr>
-            </thead>
-            <tbody id="projectsBody"></tbody>
-          </table>
-        </div>
+        <div id="projectCards" class="card-list"></div>
         <div id="projectsEmpty" class="empty" style="display:none">Aucun projet trouvé.</div>
       </section>
     </div>
@@ -412,11 +397,17 @@ function renderAll(){
 
 function renderKpis(){
   const partners=adminState.clients.filter(c=>String(val(c,["role"],"")).toLowerCase()==="partner");
-  const partnerQuota=partners.reduce((s,p)=>s+num(val(p,["passationsQuota","passations_quota"],0)),0);
-  const partnerUsed=partners.reduce((s,p)=>s+num(val(p,["passationsUsed","passations_used"],0)),0);
+  const partnerQuota=partners.reduce((sum,p)=>sum+num(val(p,["passationsQuota","passations_quota"],0)),0);
+  const partnerUsed=partners.reduce((sum,p)=>sum+num(val(p,["passationsUsed","passations_used"],0)),0);
   const linkedOrgs=adminState.organizations.filter(o=>!!getPartnerForOrg(o)).length;
   const directOrgs=adminState.organizations.length-linkedOrgs;
-
+  const statusCounts={draft:0,sent:0,published:0,results:0};
+  adminState.projects.forEach(p=>{const st=getProjectEffectiveStatus(p);statusCounts[st]=(statusCounts[st]||0)+1;});
+  const sentNoShare=adminState.projects.filter(p=>getProjectEffectiveStatus(p)==="sent"&&!getProjectShareUrl(p)).length;
+  const noShare=adminState.projects.filter(p=>["sent","published","results"].includes(getProjectEffectiveStatus(p))&&!getProjectShareUrl(p)).length;
+  const publishedNoResults=adminState.projects.filter(p=>getProjectEffectiveStatus(p)==="published"&&!getProjectResultsUrl(p)).length;
+  const noCompany=adminState.clients.filter(c=>!getCompany(c)).length;
+  const noQuota=adminState.organizations.filter(o=>num(val(o,["passationsQuota","passations_quota"],0))===0).length;
   document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
   document.getElementById("kpiPartners").textContent=partners.length;
   document.getElementById("kpiOrganizations").textContent=adminState.organizations.length;
@@ -425,7 +416,10 @@ function renderKpis(){
   document.getElementById("kpiPartnerUsed").textContent=formatNumber(partnerUsed);
   document.getElementById("kpiLinkedOrgs").textContent=linkedOrgs;
   document.getElementById("kpiDirectOrgs").textContent=directOrgs;
-
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set("globalDrafts",statusCounts.draft||0);set("globalSent",statusCounts.sent||0);set("globalPublished",statusCounts.published||0);set("globalResults",statusCounts.results||0);
+  set("globalToPublish",statusCounts.sent||0);set("globalPublishedNoResults",publishedNoResults);set("globalNoShare",noShare);set("globalPartners",partners.length);
+  set("globalPartnerRemaining",formatNumber(Math.max(0,partnerQuota-partnerUsed)));set("globalNoCompany",noCompany);set("globalNoQuota",noQuota);set("globalSentNoShare",sentNoShare);
   document.getElementById("sideUsers").textContent=adminState.clients.length;
   document.getElementById("sidePartners").textContent=partners.length;
   document.getElementById("sideOrganizations").textContent=adminState.organizations.length;
@@ -540,96 +534,59 @@ function renderPartners(){
 
 function renderOrganizations(){
   const q=(document.getElementById("orgSearch")?.value||"").toLowerCase().trim();
-
-  // Dans l'admin, on affiche uniquement les clients directs Into The Shift.
-  // Les clients finaux rattachés à un partner sont visibles dans le dossier partner.
-  const rows=adminState.organizations
-    .filter(o=>!getPartnerForOrg(o))
-    .filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
-
-  const body=document.getElementById("orgsBody");
-
-  body.innerHTML=rows.map(o=>{
+  const rows=adminState.organizations.filter(o=>!getPartnerForOrg(o)).filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
+  const grid=document.getElementById("orgCards");
+  grid.innerHTML=rows.map(o=>{
     const id=val(o,["id"],"");
     const name=getOrgName(o);
     const contactName=val(o,["contactName","contact_name"],"—");
     const contactEmail=val(o,["contactEmail","contact_email"],"");
+    const ownerName=val(o,["ownerName","owner_name"],"—");
+    const ownerEmail=val(o,["ownerEmail","owner_email"],"");
+    const ownerCompany=val(o,["ownerCompanyName","owner_company_name"],"");
     const pack=val(o,["passationsPack","passations_pack"],"");
     const quota=num(val(o,["passationsQuota","passations_quota"],0));
     const used=num(val(o,["passationsUsed","passations_used"],0));
     const remaining=Math.max(0, quota-used);
     const projectsCount=val(o,["projectsCount","projects_count"],adminState.projects.filter(p=>String(val(p,["organization_id","organizationId"],""))===String(id)).length);
-
-    return`<tr>
-      <td><div class="cell-title">${escapeHtml(name)}</div><div class="muted">ID ${escapeHtml(id)}</div></td>
-      <td><span class="badge badge-direct">client direct Into The Shift</span></td>
-      <td>Into The Shift</td>
-      <td><div>${escapeHtml(contactName)}</div><div class="muted">${escapeHtml(contactEmail)}</div></td>
-      <td>
-        <div class="quota-edit">
-          <div class="quota-field"><label>Achetées</label><input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}"></div>
-          <div class="quota-field"><label>Utilisées</label><input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}"></div>
-          <div class="quota-rest">Restantes : ${formatNumber(remaining)}</div>
-          <select id="org-pack-${escapeAttr(id)}" class="pack-select">
-            <option value="" ${!pack?"selected":""}>Pack non renseigné</option>
-            <option value="200" ${pack==="200"?"selected":""}>200</option>
-            <option value="500" ${pack==="500"?"selected":""}>500</option>
-            <option value="1200" ${pack==="1200"?"selected":""}>1 200</option>
-            <option value="2000" ${pack==="2000"?"selected":""}>2 000</option>
-            <option value="3000" ${pack==="3000"?"selected":""}>3 000</option>
-            <option value="5000" ${pack==="5000"?"selected":""}>5 000</option>
-            <option value="7000" ${pack==="7000"?"selected":""}>7 000</option>
-            <option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option>
-          </select>
-          <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer</button>
-        </div>
-      </td>
-      <td>${projectsCount}</td>
-      <td>
-        <div class="actions-cell">
-          <button class="mini-btn light" onclick="openClientFolder('${escapeAttr(id)}')">Dossier client</button>
-        </div>
-      </td>
-    </tr>`;
+    return`<article class="org-card">
+      <div class="org-card-head"><div><h3>${escapeHtml(name)}</h3><div class="card-meta">ID ${escapeHtml(id)} · ${projectsCount} AD</div></div><span class="badge badge-direct">client direct Into The Shift</span></div>
+      <div class="info-grid">
+        <div class="info-box"><div class="info-label">Compte créateur</div><div class="info-value">${escapeHtml(ownerCompany || ownerName || "—")}</div><div class="muted">${escapeHtml(ownerEmail)}</div></div>
+        <div class="info-box"><div class="info-label">Contact dossier</div><div class="info-value">${escapeHtml(contactName)}</div><div class="muted">${escapeHtml(contactEmail)}</div></div>
+        <div class="info-box"><div class="info-label">Passations restantes</div><div class="info-value">${formatNumber(remaining)}</div><div class="muted">${formatNumber(used)} utilisées / ${formatNumber(quota)} achetées</div></div>
+      </div>
+      <div class="org-quota-panel">
+        <div class="quota-field"><label>Achetées</label><input id="org-quota-${escapeAttr(id)}" type="number" min="0" value="${quota}"></div>
+        <div class="quota-field"><label>Utilisées</label><input id="org-used-${escapeAttr(id)}" type="number" min="0" value="${used}"></div>
+        <div class="quota-field"><label>Pack</label><select id="org-pack-${escapeAttr(id)}" class="pack-select" style="width:100%"><option value="" ${!pack?"selected":""}>Pack non renseigné</option><option value="200" ${pack==="200"?"selected":""}>200</option><option value="500" ${pack==="500"?"selected":""}>500</option><option value="1200" ${pack==="1200"?"selected":""}>1 200</option><option value="2000" ${pack==="2000"?"selected":""}>2 000</option><option value="3000" ${pack==="3000"?"selected":""}>3 000</option><option value="5000" ${pack==="5000"?"selected":""}>5 000</option><option value="7000" ${pack==="7000"?"selected":""}>7 000</option><option value="illimite" ${pack==="illimite"?"selected":""}>Illimité</option></select></div>
+        <button class="mini-btn light" onclick="saveOrganizationPassations('${escapeAttr(id)}')">Enregistrer quota</button>
+      </div>
+      <div class="org-actions"><button class="mini-btn light" onclick="openClientFolder('${escapeAttr(id)}')">Dossier client</button></div>
+    </article>`;
   }).join("");
-
-  document.getElementById("orgsTable").style.display=rows.length?"table":"none";
   document.getElementById("orgsEmpty").style.display=rows.length?"none":"block";
 }
 
 function getProjectConfig(p){let cfg=val(p,["config","configuration","payload","data"],null);if(typeof cfg==="string"){try{return JSON.parse(cfg);}catch(e){return {};}}return cfg&&typeof cfg==="object"?cfg:{};}
 
+
 function getProjectShareUrl(p){
   const cfg=getProjectConfig(p);
   return val(p,["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl"],val(cfg,["share_url","shareUrl","ad_url","adUrl","public_url","publicUrl","diffusion_url","diffusionUrl"],""));
 }
-
 function getProjectResultsUrl(p){
   const cfg=getProjectConfig(p);
   return val(p,["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl"],val(cfg,["results_url","resultsUrl","result_url","resultUrl","dashboard_url","dashboardUrl"],""));
 }
-
 function getProjectEffectiveStatus(p){
   const raw = String(val(p,["status","statut"],"draft")).toLowerCase();
   const sentFlag = val(p,["config_transmise","configTransmise","configSent","submitted","is_submitted"],false);
   const resultsUrl = getProjectResultsUrl(p);
-
-  if(raw === "results" || raw.includes("result") || !!resultsUrl){
-    return "results";
-  }
-
-  if(raw === "published" || raw.includes("publi") || raw.includes("ligne")){
-    return "published";
-  }
-
-  if(raw === "sent" || raw.includes("transmis") || raw.includes("submitted")){
-    return "sent";
-  }
-
-  if(sentFlag === true || sentFlag === "true"){
-    return "sent";
-  }
-
+  if(raw === "results" || raw.includes("result") || !!resultsUrl) return "results";
+  if(raw === "published" || raw.includes("publi") || raw.includes("ligne")) return "published";
+  if(raw === "sent" || raw.includes("transmis") || raw.includes("submitted")) return "sent";
+  if(sentFlag === true || sentFlag === "true") return "sent";
   return "draft";
 }
 
@@ -664,122 +621,49 @@ function isProjectConfigActuallySent(p){
 function renderProjects(){
   const q=(document.getElementById("projectSearch")?.value||"").toLowerCase().trim();
   const sf=(document.getElementById("statusFilter")?.value||"").toLowerCase();
-
-  const rows=adminState.projects.filter(p=>{
-    const effectiveStatus = getProjectEffectiveStatus(p);
-    const text=JSON.stringify(p).toLowerCase();
-    return(!q||text.includes(q))&&(!sf||effectiveStatus===sf);
-  });
-
-  const body=document.getElementById("projectsBody");
-
-  body.innerHTML=rows.map(p=>{
-    const cfg=getProjectConfig(p);
-    const id=val(p,["id"],"");
-    const title=val(cfg,[
-      "autodiagTitle",
-      "diagnosticTitle",
-      "adTitle",
-      "title",
-      "titre",
-      "campaignTitle",
-      "passationTitle"
-    ],val(p,[
-      "autodiag_title",
-      "project_title",
-      "title",
-      "name",
-      "project_name"
-    ],"Autodiag sans titre"));
-
-    const client=val(p,["organizationName","clientName","client_name","company","company_name","entreprise","client_email","email"],val(cfg,["company","entreprise","clientCompany","clientEmail"],"—"));
+  const rows=adminState.projects.filter(p=>{const effectiveStatus=getProjectEffectiveStatus(p);const text=JSON.stringify(p).toLowerCase();return(!q||text.includes(q))&&(!sf||effectiveStatus===sf);});
+  const grid=document.getElementById("projectCards");
+  grid.innerHTML=rows.map(p=>{
+    const cfg=getProjectConfig(p); const id=val(p,["id"],"");
+    const title=val(cfg,["autodiagTitle","diagnosticTitle","adTitle","title","titre","campaignTitle","passationTitle"],val(p,["autodiag_title","project_title","title","name","project_name"],"Autodiag sans titre"));
     const organization=val(p,["organizationName","organization_name"],"—");
-    const status=getProjectEffectiveStatus(p);
-    const created=formatDate(val(p,["created_at","createdAt","date_creation"],""));
-    const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
-    const sent=isProjectConfigActuallySent(p);
-
-    return`<tr>
-      <td><div class="cell-title">${escapeHtml(title)}</div></td>
-      <td>${escapeHtml(client)}</td>
-      <td>${escapeHtml(organization)}</td>
-      <td>${projectStatusBadge(status)}</td>
-      <td>${sent?'<span class="badge badge-sent">oui</span>':'<span class="badge badge-draft">non</span>'}</td>
-      <td>${created}</td>
-      <td>${updated}</td>
-      <td>
-        <div class="publication-edit">
-          <div class="publication-field">
-            <label>Statut</label>
-            <select id="project-status-${escapeAttr(id)}">
-              <option value="draft" ${status==="draft"?"selected":""}>Brouillon</option>
-              <option value="sent" ${status==="sent"?"selected":""}>Transmis</option>
-              <option value="published" ${status==="published"?"selected":""}>Publié</option>
-              <option value="results" ${status==="results"?"selected":""}>Résultats disponibles</option>
-            </select>
-          </div>
-          <div class="publication-field">
-            <label>URL de diffusion</label>
-            <input id="project-share-${escapeAttr(id)}" type="url" value="${escapeAttr(getProjectShareUrl(p))}" placeholder="https://...">
-          </div>
-          <div class="publication-field">
-            <label>URL résultats</label>
-            <input id="project-results-${escapeAttr(id)}" type="url" value="${escapeAttr(getProjectResultsUrl(p))}" placeholder="https://...">
-          </div>
-          <button class="mini-btn" onclick="saveProjectPublication('${escapeAttr(id)}')">Enregistrer</button>
-          <div class="publication-help">
-            ${status==="draft"
-              ? "En attente de transmission par le client."
-              : status==="sent"
-                ? "Ajoute l’URL de diffusion puis passe en Publié."
-                : status==="published"
-                  ? "L’AD est visible côté client. Ajoute l’URL résultats quand elle est disponible."
-                  : "Le client peut consulter l’AD et les résultats."}
-          </div>
-        </div>
-      </td>
-    </tr>`;
+    const creatorCompany=val(p,["creatorCompanyName","creator_company_name","companyName","company_name"],val(p,["clientCompanyName","client_company_name"],""));
+    const creatorEmail=val(p,["creatorEmail","creator_email","clientEmail","client_email","email"],"");
+    const client=organization || creatorCompany || val(cfg,["company","entreprise","clientCompany","clientEmail"],"—");
+    const status=getProjectEffectiveStatus(p); const created=formatDate(val(p,["created_at","createdAt","date_creation"],"")); const updated=formatDate(val(p,["updated_at","updatedAt","date_update"],""));
+    const sent=isProjectConfigActuallySent(p); const share=getProjectShareUrl(p); const results=getProjectResultsUrl(p);
+    return`<article class="project-card">
+      <div class="project-card-head"><div><h3>${escapeHtml(title)}</h3><div class="card-meta">Créé le ${created} · Mis à jour le ${updated}</div></div>${projectStatusBadge(status)}</div>
+      <div class="info-grid">
+        <div class="info-box"><div class="info-label">Client final</div><div class="info-value">${escapeHtml(client)}</div><div class="muted">Organisation : ${escapeHtml(organization)}</div></div>
+        <div class="info-box"><div class="info-label">Compte créateur</div><div class="info-value">${escapeHtml(creatorCompany || "—")}</div><div class="muted">${escapeHtml(creatorEmail)}</div></div>
+        <div class="info-box"><div class="info-label">Configuration</div><div class="info-value">${sent?"Transmise":"Non transmise"}</div><div class="muted">Statut interne : ${getProjectStatusLabel(status)}</div></div>
+      </div>
+      <div class="project-publication">
+        <div class="publication-field"><label>Statut</label><select id="project-status-${escapeAttr(id)}"><option value="draft" ${status==="draft"?"selected":""}>Brouillon</option><option value="sent" ${status==="sent"?"selected":""}>Transmis</option><option value="published" ${status==="published"?"selected":""}>Publié</option><option value="results" ${status==="results"?"selected":""}>Résultats disponibles</option></select></div>
+        <div class="publication-field"><label>URL de diffusion</label><input id="project-share-${escapeAttr(id)}" type="url" value="${escapeAttr(share)}" placeholder="https://..."></div>
+        <div class="publication-field"><label>URL résultats</label><input id="project-results-${escapeAttr(id)}" type="url" value="${escapeAttr(results)}" placeholder="https://..."></div>
+        <button class="mini-btn" onclick="saveProjectPublication('${escapeAttr(id)}')">Enregistrer</button>
+        <div class="publication-help">${status==="draft"?"En attente de transmission par le client.":status==="sent"?"Ajoute l’URL de diffusion puis passe en Publié.":status==="published"?"L’AD est visible côté client. Ajoute l’URL résultats quand elle est disponible.":"Le client peut consulter l’AD et les résultats."}</div>
+      </div>
+    </article>`;
   }).join("");
-
-  document.getElementById("projectsTable").style.display=rows.length?"table":"none";
   document.getElementById("projectsEmpty").style.display=rows.length?"none":"block";
 }
 
 async function saveProjectPublication(projectId){
   if(!projectId)return;
-
   const status=document.getElementById("project-status-"+String(projectId))?.value || "draft";
   const shareUrl=document.getElementById("project-share-"+String(projectId))?.value.trim() || "";
   const resultsUrl=document.getElementById("project-results-"+String(projectId))?.value.trim() || "";
-
   try{
-    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/publication`,{
-      status,
-      share_url:shareUrl,
-      results_url:resultsUrl,
-      shareUrl,
-      resultsUrl
-    });
-
-    adminState.projects=adminState.projects.map(p=>{
-      if(String(val(p,["id"],""))===String(projectId)){
-        return {...p,status,statut:status,share_url:shareUrl,shareUrl,results_url:resultsUrl,resultsUrl};
-      }
-      return p;
-    });
-
-    renderProjects();
+    await apiPatch(`/api/admin/projects/${encodeURIComponent(projectId)}/publication`,{status,share_url:shareUrl,results_url:resultsUrl,shareUrl,resultsUrl});
+    adminState.projects=adminState.projects.map(p=>String(val(p,["id"],""))===String(projectId)?{...p,status,statut:status,share_url:shareUrl,shareUrl,results_url:resultsUrl,resultsUrl}:p);
+    renderAll();
     showSuccess("Publication mise à jour : " + getProjectStatusLabel(status) + ".");
-
-  }catch(err){
-    console.error(err);
-    showError("Mise à jour publication impossible. Il faut la route backend PATCH /api/admin/projects/:id/publication. Détail : "+err.message);
-  }
+  }catch(err){console.error(err);showError("Mise à jour publication impossible. Détail : "+err.message);}
 }
-
-async function saveProjectStatus(projectId){
-  return saveProjectPublication(projectId);
-}
+async function saveProjectStatus(projectId){return saveProjectPublication(projectId);}
 
 async function saveUserCompany(userId){
   const companyName=document.getElementById("company-"+String(userId))?.value || "";
