@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
     : "";
 
   const mesAdLink = logged && !admin && !partner
-    ? `<a class="nav-link ${active("mes-autodiagnostics.html")}" href="mes-autodiagnostics.html">Mes AD</a>`
+    ? `<a class="nav-link ${active("mes-autodiagnostics.html")}" href="mes-autodiagnostics.html">Mes Autodiagnostics</a>`
     : "";
 
   const adminLink = admin
