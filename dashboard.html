@@ -721,6 +721,12 @@ body{
 </div>
 
 <script>
+const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+
+function getToken(){
+  return localStorage.getItem("its_token") || localStorage.getItem("token") || localStorage.getItem("auth_token") || "";
+}
+
 function openDeleteDraftModal(){
   const modal = document.getElementById("deleteDraftModal");
   if(modal) modal.style.display = "flex";
@@ -730,7 +736,6 @@ function closeDeleteDraftModal(){
   const modal = document.getElementById("deleteDraftModal");
   if(modal) modal.style.display = "none";
 }
-
 
 function getCurrentDraftTitle(){
   const state = typeof itsLoad === "function" ? itsLoad() : {};
@@ -756,8 +761,11 @@ function closePreviewModal(){
 
 function confirmDeleteDraft(){
   if(typeof itsClear === "function"){
-  itsClear();
-}
+    itsClear();
+  } else {
+    localStorage.removeItem("intotheshift_customizer_state_v1");
+  }
+
   localStorage.removeItem("its_current_ad_id");
   localStorage.removeItem("its_selected_pack");
   localStorage.removeItem("its_campaign_config");
@@ -766,8 +774,232 @@ function confirmDeleteDraft(){
   window.location.reload();
 }
 
-document.addEventListener("DOMContentLoaded", async function(){
+function getProjectTitle(apiProject){
+  const data = apiProject?.data || {};
+  const payload = data.payload || {};
 
+  return apiProject?.title ||
+    data.autodiagTitle ||
+    data.title ||
+    data.titre ||
+    payload.titre_autodiag ||
+    payload.titre_repondants ||
+    "Autodiagnostic";
+}
+
+function getProjectTheme(apiProject){
+  const data = apiProject?.data || {};
+  const payload = data.payload || {};
+
+  return data.theme ||
+    data.selectedTheme ||
+    payload.theme ||
+    payload.thematique ||
+    "Autodiagnostic";
+}
+
+function getProjectQuestionCount(apiProject){
+  const data = apiProject?.data || {};
+  const payload = data.payload || {};
+  const chapters = payload.chapters || data.chapters || [];
+
+  if(!Array.isArray(chapters)) return 0;
+
+  return chapters.reduce((sum, ch) => {
+    return sum + ((ch.questions || []).length);
+  }, 0);
+}
+
+function getEffectiveStatus(apiProject){
+  const data = apiProject?.data || {};
+  const payload = data.payload || {};
+  const rawStatus = String(apiProject?.status || data.status || "draft").toLowerCase();
+
+  const configSent =
+    apiProject?.configTransmise === true ||
+    apiProject?.config_transmise === true ||
+    data.configTransmise === true ||
+    data.config_transmise === true ||
+    data.submitted === true ||
+    payload.configTransmise === true ||
+    payload.config_transmise === true ||
+    payload.submitted === true ||
+    !!payload.submitted_at;
+
+  if(rawStatus === "published" || rawStatus.includes("publi") || rawStatus.includes("ligne")){
+    return "published";
+  }
+
+  if(rawStatus === "sent" || rawStatus.includes("transmis") || rawStatus.includes("submitted") || configSent){
+    return "sent";
+  }
+
+  return "draft";
+}
+
+async function loadLatestApiProject(){
+  const token = getToken();
+  if(!token) return null;
+
+  try{
+    const response = await fetch(API_BASE_URL + "/api/projects", {
+      headers:{
+        "Authorization":"Bearer " + token
+      }
+    });
+
+    if(!response.ok) return null;
+
+    const data = await response.json();
+    const projects = Array.isArray(data.projects) ? data.projects : [];
+
+    if(!projects.length) return null;
+
+    return projects[0];
+  }catch(e){
+    console.error("Erreur chargement projets API", e);
+    return null;
+  }
+}
+
+function renderNoProject(){
+  const miniAction = document.getElementById("mini-action");
+  const deleteBtn = document.getElementById("delete-draft-btn");
+  const resumeBtn = document.getElementById("resume-draft-btn");
+  const settingsBtn = document.getElementById("settings-draft-btn");
+  const libraryBtn = document.getElementById("draft-library-btn");
+  const blankBtn = document.getElementById("draft-blank-btn");
+
+  document.getElementById("mini-project").textContent = "Aucun projet démarré";
+  document.getElementById("mini-progress").textContent = "À démarrer";
+  document.getElementById("mini-next").textContent = "Choisir une base";
+  document.getElementById("draft-status").textContent = "Aucun projet finalisé";
+  document.getElementById("draft-title").textContent = "Vous n’avez pas encore créé d’autodiagnostic.";
+  document.getElementById("draft-theme").textContent = "Thématique à choisir";
+  document.getElementById("draft-questions").textContent = "0 question";
+  document.getElementById("draft-step").textContent = "Étape 1/5";
+
+  if(miniAction){
+    miniAction.textContent = "Commencer un autodiag";
+    miniAction.href = "index.html";
+  }
+
+  if(resumeBtn) resumeBtn.style.display = "none";
+  if(settingsBtn) settingsBtn.style.display = "none";
+  if(deleteBtn) deleteBtn.style.display = "none";
+  if(libraryBtn) libraryBtn.style.display = "inline-flex";
+  if(blankBtn) blankBtn.style.display = "inline-flex";
+}
+
+function renderLocalDraft(state){
+  const title = state?.title || state?.subject || state?.meta?.nom || "";
+
+  if(!title){
+    renderNoProject();
+    return;
+  }
+
+  const theme = state?.theme || state?.selectedTheme || "Thématique à choisir";
+  const chapters = Array.isArray(state?.chapters) ? state.chapters : [];
+  const qCount = chapters.reduce((sum, ch) => sum + ((ch.questions || []).length), 0);
+
+  const miniAction = document.getElementById("mini-action");
+  const deleteBtn = document.getElementById("delete-draft-btn");
+  const resumeBtn = document.getElementById("resume-draft-btn");
+  const settingsBtn = document.getElementById("settings-draft-btn");
+  const libraryBtn = document.getElementById("draft-library-btn");
+  const blankBtn = document.getElementById("draft-blank-btn");
+
+  document.getElementById("mini-project").textContent = title;
+  document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
+  document.getElementById("mini-next").textContent = "Continuer la création";
+  document.getElementById("draft-status").textContent = "Brouillon local";
+  document.getElementById("draft-title").textContent = title;
+  document.getElementById("draft-theme").textContent = theme;
+  document.getElementById("draft-questions").textContent = qCount + " question" + (qCount > 1 ? "s" : "");
+  document.getElementById("draft-step").textContent = "Étape 2/5";
+
+  if(miniAction){
+    miniAction.textContent = "Continuer la création";
+    miniAction.href = "questions.html";
+  }
+
+  if(resumeBtn) resumeBtn.style.display = "inline-flex";
+  if(settingsBtn) settingsBtn.style.display = "inline-flex";
+  if(deleteBtn) deleteBtn.style.display = "inline-flex";
+  if(libraryBtn) libraryBtn.style.display = "none";
+  if(blankBtn) blankBtn.style.display = "none";
+}
+
+function renderApiProject(apiProject){
+  const title = getProjectTitle(apiProject);
+  const theme = getProjectTheme(apiProject);
+  const qCount = getProjectQuestionCount(apiProject);
+  const status = getEffectiveStatus(apiProject);
+
+  const miniAction = document.getElementById("mini-action");
+  const deleteBtn = document.getElementById("delete-draft-btn");
+  const resumeBtn = document.getElementById("resume-draft-btn");
+  const settingsBtn = document.getElementById("settings-draft-btn");
+  const libraryBtn = document.getElementById("draft-library-btn");
+  const blankBtn = document.getElementById("draft-blank-btn");
+
+  document.getElementById("mini-project").textContent = title;
+  document.getElementById("draft-title").textContent = title;
+  document.getElementById("draft-theme").textContent = theme;
+  document.getElementById("draft-questions").textContent = qCount + " question" + (qCount > 1 ? "s" : "");
+
+  if(status === "published"){
+    document.getElementById("mini-progress").textContent = "Publié";
+    document.getElementById("mini-next").textContent = "Consulter";
+    document.getElementById("draft-status").textContent = "Publié";
+    document.getElementById("draft-step").textContent = "Publié";
+  } else if(status === "sent"){
+    document.getElementById("mini-progress").textContent = "En attente de publication";
+    document.getElementById("mini-next").textContent = "Validation Into The Shift";
+    document.getElementById("draft-status").textContent = "Transmis";
+    document.getElementById("draft-step").textContent = "Transmission effectuée";
+  } else {
+    document.getElementById("mini-progress").textContent = "Brouillon";
+    document.getElementById("mini-next").textContent = "Continuer";
+    document.getElementById("draft-status").textContent = "Brouillon en cours";
+    document.getElementById("draft-step").textContent = "Étape 2/5";
+  }
+
+  if(resumeBtn){
+    resumeBtn.style.display = "inline-flex";
+    resumeBtn.textContent = status === "sent" ? "Modifier la configuration" : "Reprendre la création";
+    resumeBtn.href = "questions.html";
+  }
+
+  if(settingsBtn){
+    settingsBtn.style.display = "inline-flex";
+    settingsBtn.textContent = status === "sent" ? "Modifier le paramétrage" : "Paramétrer";
+    settingsBtn.href = "parametrage.html";
+  }
+
+  if(deleteBtn){
+    deleteBtn.style.display = status === "draft" ? "inline-flex" : "none";
+  }
+
+  if(libraryBtn) libraryBtn.style.display = "none";
+  if(blankBtn) blankBtn.style.display = "none";
+
+  if(miniAction){
+    if(status === "published"){
+      miniAction.textContent = "Voir le projet";
+      miniAction.href = "validation.html";
+    } else if(status === "sent"){
+      miniAction.textContent = "Modifier la configuration";
+      miniAction.href = "questions.html";
+    } else {
+      miniAction.textContent = "Continuer la création";
+      miniAction.href = "questions.html";
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async function(){
   const firstname = localStorage.getItem("its_user_firstname") || "";
   const firstnameInline = document.getElementById("user-firstname-inline");
 
@@ -782,174 +1014,12 @@ document.addEventListener("DOMContentLoaded", async function(){
     state = {};
   }
 
-  let apiProject = null;
-
-  try{
-    const token =
-      localStorage.getItem("its_token") ||
-      localStorage.getItem("token") ||
-      "";
-
-    if(token){
-      const response = await fetch(
-        "https://into-the-shift-studio-api.osc-fr1.scalingo.io/api/projects",
-        {
-          headers:{
-            "Authorization":"Bearer " + token
-          }
-        }
-      );
-
-      if(response.ok){
-        const data = await response.json();
-
-        if(Array.isArray(data.projects) && data.projects.length){
-          apiProject = data.projects[0];
-        }
-      }
-    }
-  }catch(e){
-    console.error("Erreur chargement projets API", e);
-  }
+  const apiProject = await loadLatestApiProject();
 
   if(apiProject){
-
-    const projectData = apiProject.data || {};
-
-    const title =
-      apiProject.title ||
-      projectData.autodiagTitle ||
-      projectData.title ||
-      "Autodiagnostic";
-
-    const status = apiProject.status || "draft";
-
-    const questionsCount =
-      projectData.payload?.chapters?.reduce((sum, ch) => {
-        return sum + ((ch.questions || []).length);
-      }, 0) || 0;
-
-    document.getElementById("mini-project").textContent = title;
-
-    if(status === "published"){
-      document.getElementById("mini-progress").textContent = "Publié";
-      document.getElementById("mini-next").textContent = "Consulter";
-      document.getElementById("draft-status").textContent = "Publié";
-    }
-    else if(status === "sent"){
-      document.getElementById("mini-progress").textContent = "En attente de publication";
-      document.getElementById("mini-next").textContent = "Validation Into The Shift";
-      document.getElementById("draft-status").textContent = "Transmis";
-    }
-    else{
-      document.getElementById("mini-progress").textContent = "Brouillon";
-      document.getElementById("mini-next").textContent = "Continuer";
-      document.getElementById("draft-status").textContent = "Brouillon en cours";
-    }
-
-    document.getElementById("draft-title").textContent = title;
-
-    document.getElementById("draft-theme").textContent =
-      projectData.theme ||
-      projectData.selectedTheme ||
-      "Autodiagnostic";
-
-    document.getElementById("draft-questions").textContent =
-      questionsCount + " question" + (questionsCount > 1 ? "s" : "");
-
-    document.getElementById("draft-step").textContent =
-      status === "published"
-        ? "Publié"
-        : status === "sent"
-        ? "Transmission effectuée"
-        : "Étape 2/5";
-
-    const resumeBtn = document.getElementById("resume-draft-btn");
-    const settingsBtn = document.getElementById("settings-draft-btn");
-    const deleteBtn = document.getElementById("delete-draft-btn");
-    const libraryBtn = document.getElementById("draft-library-btn");
-    const blankBtn = document.getElementById("draft-blank-btn");
-    const miniAction = document.getElementById("mini-action");
-
-    if(resumeBtn) resumeBtn.style.display = "inline-flex";
-    if(settingsBtn) settingsBtn.style.display = "inline-flex";
-
-    if(status === "published" || status === "sent"){
-      if(deleteBtn) deleteBtn.style.display = "none";
-    } else {
-      if(deleteBtn) deleteBtn.style.display = "inline-flex";
-    }
-
-    if(libraryBtn) libraryBtn.style.display = "none";
-    if(blankBtn) blankBtn.style.display = "none";
-
-    if(miniAction){
-      miniAction.textContent =
-        status === "published"
-          ? "Voir le projet"
-          : "Continuer la création";
-
-      miniAction.href =
-        status === "published"
-          ? "validation.html"
-          : "questions.html";
-    }
-  }
-
-  else{
-
-    const title = state?.title || state?.subject || state?.meta?.nom || "";
-    const theme = state?.theme || state?.selectedTheme || "Thématique à choisir";
-
-    const chapters = Array.isArray(state?.chapters)
-      ? state.chapters
-      : [];
-
-    const qCount = chapters.reduce((sum, ch) =>
-      sum + ((ch.questions || []).length), 0);
-
-    const miniAction = document.getElementById("mini-action");
-    const deleteBtn = document.getElementById("delete-draft-btn");
-    const resumeBtn = document.getElementById("resume-draft-btn");
-    const settingsBtn = document.getElementById("settings-draft-btn");
-    const libraryBtn = document.getElementById("draft-library-btn");
-    const blankBtn = document.getElementById("draft-blank-btn");
-
-    if(title){
-
-      document.getElementById("mini-project").textContent = title;
-
-      document.getElementById("mini-progress").textContent =
-        qCount > 0
-          ? qCount + " question" + (qCount > 1 ? "s" : "")
-          : "Contenus à compléter";
-
-      document.getElementById("mini-next").textContent =
-        "Continuer la création";
-
-      if(miniAction){
-        miniAction.textContent = "Continuer la création";
-        miniAction.href = "questions.html";
-      }
-
-      document.getElementById("draft-status").textContent =
-        "Brouillon local";
-
-      document.getElementById("draft-title").textContent = title;
-      document.getElementById("draft-theme").textContent = theme;
-
-      document.getElementById("draft-questions").textContent =
-        qCount + " question" + (qCount > 1 ? "s" : "");
-
-      document.getElementById("draft-step").textContent = "Étape 2/5";
-
-      if(resumeBtn) resumeBtn.style.display = "inline-flex";
-      if(settingsBtn) settingsBtn.style.display = "inline-flex";
-      if(deleteBtn) deleteBtn.style.display = "inline-flex";
-
-      if(libraryBtn) libraryBtn.style.display = "none";
-      if(blankBtn) blankBtn.style.display = "none";
-    }
+    renderApiProject(apiProject);
+  } else {
+    renderLocalDraft(state);
   }
 
   document.addEventListener("keydown", function(e){
@@ -958,23 +1028,6 @@ document.addEventListener("DOMContentLoaded", async function(){
       closePreviewModal();
     }
   });
-
-  const modal = document.getElementById("deleteDraftModal");
-
-  if(modal){
-    modal.addEventListener("click", function(e){
-      if(e.target === this) closeDeleteDraftModal();
-    });
-  }
-
-  const previewModal = document.getElementById("previewModal");
-
-  if(previewModal){
-    previewModal.addEventListener("click", function(e){
-      if(e.target === this) closePreviewModal();
-    });
-  }
-});
 
   const modal = document.getElementById("deleteDraftModal");
   if(modal){
