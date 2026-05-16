@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ? `<a class="nav-link ${active("dashboard.html")}" href="dashboard.html">Mon dashboard</a>`
     : "";
 
-  const mesAdLink = logged && client
+  const mesAdLink = logged && !admin && !partner
     ? `<a class="nav-link ${active("mes-autodiagnostics.html")}" href="mes-autodiagnostics.html">Mes AD</a>`
     : "";
 
