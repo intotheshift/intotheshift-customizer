@@ -103,6 +103,9 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 .global-card h3{margin:0 0 8px;color:#0d4c72;font-size:16px}
 .global-line{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #edf2f6;padding:6px 0;font-size:13px;color:#60758a}
 .global-line:last-child{border-bottom:0}.global-line strong{color:#18375d}
+.global-line.clickable{cursor:pointer;border-radius:10px;padding-left:8px;padding-right:8px;transition:background .15s ease}
+.global-line.clickable:hover{background:#eaf3f8;color:#0d4c72}
+.global-line.clickable strong{text-decoration:underline;text-underline-offset:3px;color:#0d4c72}
 .card-list{display:grid;grid-template-columns:1fr;gap:14px}
 .org-card,.project-card{border:1px solid #dfe8ef;border-radius:22px;background:#fff;padding:18px;box-shadow:0 8px 22px rgba(13,76,114,.05)}
 .org-card-head,.project-card-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}
@@ -181,11 +184,11 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
           Règle métier : un <strong>partner</strong> possède un quota global. Ses clients finaux consomment ce quota. Un client direct Into The Shift peut avoir son propre pack.
         </div>
         <div class="global-cards">
-          <article class="global-card"><div class="global-ico">🧩</div><div style="width:100%"><h3>Autodiags</h3><div class="global-line"><span>Brouillons</span><strong id="globalDrafts">—</strong></div><div class="global-line"><span>Transmis</span><strong id="globalSent">—</strong></div><div class="global-line"><span>Publiés</span><strong id="globalPublished">—</strong></div><div class="global-line"><span>Résultats disponibles</span><strong id="globalResults">—</strong></div></div></article>
-          <article class="global-card"><div class="global-ico">🚀</div><div style="width:100%"><h3>Publication</h3><div class="global-line"><span>À publier</span><strong id="globalToPublish">—</strong></div><div class="global-line"><span>Publiés sans résultats</span><strong id="globalPublishedNoResults">—</strong></div><div class="global-line"><span>Sans lien diffusion</span><strong id="globalNoShare">—</strong></div></div></article>
-          <article class="global-card"><div class="global-ico">🏢</div><div style="width:100%"><h3>Clients</h3><div class="global-line"><span>Clients directs</span><strong id="kpiDirectOrgs">—</strong></div><div class="global-line"><span>Clients partners</span><strong id="kpiLinkedOrgs">—</strong></div><div class="global-line"><span>Partners</span><strong id="globalPartners">—</strong></div></div></article>
-          <article class="global-card"><div class="global-ico">📊</div><div style="width:100%"><h3>Passations partners</h3><div class="global-line"><span>Achetées</span><strong id="kpiPartnerQuota">—</strong></div><div class="global-line"><span>Utilisées</span><strong id="kpiPartnerUsed">—</strong></div><div class="global-line"><span>Restantes</span><strong id="globalPartnerRemaining">—</strong></div></div></article>
-          <article class="global-card"><div class="global-ico">⚠️</div><div style="width:100%"><h3>Alertes</h3><div class="global-line"><span>Comptes sans entreprise</span><strong id="globalNoCompany">—</strong></div><div class="global-line"><span>Clients sans quota</span><strong id="globalNoQuota">—</strong></div><div class="global-line"><span>Transmis sans lien</span><strong id="globalSentNoShare">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">🧩</div><div style="width:100%"><h3>Autodiags</h3><div class="global-line clickable" onclick="goToProjects('draft')"><span>Brouillons</span><strong id="globalDrafts">—</strong></div><div class="global-line clickable" onclick="goToProjects('sent')"><span>Transmis</span><strong id="globalSent">—</strong></div><div class="global-line clickable" onclick="goToProjects('published')"><span>Publiés</span><strong id="globalPublished">—</strong></div><div class="global-line clickable" onclick="goToProjects('results')"><span>Résultats disponibles</span><strong id="globalResults">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">🚀</div><div style="width:100%"><h3>Publication</h3><div class="global-line clickable" onclick="goToProjects('sent')"><span>À publier</span><strong id="globalToPublish">—</strong></div><div class="global-line clickable" onclick="goToProjects('published')"><span>Publiés sans résultats</span><strong id="globalPublishedNoResults">—</strong></div><div class="global-line clickable" onclick="goToProjects('', 'sans lien diffusion')"><span>Sans lien diffusion</span><strong id="globalNoShare">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">🏢</div><div style="width:100%"><h3>Clients</h3><div class="global-line clickable" onclick="goToOrganizations()"><span>Clients directs</span><strong id="kpiDirectOrgs">—</strong></div><div class="global-line clickable" onclick="goToPartners()"><span>Clients partners</span><strong id="kpiLinkedOrgs">—</strong></div><div class="global-line clickable" onclick="goToPartners()"><span>Partners</span><strong id="globalPartners">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">📊</div><div style="width:100%"><h3>Passations partners</h3><div class="global-line clickable" onclick="goToPartners()"><span>Achetées</span><strong id="kpiPartnerQuota">—</strong></div><div class="global-line clickable" onclick="goToPartners()"><span>Utilisées</span><strong id="kpiPartnerUsed">—</strong></div><div class="global-line clickable" onclick="goToPartners()"><span>Restantes</span><strong id="globalPartnerRemaining">—</strong></div></div></article>
+          <article class="global-card"><div class="global-ico">⚠️</div><div style="width:100%"><h3>Alertes</h3><div class="global-line clickable" onclick="goToAccounts('sans entreprise')"><span>Comptes sans entreprise</span><strong id="globalNoCompany">—</strong></div><div class="global-line clickable" onclick="goToOrganizations('sans quota')"><span>Clients sans quota</span><strong id="globalNoQuota">—</strong></div><div class="global-line clickable" onclick="goToProjects('sent', 'sans lien diffusion')"><span>Transmis sans lien</span><strong id="globalSentNoShare">—</strong></div></div></article>
         </div>
       </section>
 
@@ -295,6 +298,7 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
               <option value="draft">Brouillon</option>
               <option value="sent">Transmis</option>
               <option value="published">Publié</option>
+              <option value="results">Résultats disponibles</option>
             </select>
           </div>
         </div>
@@ -351,16 +355,68 @@ function statusBadge(status){const s=String(status||"brouillon").toLowerCase();i
 function isConfigSent(project){const sent=val(project,["config_transmise","configSent","submitted","is_submitted"],false);const status=String(val(project,["status","statut"],"")).toLowerCase();return sent===true||sent==="true"||status.includes("transmis")||status.includes("submitted");}
 function getCompany(c){return val(c,["companyName","company_name","company","organization","organisation","entreprise"],"");}
 function getUserName(c){return (val(c,["firstName","first_name"],"") + " " + val(c,["lastName","last_name"],"")).trim() || val(c,["name","full_name"],"—");}
-function getPartnerIdFromOrg(o){return val(o,["partnerId","partner_id","ownerId","owner_id","created_by","createdBy"],"");}
+function getPartnerIdFromOrg(o){
+  return val(o,["partnerId","partner_id","parent_id","parentId","partner_user_id","partnerUserId"],"");
+}
 function getOrgName(o){return val(o,["name","organizationName","clientName","company","company_name"],"—");}
-function getPartnerForOrg(o){const pid=String(getPartnerIdFromOrg(o));return adminState.clients.find(c=>String(val(c,["id","user_id"],""))===pid && String(val(c,["role"],"")).toLowerCase()==="partner");}
-function getPartnerOrgs(partnerId){return adminState.organizations.filter(o=>String(getPartnerIdFromOrg(o))===String(partnerId));}
+function isPartnerOrganizationRecord(o){
+  const type=String(val(o,["type","organization_type","org_type","role"],"")).toLowerCase();
+  return type==="partner" || type==="cabinet" || type==="organism" || type==="organisme";
+}
+function getFinalOrganizations(){
+  return adminState.organizations.filter(o=>!isPartnerOrganizationRecord(o));
+}
+function getPartnerForOrg(o){
+  const pid=String(getPartnerIdFromOrg(o));
+  if(!pid)return null;
+  return adminState.clients.find(c=>String(val(c,["id","user_id"],""))===pid && String(val(c,["role"],"")).toLowerCase()==="partner") || null;
+}
+function getPartnerOrgs(partnerId){
+  return getFinalOrganizations().filter(o=>String(getPartnerIdFromOrg(o))===String(partnerId));
+}
+function getProjectsForOrg(org){
+  const orgId=String(val(org,["id"],""));
+  return adminState.projects.filter(p=>String(val(p,["organization_id","organizationId","org_id","orgId"],""))===orgId);
+}
 
 function showTab(tab){
   document.querySelectorAll(".admin-section").forEach(s=>s.classList.remove("active"));
   document.querySelectorAll(".side-link").forEach(a=>a.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
   document.querySelector(`.side-link[data-tab="${tab}"]`)?.classList.add("active");
+}
+
+function goToProjects(status="", search=""){
+  showTab("projects");
+  const statusFilter=document.getElementById("statusFilter");
+  const projectSearch=document.getElementById("projectSearch");
+  if(statusFilter)statusFilter.value=status||"";
+  if(projectSearch)projectSearch.value=search||"";
+  renderProjects();
+  document.getElementById("tab-projects")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function goToOrganizations(search=""){
+  showTab("organizations");
+  const orgSearch=document.getElementById("orgSearch");
+  if(orgSearch)orgSearch.value=search||"";
+  renderOrganizations();
+  document.getElementById("tab-organizations")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function goToPartners(){
+  showTab("partners");
+  const partnerSearch=document.getElementById("partnerSearch");
+  if(partnerSearch)partnerSearch.value="";
+  renderPartners();
+  document.getElementById("tab-partners")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function goToAccounts(search=""){
+  showTab("accounts");
+  const clientSearch=document.getElementById("clientSearch");
+  const roleFilter=document.getElementById("roleFilter");
+  if(clientSearch)clientSearch.value=search||"";
+  if(roleFilter)roleFilter.value="";
+  renderAccounts();
+  document.getElementById("tab-accounts")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function resetAdminFilters(){
@@ -406,18 +462,19 @@ function renderKpis(){
   const partners=adminState.clients.filter(c=>String(val(c,["role"],"")).toLowerCase()==="partner");
   const partnerQuota=partners.reduce((sum,p)=>sum+num(val(p,["passationsQuota","passations_quota"],0)),0);
   const partnerUsed=partners.reduce((sum,p)=>sum+num(val(p,["passationsUsed","passations_used"],0)),0);
-  const linkedOrgs=adminState.organizations.filter(o=>!!getPartnerForOrg(o)).length;
-  const directOrgs=adminState.organizations.length-linkedOrgs;
+  const finalOrgs=getFinalOrganizations();
+  const linkedOrgs=finalOrgs.filter(o=>!!getPartnerForOrg(o)).length;
+  const directOrgs=finalOrgs.length-linkedOrgs;
   const statusCounts={draft:0,sent:0,published:0,results:0};
   adminState.projects.forEach(p=>{const st=getProjectEffectiveStatus(p);statusCounts[st]=(statusCounts[st]||0)+1;});
   const sentNoShare=adminState.projects.filter(p=>getProjectEffectiveStatus(p)==="sent"&&!getProjectShareUrl(p)).length;
   const noShare=adminState.projects.filter(p=>["sent","published","results"].includes(getProjectEffectiveStatus(p))&&!getProjectShareUrl(p)).length;
   const publishedNoResults=adminState.projects.filter(p=>getProjectEffectiveStatus(p)==="published"&&!getProjectResultsUrl(p)).length;
   const noCompany=adminState.clients.filter(c=>!getCompany(c)).length;
-  const noQuota=adminState.organizations.filter(o=>num(val(o,["passationsQuota","passations_quota"],0))===0).length;
+  const noQuota=finalOrgs.filter(o=>num(val(o,["passationsQuota","passations_quota"],0))===0).length;
   document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
   document.getElementById("kpiPartners").textContent=partners.length;
-  document.getElementById("kpiOrganizations").textContent=adminState.organizations.length;
+  document.getElementById("kpiOrganizations").textContent=finalOrgs.length;
   document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);
   document.getElementById("kpiPartnerQuota").textContent=formatNumber(partnerQuota);
   document.getElementById("kpiPartnerUsed").textContent=formatNumber(partnerUsed);
@@ -429,7 +486,7 @@ function renderKpis(){
   set("globalPartnerRemaining",formatNumber(Math.max(0,partnerQuota-partnerUsed)));set("globalNoCompany",noCompany);set("globalNoQuota",noQuota);set("globalSentNoShare",sentNoShare);
   document.getElementById("sideUsers").textContent=adminState.clients.length;
   document.getElementById("sidePartners").textContent=partners.length;
-  document.getElementById("sideOrganizations").textContent=adminState.organizations.length;
+  document.getElementById("sideOrganizations").textContent=finalOrgs.length;
   document.getElementById("sideProjects").textContent=adminState.projects.length;
 }
 
@@ -440,7 +497,7 @@ function renderAccounts(){
   const rows=adminState.clients.filter(c=>{
     const role=String(val(c,["role"],"client")).toLowerCase();
     const text=JSON.stringify(c).toLowerCase();
-    return(!q||text.includes(q))&&(!rf||role===rf);
+    const specialNoCompany=q==="sans entreprise";return(!q||specialNoCompany||text.includes(q))&&(!rf||role===rf)&&(!specialNoCompany||!getCompany(c));
   });
 
   const body=document.getElementById("accountsBody");
@@ -541,7 +598,7 @@ function renderPartners(){
 
 function renderOrganizations(){
   const q=(document.getElementById("orgSearch")?.value||"").toLowerCase().trim();
-  const rows=adminState.organizations.filter(o=>!getPartnerForOrg(o)).filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
+  const rows=getFinalOrganizations().filter(o=>!getPartnerForOrg(o)).filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
   const grid=document.getElementById("orgCards");
   grid.innerHTML=rows.map(o=>{
     const id=val(o,["id"],"");
@@ -555,7 +612,7 @@ function renderOrganizations(){
     const quota=num(val(o,["passationsQuota","passations_quota"],0));
     const used=num(val(o,["passationsUsed","passations_used"],0));
     const remaining=Math.max(0, quota-used);
-    const projectsCount=val(o,["projectsCount","projects_count"],adminState.projects.filter(p=>String(val(p,["organization_id","organizationId"],""))===String(id)).length);
+    const projectsCount=getProjectsForOrg(o).length;
     return`<article class="org-card">
       <div class="org-card-head"><div><h3>${escapeHtml(name)}</h3><div class="card-meta">ID ${escapeHtml(id)} · ${projectsCount} AD</div></div><span class="badge badge-direct">client direct Into The Shift</span></div>
       <div class="info-grid">
@@ -628,7 +685,7 @@ function isProjectConfigActuallySent(p){
 function renderProjects(){
   const q=(document.getElementById("projectSearch")?.value||"").toLowerCase().trim();
   const sf=(document.getElementById("statusFilter")?.value||"").toLowerCase();
-  const rows=adminState.projects.filter(p=>{const effectiveStatus=getProjectEffectiveStatus(p);const text=JSON.stringify(p).toLowerCase();return(!q||text.includes(q))&&(!sf||effectiveStatus===sf);});
+  const rows=adminState.projects.filter(p=>{const effectiveStatus=getProjectEffectiveStatus(p);const text=JSON.stringify(p).toLowerCase();const specialNoShare=q==="sans lien diffusion";return(!q||specialNoShare||text.includes(q))&&(!sf||effectiveStatus===sf)&&(!specialNoShare||(["sent","published","results"].includes(effectiveStatus)&&!getProjectShareUrl(p)));});
   const grid=document.getElementById("projectCards");
   grid.innerHTML=rows.map(p=>{
     const cfg=getProjectConfig(p); const id=val(p,["id"],"");
