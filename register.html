@@ -478,7 +478,9 @@ body{
 
 
 <script>
-const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? "https://into-the-shift-studio-api-staging.osc-fr1.scalingo.io"
+  : "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
 
 function showRegisterError(message){
   const box = document.getElementById("register-error");

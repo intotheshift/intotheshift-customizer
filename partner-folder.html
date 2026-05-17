@@ -175,7 +175,9 @@ td{padding:13px 12px;border-bottom:1px solid #edf2f6;font-size:14px;vertical-ali
 </main>
 
 <script>
-const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? "https://into-the-shift-studio-api-staging.osc-fr1.scalingo.io"
+  : "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
 
 let state = {
   partnerId:"",

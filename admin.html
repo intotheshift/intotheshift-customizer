@@ -311,7 +311,9 @@ html,body{max-width:100%;overflow-x:hidden}.admin-page{width:100%;overflow-x:hid
 </main>
 
 <script>
-const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? "https://into-the-shift-studio-api-staging.osc-fr1.scalingo.io"
+  : "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
 let adminState = { summary:{}, clients:[], projects:[], organizations:[] };
 
 function getToken(){return localStorage.getItem("its_token") || localStorage.getItem("token") || localStorage.getItem("auth_token") || "";}
