@@ -366,13 +366,40 @@ function isPartnerOrganizationRecord(o){
 function getFinalOrganizations(){
   return adminState.organizations.filter(o=>!isPartnerOrganizationRecord(o));
 }
+function hasPartnerLink(o){
+  const pid=String(getPartnerIdFromOrg(o) || "").trim();
+  return !!pid && pid !== "0" && pid.toLowerCase() !== "null" && pid.toLowerCase() !== "undefined";
+}
+function getDirectOrganizations(){
+  return getFinalOrganizations().filter(o=>!hasPartnerLink(o));
+}
+function getLinkedOrganizations(){
+  return getFinalOrganizations().filter(o=>hasPartnerLink(o));
+}
 function getPartnerForOrg(o){
-  const pid=String(getPartnerIdFromOrg(o));
+  const pid=String(getPartnerIdFromOrg(o) || "").trim();
   if(!pid)return null;
   return adminState.clients.find(c=>String(val(c,["id","user_id"],""))===pid && String(val(c,["role"],"")).toLowerCase()==="partner") || null;
 }
+function getPartnerOrgIds(partnerUser){
+  const partnerUserId=String(val(partnerUser,["id","user_id"],"")).trim();
+  const partnerEmail=String(val(partnerUser,["email"],"")).toLowerCase().trim();
+  const partnerCompany=String(getCompany(partnerUser) || getUserName(partnerUser) || "").toLowerCase().trim();
+  return adminState.organizations
+    .filter(o=>isPartnerOrganizationRecord(o))
+    .filter(o=>{
+      const createdBy=String(val(o,["created_by","createdBy","owner_id","ownerId","user_id","userId"],"")).trim();
+      const email=String(val(o,["contactEmail","contact_email","ownerEmail","owner_email","email"],"")).toLowerCase().trim();
+      const name=String(getOrgName(o)).toLowerCase().trim();
+      return (partnerUserId && createdBy===partnerUserId) || (partnerEmail && email===partnerEmail) || (partnerCompany && name===partnerCompany);
+    })
+    .map(o=>String(val(o,["id"],"")).trim())
+    .filter(Boolean);
+}
 function getPartnerOrgs(partnerId){
-  return getFinalOrganizations().filter(o=>String(getPartnerIdFromOrg(o))===String(partnerId));
+  const partnerUser=adminState.clients.find(c=>String(val(c,["id","user_id"],""))===String(partnerId));
+  const possibleIds=new Set([String(partnerId), ...getPartnerOrgIds(partnerUser || {})]);
+  return getLinkedOrganizations().filter(o=>possibleIds.has(String(getPartnerIdFromOrg(o)).trim()));
 }
 function getProjectsForOrg(org){
   const orgId=String(val(org,["id"],""));
@@ -463,18 +490,18 @@ function renderKpis(){
   const partnerQuota=partners.reduce((sum,p)=>sum+num(val(p,["passationsQuota","passations_quota"],0)),0);
   const partnerUsed=partners.reduce((sum,p)=>sum+num(val(p,["passationsUsed","passations_used"],0)),0);
   const finalOrgs=getFinalOrganizations();
-  const linkedOrgs=finalOrgs.filter(o=>!!getPartnerForOrg(o)).length;
-  const directOrgs=finalOrgs.length-linkedOrgs;
+  const linkedOrgs=getLinkedOrganizations().length;
+  const directOrgs=getDirectOrganizations().length;
   const statusCounts={draft:0,sent:0,published:0,results:0};
   adminState.projects.forEach(p=>{const st=getProjectEffectiveStatus(p);statusCounts[st]=(statusCounts[st]||0)+1;});
   const sentNoShare=adminState.projects.filter(p=>getProjectEffectiveStatus(p)==="sent"&&!getProjectShareUrl(p)).length;
   const noShare=adminState.projects.filter(p=>["sent","published","results"].includes(getProjectEffectiveStatus(p))&&!getProjectShareUrl(p)).length;
   const publishedNoResults=adminState.projects.filter(p=>getProjectEffectiveStatus(p)==="published"&&!getProjectResultsUrl(p)).length;
   const noCompany=adminState.clients.filter(c=>!getCompany(c)).length;
-  const noQuota=finalOrgs.filter(o=>num(val(o,["passationsQuota","passations_quota"],0))===0).length;
+  const noQuota=getDirectOrganizations().filter(o=>num(val(o,["passationsQuota","passations_quota"],0))===0).length;
   document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
   document.getElementById("kpiPartners").textContent=partners.length;
-  document.getElementById("kpiOrganizations").textContent=finalOrgs.length;
+  document.getElementById("kpiOrganizations").textContent=directOrgs;
   document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);
   document.getElementById("kpiPartnerQuota").textContent=formatNumber(partnerQuota);
   document.getElementById("kpiPartnerUsed").textContent=formatNumber(partnerUsed);
@@ -486,7 +513,7 @@ function renderKpis(){
   set("globalPartnerRemaining",formatNumber(Math.max(0,partnerQuota-partnerUsed)));set("globalNoCompany",noCompany);set("globalNoQuota",noQuota);set("globalSentNoShare",sentNoShare);
   document.getElementById("sideUsers").textContent=adminState.clients.length;
   document.getElementById("sidePartners").textContent=partners.length;
-  document.getElementById("sideOrganizations").textContent=finalOrgs.length;
+  document.getElementById("sideOrganizations").textContent=directOrgs;
   document.getElementById("sideProjects").textContent=adminState.projects.length;
 }
 
@@ -598,7 +625,7 @@ function renderPartners(){
 
 function renderOrganizations(){
   const q=(document.getElementById("orgSearch")?.value||"").toLowerCase().trim();
-  const rows=getFinalOrganizations().filter(o=>!getPartnerForOrg(o)).filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
+  const rows=getDirectOrganizations().filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));
   const grid=document.getElementById("orgCards");
   grid.innerHTML=rows.map(o=>{
     const id=val(o,["id"],"");
