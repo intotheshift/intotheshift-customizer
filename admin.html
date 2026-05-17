@@ -797,20 +797,32 @@ async function saveProjectPublication(projectId){
     showSuccess("Publication mise à jour : " + getProjectStatusLabel(status) + ".");
   }catch(err){console.error(err);showError("Mise à jour publication impossible. Détail : "+err.message);}
 }
-async function deleteProject(projectId, title){
-  if(!projectId)return;
+let projectToDelete = null;
 
-  const ok = confirm(`Supprimer définitivement cet autodiag ?\n\n${title || "Autodiag sélectionné"}`);
-  if(!ok)return;
+function deleteProject(projectId, title){
+  projectToDelete = { id: projectId, title: title || "Autodiag sélectionné" };
+
+  document.getElementById("deleteProjectTitle").textContent = projectToDelete.title;
+  document.getElementById("deleteProjectModal").style.display = "flex";
+}
+
+function closeDeleteProjectModal(){
+  projectToDelete = null;
+  document.getElementById("deleteProjectModal").style.display = "none";
+}
+
+async function confirmDeleteProject(){
+  if(!projectToDelete?.id)return;
 
   try{
-    await apiDelete(`/api/admin/projects/${encodeURIComponent(projectId)}`);
-    adminState.projects = adminState.projects.filter(p => String(val(p,["id"],"")) !== String(projectId));
+    await apiDelete(`/api/admin/projects/${encodeURIComponent(projectToDelete.id)}`);
+    adminState.projects = adminState.projects.filter(p => String(val(p,["id"],"")) !== String(projectToDelete.id));
+    closeDeleteProjectModal();
     renderAll();
     showSuccess("Autodiag supprimé.");
   }catch(err){
     console.error(err);
-    showError("Suppression de l’autodiag impossible. Il faut vérifier que la route backend DELETE /api/admin/projects/:id existe. Détail : " + err.message);
+    showError("Suppression de l’autodiag impossible. Détail : " + err.message);
   }
 }
 async function saveProjectStatus(projectId){return saveProjectPublication(projectId);}
@@ -957,5 +969,18 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(requireAdmin())loadAdminData();
 });
 </script>
+<div id="deleteProjectModal" style="display:none;position:fixed;inset:0;background:rgba(13,31,45,.55);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:24px;padding:24px;max-width:520px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.25);">
+    <h3 style="margin:0 0 10px;color:#0d4c72;font-size:22px;">Supprimer cet autodiag ?</h3>
+    <p style="margin:0 0 18px;color:#60758a;line-height:1.45;">
+      Cette action est définitive. L’autodiag sera supprimé de l’espace admin.
+    </p>
+    <div style="background:#fff6f6;border:1px solid #ffd1d1;color:#9d2b2b;border-radius:14px;padding:12px;margin-bottom:18px;font-weight:800;" id="deleteProjectTitle"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="mini-btn light" onclick="closeDeleteProjectModal()">Annuler</button>
+      <button class="mini-btn danger" onclick="confirmDeleteProject()">Supprimer définitivement</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
