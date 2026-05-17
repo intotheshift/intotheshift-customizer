@@ -314,3 +314,114 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.6}
 .forgot-password-link a:hover{
   text-decoration:underline;
 }
+
+
+/* ── Champs URL et bloc publication autodiags ───────────────── */
+input[type="url"],
+.url-input{
+  width:100%;
+  min-height:44px;
+  border:1px solid #d5e1e9;
+  border-radius:12px;
+  padding:10px 12px;
+  font-family:'Asap',sans-serif;
+  font-size:14px;
+  color:#18375d;
+  background:#fff;
+  outline:none;
+}
+
+input[type="url"]:focus,
+.url-input:focus{
+  border-color:#0d4c72;
+  box-shadow:0 0 0 3px rgba(13,76,114,.10);
+}
+
+.publication-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+
+.publication-field label{
+  display:block;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:#74899a;
+  font-weight:900;
+  margin:0;
+}
+
+.publication-field select,
+.publication-field input{
+  width:100%;
+  height:44px;
+  border:1px solid #d5e1e9;
+  border-radius:12px;
+  padding:10px 12px;
+  font-family:'Asap',sans-serif;
+  font-size:14px;
+  color:#18375d;
+  background:#fff;
+  outline:none;
+}
+
+.publication-field select:focus,
+.publication-field input:focus{
+  border-color:#0d4c72;
+  box-shadow:0 0 0 3px rgba(13,76,114,.10);
+}
+
+.project-publication{
+  display:grid;
+  grid-template-columns:170px minmax(260px,1fr) minmax(260px,1fr) auto;
+  gap:14px;
+  align-items:end;
+  background:#fbfdfe;
+  border:1px solid #e2ebf2;
+  border-radius:18px;
+  padding:16px;
+  margin-top:12px;
+}
+
+.project-publication .mini-btn{
+  height:44px;
+  border-radius:12px;
+  padding:0 16px;
+  align-self:end;
+}
+
+.project-publication .publication-help{
+  grid-column:1/-1;
+  font-size:13px;
+  color:#60758a;
+  line-height:1.4;
+  background:#eef6fb;
+  border:1px solid #d7e8f1;
+  border-radius:12px;
+  padding:10px 12px;
+}
+
+@media(max-width:1100px){
+  .project-publication{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .project-publication .mini-btn{
+    grid-column:1/-1;
+  }
+}
+
+@media(max-width:700px){
+  .project-publication{
+    grid-template-columns:1fr;
+  }
+
+  .project-publication .mini-btn{
+    grid-column:auto;
+    width:100%;
+    justify-content:center;
+  }
+}
