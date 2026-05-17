@@ -544,9 +544,7 @@ function renderKpis(){
   document.getElementById("kpiUsers").textContent=val(adminState.summary,["users","usersCount","totalUsers"],adminState.clients.length);
   document.getElementById("kpiPartners").textContent=partners.length;
   document.getElementById("kpiOrganizations").textContent=directOrgs;
-  document.getElementById("kpiProjects").textContent=val(adminState.summary,["projects","projectsCount","totalProjects"],adminState.projects.length);
-  document.getElementById("kpiPartnerQuota").textContent=formatNumber(partnerQuota);
-  document.getElementById("kpiPartnerUsed").textContent=formatNumber(partnerUsed);
+  document.getElementById("kpiProjects").textContent=adminState.projects.length;  document.getElementById("kpiPartnerUsed").textContent=formatNumber(partnerUsed);
   document.getElementById("kpiLinkedOrgs").textContent=linkedOrgs;
   document.getElementById("kpiDirectOrgs").textContent=directOrgs;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
