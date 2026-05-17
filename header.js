@@ -145,9 +145,9 @@ document.addEventListener("DOMContentLoaded", function () {
     : "";
 
   const partnerLink =
-    (partner || admin)
-      ? `<a class="nav-link ${active("partner.html")}" href="partner.html">${admin ? "Vue partner" : "Mes clients"}</a>`
-      : "";
+  partner
+    ? `<a class="nav-link ${active("partner.html")}" href="partner.html">Mes clients</a>`
+    : "";
 
   const accountLink = logged
     ? `<a class="nav-link ${active("account.html")}" href="account.html">Mon compte</a>`
