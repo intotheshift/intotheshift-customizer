@@ -366,9 +366,37 @@ function isPartnerOrganizationRecord(o){
 function getFinalOrganizations(){
   return adminState.organizations.filter(o=>!isPartnerOrganizationRecord(o));
 }
+function cleanId(value){
+  const id=String(value || "").trim();
+  if(!id || id==="0" || id.toLowerCase()==="null" || id.toLowerCase()==="undefined" || id==="—") return "";
+  return id;
+}
+function getOrgCreatorId(o){
+  return cleanId(val(o,["created_by","createdBy","owner_id","ownerId","user_id","userId","createdByUserId","creator_id","creatorId"],""));
+}
+function getUserById(id){
+  const clean=cleanId(id);
+  if(!clean)return null;
+  return adminState.clients.find(c=>String(val(c,["id","user_id"],"")).trim()===clean) || null;
+}
+function isPartnerUser(user){
+  return String(val(user,["role"],"")).toLowerCase()==="partner";
+}
 function hasPartnerLink(o){
-  const pid=String(getPartnerIdFromOrg(o) || "").trim();
-  return !!pid && pid !== "0" && pid.toLowerCase() !== "null" && pid.toLowerCase() !== "undefined";
+  const pid=cleanId(getPartnerIdFromOrg(o));
+  if(pid)return true;
+
+  const creator=getUserById(getOrgCreatorId(o));
+  if(creator && isPartnerUser(creator))return true;
+
+  const ownerEmail=String(val(o,["ownerEmail","owner_email","creatorEmail","creator_email"],"")).toLowerCase().trim();
+  if(ownerEmail){
+    const owner=adminState.clients.find(c=>String(val(c,["email"],"")).toLowerCase().trim()===ownerEmail);
+    if(owner && isPartnerUser(owner))return true;
+  }
+
+  const ownerRole=String(val(o,["ownerRole","owner_role","creatorRole","creator_role"],"")).toLowerCase();
+  return ownerRole==="partner";
 }
 function getDirectOrganizations(){
   return getFinalOrganizations().filter(o=>!hasPartnerLink(o));
@@ -377,9 +405,21 @@ function getLinkedOrganizations(){
   return getFinalOrganizations().filter(o=>hasPartnerLink(o));
 }
 function getPartnerForOrg(o){
-  const pid=String(getPartnerIdFromOrg(o) || "").trim();
-  if(!pid)return null;
-  return adminState.clients.find(c=>String(val(c,["id","user_id"],""))===pid && String(val(c,["role"],"")).toLowerCase()==="partner") || null;
+  const pid=cleanId(getPartnerIdFromOrg(o));
+  if(pid){
+    const partner=getUserById(pid);
+    if(partner && isPartnerUser(partner))return partner;
+  }
+
+  const creator=getUserById(getOrgCreatorId(o));
+  if(creator && isPartnerUser(creator))return creator;
+
+  const ownerEmail=String(val(o,["ownerEmail","owner_email","creatorEmail","creator_email"],"")).toLowerCase().trim();
+  if(ownerEmail){
+    return adminState.clients.find(c=>String(val(c,["email"],"")).toLowerCase().trim()===ownerEmail && isPartnerUser(c)) || null;
+  }
+
+  return null;
 }
 function getPartnerOrgIds(partnerUser){
   const partnerUserId=String(val(partnerUser,["id","user_id"],"")).trim();
