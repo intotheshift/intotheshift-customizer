@@ -777,6 +777,7 @@ function renderProjects(){
         <div class="publication-field"><label>URL de diffusion</label><input id="project-share-${escapeAttr(id)}" class="url-input" type="url" value="${escapeAttr(share)}" placeholder="https://..."></div>
         <div class="publication-field"><label>URL résultats</label><input id="project-results-${escapeAttr(id)}" class="url-input" type="url" value="${escapeAttr(results)}" placeholder="https://..."></div>
         <button class="mini-btn" onclick="saveProjectPublication('${escapeAttr(id)}')">Enregistrer</button>
+        <button class="mini-btn danger" onclick="deleteProject('${escapeAttr(id)}','${escapeAttr(title)}')">Supprimer</button>
         <div class="publication-help">${status==="draft"?"En attente de transmission par le client.":status==="sent"?"Ajoute l’URL de diffusion puis passe en Publié.":status==="published"?"L’AD est visible côté client. Ajoute l’URL résultats quand elle est disponible.":"Le client peut consulter l’AD et les résultats."}</div>
       </div>
     </article>`;
@@ -795,6 +796,22 @@ async function saveProjectPublication(projectId){
     renderAll();
     showSuccess("Publication mise à jour : " + getProjectStatusLabel(status) + ".");
   }catch(err){console.error(err);showError("Mise à jour publication impossible. Détail : "+err.message);}
+}
+async function deleteProject(projectId, title){
+  if(!projectId)return;
+
+  const ok = confirm(`Supprimer définitivement cet autodiag ?\n\n${title || "Autodiag sélectionné"}`);
+  if(!ok)return;
+
+  try{
+    await apiDelete(`/api/admin/projects/${encodeURIComponent(projectId)}`);
+    adminState.projects = adminState.projects.filter(p => String(val(p,["id"],"")) !== String(projectId));
+    renderAll();
+    showSuccess("Autodiag supprimé.");
+  }catch(err){
+    console.error(err);
+    showError("Suppression de l’autodiag impossible. Il faut vérifier que la route backend DELETE /api/admin/projects/:id existe. Détail : " + err.message);
+  }
 }
 async function saveProjectStatus(projectId){return saveProjectPublication(projectId);}
 
