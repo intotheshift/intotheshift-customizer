@@ -574,10 +574,10 @@ body{
       <div class="quick-card">
         <div>
           <div class="quick-icon">◎</div>
-          <h3>Voir un exemple répondant</h3>
-          <p>Visualisez une expérience répondant prête à l’emploi avant de préparer votre propre diffusion.</p>
+          <h3>Voir l’autodiagnostic côté répondant</h3>
+          <p>Prévisualisez votre autodiagnostic comme une personne répondante, avec un parcours de passation simulé.</p>
         </div>
-        <button id="preview-link-card" type="button" class="btn btn-secondary" onclick="openPreviewModal()">Ouvrir l’aperçu</button>
+        <button id="preview-link-card" type="button" class="btn btn-secondary" onclick="openPreviewModal()">Voir côté répondant</button>
       </div>
     </div>
   </section>
@@ -586,7 +586,7 @@ body{
     <div class="dash-section-head">
       <div>
         <div class="dash-section-kicker">Projet en cours</div>
-        <h2 class="dash-section-title">Mon brouillon</h2>
+        <h2 class="dash-section-title" id="current-project-heading">Projet en cours</h2>
       </div>
     </div>
 
@@ -723,6 +723,7 @@ body{
 
 <script>
 const API_BASE_URL = "https://into-the-shift-studio-api.osc-fr1.scalingo.io";
+let latestVisibleProject = null;
 
 function getToken(){
   return localStorage.getItem("its_token") || localStorage.getItem("token") || localStorage.getItem("auth_token") || "";
@@ -743,13 +744,77 @@ function getCurrentDraftTitle(){
   return state?.title || state?.subject || state?.meta?.nom || "";
 }
 
+function parseMaybeJson(value){
+  if(typeof value !== "string") return value;
+  try{return JSON.parse(value);}catch(e){return value;}
+}
+
+function getApiProjectPayload(apiProject){
+  const rawData = parseMaybeJson(apiProject?.data || apiProject?.config || apiProject?.configuration || apiProject?.payload || {});
+  const data = rawData && typeof rawData === "object" ? rawData : {};
+  const rawPayload = parseMaybeJson(data.payload || data.data || data);
+  return rawPayload && typeof rawPayload === "object" ? rawPayload : {};
+}
+
+function normalizeProjectForPreview(apiProject){
+  const payload = getApiProjectPayload(apiProject);
+  const title = getProjectTitle(apiProject);
+  const theme = getProjectTheme(apiProject);
+  const chapters = Array.isArray(payload.chapters) ? payload.chapters : [];
+
+  return {
+    ...payload,
+    title: payload.title || payload.titre || title,
+    subject: payload.subject || theme,
+    theme: payload.theme || theme,
+    selectedTheme: payload.selectedTheme || theme,
+    intro: payload.intro || payload.introduction || "Répondez spontanément aux situations proposées. Cet aperçu est une simulation côté répondant.",
+    duration: payload.duration || payload.duree || "5 à 7 min",
+    chapters: chapters,
+    demographics: Array.isArray(payload.demographics) ? payload.demographics : [],
+    resources: Array.isArray(payload.resources) ? payload.resources : [],
+    meta: {
+      ...(payload.meta || {}),
+      titre: payload?.meta?.titre || payload.titre || payload.title || title
+    }
+  };
+}
+
+function savePreviewStateFromProject(apiProject){
+  if(!apiProject) return false;
+  const previewState = normalizeProjectForPreview(apiProject);
+  if(!Array.isArray(previewState.chapters) || !previewState.chapters.length) return false;
+
+  if(typeof itsSave === "function"){
+    itsSave(previewState);
+  }else{
+    localStorage.setItem("intotheshift_customizer_state_v1", JSON.stringify(previewState));
+  }
+  return true;
+}
+
+function hasLocalPreviewState(){
+  try{
+    const state = typeof itsLoad === "function" ? itsLoad() : {};
+    return !!(state && Array.isArray(state.chapters) && state.chapters.length);
+  }catch(e){
+    return false;
+  }
+}
+
 function openPreviewModal(){
   const modal = document.getElementById("previewModal");
   const frame = document.getElementById("previewFrame");
   if(!modal || !frame) return;
 
-  const hasDraft = !!getCurrentDraftTitle();
-  frame.src = hasDraft ? "apercu-passation.html" : "apercu-passation.html?demo=qvt";
+  const projectReady = latestVisibleProject ? savePreviewStateFromProject(latestVisibleProject) : hasLocalPreviewState();
+
+  if(!projectReady){
+    alert("La prévisualisation côté répondant sera disponible dès qu’un autodiagnostic contiendra au moins un chapitre avec des questions.");
+    return;
+  }
+
+  frame.src = "apercu-passation.html";
   modal.style.display = "flex";
 }
 
@@ -856,6 +921,12 @@ async function loadLatestApiProject(){
 
     if(!projects.length) return null;
 
+    projects.sort((a,b) => {
+      const da = new Date(a.updated_at || a.updatedAt || a.created_at || a.createdAt || 0).getTime();
+      const db = new Date(b.updated_at || b.updatedAt || b.created_at || b.createdAt || 0).getTime();
+      return db - da;
+    });
+
     return projects[0];
   }catch(e){
     console.error("Erreur chargement projets API", e);
@@ -874,6 +945,8 @@ function renderNoProject(){
   document.getElementById("mini-project").textContent = "Aucun projet démarré";
   document.getElementById("mini-progress").textContent = "À démarrer";
   document.getElementById("mini-next").textContent = "Choisir une base";
+  const heading = document.getElementById("current-project-heading");
+  if(heading) heading.textContent = "Projet en cours";
   document.getElementById("draft-status").textContent = "Aucun projet finalisé";
   document.getElementById("draft-title").textContent = "Vous n’avez pas encore créé d’autodiagnostic.";
   document.getElementById("draft-theme").textContent = "Thématique à choisir";
@@ -890,6 +963,11 @@ function renderNoProject(){
   if(deleteBtn) deleteBtn.style.display = "none";
   if(libraryBtn) libraryBtn.style.display = "inline-flex";
   if(blankBtn) blankBtn.style.display = "inline-flex";
+  const previewBtn = document.getElementById("preview-link-card");
+  if(previewBtn){
+    previewBtn.disabled = false;
+    previewBtn.textContent = "Voir côté répondant";
+  }
 }
 
 function renderLocalDraft(state){
@@ -914,6 +992,8 @@ function renderLocalDraft(state){
   document.getElementById("mini-project").textContent = title;
   document.getElementById("mini-progress").textContent = qCount > 0 ? qCount + " question" + (qCount > 1 ? "s" : "") : "Contenus à compléter";
   document.getElementById("mini-next").textContent = "Continuer la création";
+  const heading = document.getElementById("current-project-heading");
+  if(heading) heading.textContent = "Brouillon en cours";
   document.getElementById("draft-status").textContent = "Brouillon local";
   document.getElementById("draft-title").textContent = title;
   document.getElementById("draft-theme").textContent = theme;
@@ -930,6 +1010,8 @@ function renderLocalDraft(state){
   if(deleteBtn) deleteBtn.style.display = "inline-flex";
   if(libraryBtn) libraryBtn.style.display = "none";
   if(blankBtn) blankBtn.style.display = "none";
+  const previewBtn = document.getElementById("preview-link-card");
+  if(previewBtn) previewBtn.textContent = "Voir côté répondant";
 }
 
 function renderApiProject(apiProject){
@@ -937,6 +1019,11 @@ function renderApiProject(apiProject){
   const theme = getProjectTheme(apiProject);
   const qCount = getProjectQuestionCount(apiProject);
   const status = getEffectiveStatus(apiProject);
+  latestVisibleProject = apiProject;
+  const heading = document.getElementById("current-project-heading");
+  if(heading){
+    heading.textContent = status === "published" ? "Autodiagnostic publié" : status === "sent" ? "Autodiagnostic transmis" : "Brouillon en cours";
+  }
 
   const miniAction = document.getElementById("mini-action");
   const deleteBtn = document.getElementById("delete-draft-btn");
@@ -998,6 +1085,9 @@ function renderApiProject(apiProject){
       miniAction.href = "questions.html";
     }
   }
+
+  const previewBtn = document.getElementById("preview-link-card");
+  if(previewBtn) previewBtn.textContent = "Voir côté répondant";
 }
 
 document.addEventListener("DOMContentLoaded", async function(){
